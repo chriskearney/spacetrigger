@@ -32,7 +32,7 @@ public class SpriteSheetAnimation {
         this.renderPoint = renderPoint;
         for (int j = 0; j < rows; j++) {
             for (int i = 0; i < columns; i++) {
-                if (i <= skipFrame) {
+                if (i < skipFrame) {
                     continue;
                 }
                 spriteFrames.add(spriteSheet.getSubimage(i * x_size, j * y_size, x_size, y_size));
@@ -73,5 +73,9 @@ public class SpriteSheetAnimation {
 
     public Optional<Point> getRenderPoint() {
         return renderPoint;
+    }
+
+    public List<BufferedImage> getSpriteFrames() {
+        return spriteFrames;
     }
 }

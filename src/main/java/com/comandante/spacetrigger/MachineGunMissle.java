@@ -15,7 +15,7 @@ public class MachineGunMissle extends Missile {
     }
 
     public SpriteSheetAnimation getDamageAnimation(Point point) {
-        SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(64, 64, 8, 8, Assets.SMALL_MACHINEGUN_ANIMATION, 2, 3, Optional.of(point));
+        SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(32, 32, 8, 8, Assets.SMALL_MACHINEGUN_ANIMATION, 2, 3, Optional.of(point));
         return spriteSheetAnimation;
     }
 }

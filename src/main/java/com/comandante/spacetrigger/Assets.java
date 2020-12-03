@@ -23,6 +23,7 @@ public class Assets {
     public static final BufferedImage BOARD_BACKGROUND_1;
 
     public static final BufferedImage SMALL_MACHINEGUN_ANIMATION;
+    public static final BufferedImage SMALL_MISSLE_ANIMATION;
 
     static {
 
@@ -39,12 +40,14 @@ public class Assets {
 
         MACHINEGUN_MISSLE = loadImage("machinegun-missle.png");
 
-        SMALL_MACHINEGUN_ANIMATION = loadImage("small-machinegun-explosion.png");
+        SMALL_MACHINEGUN_ANIMATION = loadImage("small-machinegun-explosion-new.png");
+
+        SMALL_MISSLE_ANIMATION = loadImage("small-missle-explosion.png");
 
         BOARD_BACKGROUND_1 = loadImage("space/pngs/space-1.png");
     }
 
-    private static BufferedImage loadImage(String imageFilename) {
+    public static BufferedImage loadImage(String imageFilename) {
         try {
             InputStream imageStream = Assets.class.getClassLoader().getResourceAsStream(imageFilename);
             return ImageIO.read(imageStream);

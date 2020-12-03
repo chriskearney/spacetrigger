@@ -43,7 +43,7 @@ public class Missile extends Sprite {
     }
 
     public SpriteSheetAnimation getDamageAnimation(Point point) {
-        SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(64, 64, 8, 8, Assets.SMALL_MACHINEGUN_ANIMATION, 2, 3, Optional.of(point));
+        SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(64, 64, 8, 8, Assets.SMALL_MISSLE_ANIMATION, 2, 3, Optional.of(point));
         return spriteSheetAnimation;
     }
 }
