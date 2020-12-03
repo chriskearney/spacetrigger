@@ -29,19 +29,19 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void initBoard() {
-        this.backgroundImage = Assets.BOARD_BACKGROUND_1;
-
-        addKeyListener(new TAdapter());
+        addKeyListener(new BoardKeyAdapter());
         setBackground(Color.BLACK);
         setFocusable(true);
-        ingame = true;
-
-        spaceShip = new SpaceShip();
-
-        initAliens();
-
+        resetBoard();
         timer = new Timer(DELAY, this);
         timer.start();
+    }
+
+    private void resetBoard() {
+        this.backgroundImage = Assets.BOARD_BACKGROUND_1;
+        ingame = true;
+        spaceShip = new SpaceShip();
+        initAliens();
     }
 
     public void initAliens() {
@@ -143,7 +143,7 @@ public class Board extends JPanel implements ActionListener {
 
     private void drawGameOver(Graphics g) {
 
-        String msg = "Game Over";
+        String msg = "Game Over - Press \"R\" to restart";
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics fm = getFontMetrics(small);
 
@@ -250,7 +250,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
 
-    private class TAdapter extends KeyAdapter {
+    private class BoardKeyAdapter extends KeyAdapter {
 
         @Override
         public void keyReleased(KeyEvent e) {
@@ -259,7 +259,11 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            spaceShip.keyPressed(e);
+            if (!ingame && e.getKeyCode() == KeyEvent.VK_R) {
+                resetBoard();
+            } else {
+                spaceShip.keyPressed(e);
+            }
         }
     }
 }
