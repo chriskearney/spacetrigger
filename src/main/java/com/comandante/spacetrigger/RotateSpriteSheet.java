@@ -35,7 +35,7 @@ public class RotateSpriteSheet {
         }
 
         int currentImage = 0;
-        graphics.clearRect(imageWidth * 8, imageWidth* 8, imageWidth, imageHeight);
+        graphics.clearRect(0, 0, imageWidth, imageHeight);
         for (int j = 0; j < rows; j++) {
             for (int i = 0; i < columns; i++) {
                 graphics.drawImage(rotatedImages.get(currentImage), i * imageWidth, j * imageHeight, null);
