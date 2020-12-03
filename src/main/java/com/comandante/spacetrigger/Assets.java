@@ -44,7 +44,7 @@ public class Assets {
 
         SMALL_MISSLE_ANIMATION = loadImage("small-missle-explosion.png");
 
-        BOARD_BACKGROUND_1 = loadImage("space/pngs/space-1.png");
+        BOARD_BACKGROUND_1 = loadImage("gameassets/space/pngs/space-1.png");
     }
 
     public static BufferedImage loadImage(String imageFilename) {
