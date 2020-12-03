@@ -38,13 +38,13 @@ public class Assets {
         SPACESHIP_EXPLOSION = loadImage("spaceship-explosion.png");
         SPACESHIP_MISSLE = loadImage("spaceship-missle.png");
 
-        MACHINEGUN_MISSLE = loadImage("machinegun-missle.png");
+        MACHINEGUN_MISSLE = loadImage("small-machinegun-bullet.png");
 
         SMALL_MACHINEGUN_ANIMATION = loadImage("small-machinegun-explosion-new.png");
 
         SMALL_MISSLE_ANIMATION = loadImage("small-missle-explosion.png");
 
-        BOARD_BACKGROUND_1 = loadImage("gameassets/space/pngs/space-1.png");
+        BOARD_BACKGROUND_1 = loadImage("spacebackground.png");
     }
 
     public static BufferedImage loadImage(String imageFilename) {
@@ -52,7 +52,7 @@ public class Assets {
             InputStream imageStream = Assets.class.getClassLoader().getResourceAsStream(imageFilename);
             return ImageIO.read(imageStream);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(imageFilename + e);
         }
     }
 

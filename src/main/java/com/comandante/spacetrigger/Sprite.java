@@ -112,12 +112,16 @@ public abstract class Sprite {
         for (int i = 0; i < (getWidth()); i++) {
             for (int j = 0; j < getHeight(); j++) {
                 pixel = image.getRGB(i, j);
-                if (!((pixel >> 24) == 0x00)) {
+                if (!isTransparent(pixel)) {
                     mask.add((getX() + i) + "," + (getY() + j));
                 }
             }
         }
         return mask;
+    }
+
+    public static boolean isTransparent(int pixel) {
+        return (pixel>>24) == 0x00;
     }
 
     public Optional<Point> isCollison(Sprite sprite) {

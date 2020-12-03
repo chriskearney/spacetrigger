@@ -83,8 +83,8 @@ public class SpaceShip extends Sprite {
     }
 
     public void fireGun() {
-        missiles.add(new MachineGunMissle((x + width / 2) - 13, (y + height / 2) - 5, Direction.UP));
-        missiles.add(new MachineGunMissle((x + width / 2) + 13, (y + height / 2) - 5, Direction.UP));
+        missiles.add(new MachineGunMissle((x + width / 2) - 22, (y + height / 2) - 15, Direction.UP));
+        missiles.add(new MachineGunMissle((x + width / 2) + 3, (y + height / 2) - 15, Direction.UP));
     }
 
     public void keyPressed(KeyEvent e) {

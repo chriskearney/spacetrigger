@@ -15,7 +15,7 @@ public class AlienNymph extends Alien {
     }
 
     public void fire() {
-        missiles.add(new MachineGunMissle((x + width / 2) - 7, (y + height / 2) + 40, Direction.DOWN));
+        missiles.add(new MachineGunMissle((x + width / 2) - 10, (y + height / 2) + 10, Direction.DOWN));
     }
 
 
@@ -26,11 +26,11 @@ public class AlienNymph extends Alien {
         }
         ticks++;
 
-        double orbitalPeriod = 500;
+        double orbitalPeriod = 600;
         double portion = (ticks % orbitalPeriod) / orbitalPeriod; // [0, 1)
         double angle = portion * 2 * Math.PI;                    // [0, 2 * PI)
 
-        double radius = 50;
+        double radius = 25;
 
         double planetX = originalX + radius * Math.cos(angle);
         double planetY = originalY + radius * Math.sin(angle);
@@ -44,7 +44,7 @@ public class AlienNymph extends Alien {
         }
 
         x = (int) Math.round(planetX);
-        speed += .6;
+        speed += .3;
         y = (int) Math.round(planetY + speed);
     }
 }
