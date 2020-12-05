@@ -11,10 +11,9 @@ public class LevelOne extends Level {
     private AlienRogue configureAlienRogue(AlienRogue alienRogue) {
         alienRogue.pause(1);
         alienRogue.addDownAnglePath(.9, 1200, AlienScout.Direction.LEFT_TO_RIGHT);
-        alienRogue.addCircle(.4, 300);
         alienRogue.addPoint(100, 20);
         alienRogue.addPoint(BOARD_X - 200, 20);
-
+        alienRogue.addDownAnglePath(.9, 1200, AlienScout.Direction.RIGHT_TO_LEFT);
         return alienRogue;
     }
 
@@ -24,17 +23,12 @@ public class LevelOne extends Level {
 
         List<Alien> secondOneAliens = new ArrayList<>();
 
-        secondOneAliens.add(configureAlienRogue(new AlienRogue(40, 0)));
-        secondOneAliens.add(configureAlienRogue(new AlienRogue(80, 0)));
-        secondOneAliens.add(configureAlienRogue(new AlienRogue(120, 0)));
-
-
         secondOneAliens.add(new AlienScout(AlienScout.Direction.RIGHT_TO_LEFT, 528, -214));
         secondOneAliens.add(new AlienScout(AlienScout.Direction.RIGHT_TO_LEFT,464, -154));
         secondOneAliens.add(new AlienScout(AlienScout.Direction.RIGHT_TO_LEFT,400, -94));
 
         for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = new AlienNymph(i * 40 + 250, -35 * i);
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
             secondOneAliens.add(alienNymph);
         }
 

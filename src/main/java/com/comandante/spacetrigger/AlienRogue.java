@@ -12,8 +12,19 @@ public class AlienRogue extends AlienNymph {
         super(x, y);
     }
 
+    public void fire() {
+        missiles.add(new MachineGunMissle((x + width / 2) - 10, (y + height / 2) + 10, Direction.DOWN));
+    }
+
     @Override
     public void move() {
+        int stepSize = 100;
+        if (ticks % stepSize == 0) {
+            int randoPercent = random.nextInt(100);
+            if (randoPercent > 80) {
+                fire();
+            }
+        }
         for (int i = 0; i < speed; i++) {
             Point remove = trajectory.get(ticks);
             x = remove.getLocation().x;
