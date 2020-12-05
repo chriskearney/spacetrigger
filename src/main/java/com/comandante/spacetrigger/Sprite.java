@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.SplittableRandom;
+
+import static com.comandante.spacetrigger.Main.BOARD_X;
+import static java.lang.Math.sin;
 
 public abstract class Sprite {
 
@@ -23,23 +27,37 @@ public abstract class Sprite {
     protected boolean isExploding;
     private boolean invisibleAfterExploding;
 
+
     protected List<SpriteSheetAnimation> damageAnimations = new ArrayList<>();
 
 
     private int centerX;
     private int centerY;
 
+    protected final int originalX;
+    protected final int originalY;
+
+    protected ArrayList<Point> trajectory = new ArrayList<>();
+
+    private Point previousAddedPoint;
+
     private static final BufferedImage TRANSPARENT_ONE_PIXEL = createTransparentBufferedImage(1, 1);
 
     public Sprite(int x, int y, int hitPoints) {
         this.x = x;
         this.y = y;
+        this.originalX = x;
+        this.originalY = y;
         this.hitPoints = hitPoints;
+        this.previousAddedPoint = new Point(originalX, originalY);
     }
 
     public Sprite(int x, int y) {
         this.x = x;
         this.y = y;
+        this.originalX = x;
+        this.originalY = y;
+        this.previousAddedPoint = new Point(originalX, originalY);
     }
 
     protected void loadImage(BufferedImage image) {
@@ -183,6 +201,97 @@ public abstract class Sprite {
         int relativeY = point.getLocation().y - y;
         return new Point(relativeX, relativeY);
     }
+
+    public static ArrayList<Point> getLine(Point start, Point target) {
+        ArrayList<Point> ret = new ArrayList<Point>();
+
+        int x0 = start.x;
+        int y0 = start.y;
+
+        int x1 = target.x;
+        int y1 = target.y;
+
+        int sx = 0;
+        int sy = 0;
+
+        int dx = Math.abs(x1 - x0);
+        sx = x0 < x1 ? 1 : -1;
+        int dy = -1 * Math.abs(y1 - y0);
+        sy = y0 < y1 ? 1 : -1;
+        int err = dx + dy, e2; /* error value e_xy */
+
+        for (; ; ) {  /* loop */
+            ret.add(new Point(x0, y0));
+            if (x0 == x1 && y0 == y1) break;
+            e2 = 2 * err;
+            if (e2 >= dy) {
+                err += dy;
+                x0 += sx;
+            } /* e_xy+e_x > 0 */
+            if (e2 <= dx) {
+                err += dx;
+                y0 += sy;
+            } /* e_xy+e_y < 0 */
+        }
+
+        return ret;
+    }
+
+    public void addDownAnglePath(double speed, int amount, AlienScout.Direction direction) {
+        ArrayList<Point> points = new ArrayList<>();
+        for (int i = 0; i < amount; i++) {
+            int xFactor = 1;
+            if (direction.equals(AlienScout.Direction.RIGHT_TO_LEFT)) {
+                xFactor = -xFactor;
+            }
+            int proposedX = (int) (BOARD_X / 3 * sin(i * .5 * Math.PI / (BOARD_X * xFactor))) + previousAddedPoint.getLocation().x;
+            speed = speed + .3;
+            int proposedY = (int) Math.round(speed);
+            int x = proposedX;
+            int y = proposedY + previousAddedPoint.getLocation().y;
+            points.add(new Point(x, y));
+        }
+        trajectory.addAll(points);
+        previousAddedPoint = points.get(points.size() - 1);
+    }
+
+    public void addCircle(double speed, int amount) {
+        ArrayList<Point> points = new ArrayList<>();
+        for (int i = 1; i < amount; i++) {
+            double orbitalPeriod = 1600;
+            double portion = (i % orbitalPeriod) / orbitalPeriod; // [0, 1)
+            double angle = portion * 2 * Math.PI;                    // [0, 2 * PI)
+
+            double radius = 80;
+
+            double planetX = previousAddedPoint.getLocation().x + radius * Math.cos(angle);
+            double planetY = previousAddedPoint.getLocation().y + radius * Math.sin(angle);
+
+            int newX = (int) Math.round(planetX);
+            speed += .1;
+            int newY = (int) Math.round(planetY + speed);
+            points.add(new Point(newX, newY));
+        }
+        trajectory.addAll(points);
+        previousAddedPoint = points.get(points.size() - 1);
+    }
+
+    public void addPoint(int destX, int destY) {
+        Point destPoint = new Point(originalX + destX, destY);
+        trajectory.addAll(getLine(previousAddedPoint, destPoint));
+        previousAddedPoint = destPoint;
+    }
+
+    public void pause(int amount) {
+        for (int i = 0; i < amount * 180; i++) {
+            trajectory.add(previousAddedPoint);
+        }
+    }
+
+    public Point getPreviousAddedPoint() {
+        return previousAddedPoint;
+    }
+
 
     public List<SpriteSheetAnimation> getDamageAnimations() {
         return damageAnimations;

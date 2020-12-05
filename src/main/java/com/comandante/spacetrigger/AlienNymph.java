@@ -1,8 +1,12 @@
 package com.comandante.spacetrigger;
 
+import java.util.Random;
+import java.util.SplittableRandom;
+
 public class AlienNymph extends Alien {
 
     private double speed = 0;
+
 
     public AlienNymph(int x, int y) {
         super(x, y, 75);
