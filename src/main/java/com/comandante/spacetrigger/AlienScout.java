@@ -6,9 +6,11 @@ import static java.lang.Math.sin;
 public class AlienScout extends Alien {
 
     private double speed = 0.1;
+    private final Direction direction;
 
-    public AlienScout(int x, int y) {
+    public AlienScout(Direction direction, int x, int y) {
         super(x, y, 1000);
+        this.direction = direction;
     }
 
      protected void initAlien() {
@@ -35,10 +37,20 @@ public class AlienScout extends Alien {
         }
 
         ticks++;
-        int proposedX = (int) (BOARD_X / 3  * sin(ticks * .5 * Math.PI / (BOARD_X * -4))) + originalX;
+        //Controls whether you go left to right, or other way around.
+        int xFactor = 4;
+        if (direction.equals(Direction.RIGHT_TO_LEFT)) {
+            xFactor = -xFactor;
+        }
+        int proposedX = (int) (BOARD_X / 3  * sin(ticks * .5 * Math.PI / (BOARD_X * xFactor))) + originalX;
         speed = speed + .3;
         int proposedY = (int) Math.round(speed);
         x = proposedX;
         y = proposedY + originalY;
+    }
+
+    enum Direction {
+        LEFT_TO_RIGHT,
+        RIGHT_TO_LEFT
     }
 }

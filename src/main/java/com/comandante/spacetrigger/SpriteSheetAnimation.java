@@ -32,13 +32,13 @@ public class SpriteSheetAnimation {
         this.renderPoint = renderPoint;
         for (int j = 0; j < rows; j++) {
             for (int i = 0; i < columns; i++) {
-                if (i < skipFrame) {
-                    continue;
-                }
                 spriteFrames.add(spriteSheet.getSubimage(i * x_size, j * y_size, x_size, y_size));
-                currentFrame = Optional.ofNullable(spriteFrames.get(0));
             }
         }
+        for (int i = 0; i < skipFrame; i++) {
+            spriteFrames.remove(i);
+        }
+        currentFrame = Optional.ofNullable(spriteFrames.get(0));
     }
 
     public SpriteSheetAnimation(int x_size, int y_size, int columns, int rows, BufferedImage spriteSheet, int skipFrame, int frameDelay) {

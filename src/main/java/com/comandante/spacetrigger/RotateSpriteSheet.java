@@ -21,7 +21,7 @@ public class RotateSpriteSheet {
         int columns = 8;
         int rows = 8;
 
-        BufferedImage bufferedImage = Assets.loadImage("explosions/explosion 2.png");
+        BufferedImage bufferedImage = Assets.loadImage("thenew.png");
         SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(imageWidth, imageHeight, columns, rows, bufferedImage, 0, 0);
         List<BufferedImage> spriteFrames = spriteSheetAnimation.getSpriteFrames();
 
@@ -43,7 +43,7 @@ public class RotateSpriteSheet {
             }
         }
 
-        File outputfile = new File("vertical-explosion-2.png");
+        File outputfile = new File("0-rotated.png");
         ImageIO.write(bufferedImage, "png", outputfile);
     }
 

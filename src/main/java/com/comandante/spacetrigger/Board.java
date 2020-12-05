@@ -22,6 +22,9 @@ public class Board extends JPanel implements ActionListener {
     private BufferedImage backgroundImage;
     private boolean ingame;
 
+    private long startTime;
+    private Level currentLevel = new LevelOne();
+
     private ArrayList<Alien> aliens;
 
     public Board() {
@@ -42,25 +45,12 @@ public class Board extends JPanel implements ActionListener {
         ingame = true;
         spaceShip = new SpaceShip();
         initAliens();
+        startTime = System.currentTimeMillis();
+        currentLevel = new LevelOne();
     }
 
     public void initAliens() {
         aliens = new ArrayList<>();
-
-        aliens.add(new AlienScout(528, -120));
-        aliens.add(new AlienScout(464, -60));
-        aliens.add(new AlienScout(400, 0));
-
-        for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = new AlienNymph(i * 40 + 100, -35 * i);
-            aliens.add(alienNymph);
-        }
-
-        for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = new AlienNymph(i * 40 + 180, 35 * i);
-            aliens.add(alienNymph);
-        }
-
     }
 
     @Override
@@ -234,7 +224,9 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void updateAliens() {
-        if (aliens.isEmpty()) {
+        aliens.addAll(currentLevel.getAlien(System.currentTimeMillis() - startTime));
+
+        if (currentLevel.isEmpty() && aliens.isEmpty()) {
             ingame = false;
             return;
         }

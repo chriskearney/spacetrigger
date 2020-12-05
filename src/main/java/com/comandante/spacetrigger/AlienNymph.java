@@ -26,11 +26,11 @@ public class AlienNymph extends Alien {
         }
         ticks++;
 
-        double orbitalPeriod = 600;
+        double orbitalPeriod = 400;
         double portion = (ticks % orbitalPeriod) / orbitalPeriod; // [0, 1)
         double angle = portion * 2 * Math.PI;                    // [0, 2 * PI)
 
-        double radius = 25;
+        double radius = 80;
 
         double planetX = originalX + radius * Math.cos(angle);
         double planetY = originalY + radius * Math.sin(angle);
@@ -44,7 +44,7 @@ public class AlienNymph extends Alien {
         }
 
         x = (int) Math.round(planetX);
-        speed += .3;
+        speed += .6;
         y = (int) Math.round(planetY + speed);
     }
 }
