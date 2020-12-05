@@ -21,70 +21,132 @@ public class LevelOne extends Level {
 
         //1 - Second, Aka Start of the game:
 
-        List<Alien> secondOneAliens = new ArrayList<>();
+        List<Alien> roundOne = new ArrayList<>();
 
-        secondOneAliens.add(new AlienScout(AlienScout.Direction.RIGHT_TO_LEFT, 528, -214));
-        secondOneAliens.add(new AlienScout(AlienScout.Direction.RIGHT_TO_LEFT,464, -154));
-        secondOneAliens.add(new AlienScout(AlienScout.Direction.RIGHT_TO_LEFT,400, -94));
+        roundOne.add(new AlienScout(AlienScout.Direction.RIGHT_TO_LEFT, 528, -214));
+        roundOne.add(new AlienScout(AlienScout.Direction.RIGHT_TO_LEFT,464, -154));
+        roundOne.add(new AlienScout(AlienScout.Direction.RIGHT_TO_LEFT,400, -94));
 
         for (int i = 0; i < 5; i++) {
             AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
-            secondOneAliens.add(alienNymph);
+            roundOne.add(alienNymph);
         }
 
-        alienTimeMap.put(3L, secondOneAliens);
+        alienTimeMap.put(3L, roundOne);
 
+        //1 - Second, Aka Start of the game:
 
-        //10 - Seconds
-
-        List<Alien> secondTenAliens = new ArrayList<>();
-
-        secondTenAliens.add(new AlienScout(AlienScout.Direction.LEFT_TO_RIGHT,50, -214));
-        secondTenAliens.add(new AlienScout(AlienScout.Direction.LEFT_TO_RIGHT,114, -154));
-        secondTenAliens.add(new AlienScout(AlienScout.Direction.LEFT_TO_RIGHT,178, -94));
+        List<Alien> roundTwo = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = new AlienNymph(i * 40 + 100, -35 * i);
-            secondTenAliens.add(alienNymph);
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            roundTwo.add(alienNymph);
         }
+
+        alienTimeMap.put(4L, roundTwo);
+
+        //1 - Second, Aka Start of the game:
+
+        List<Alien> roundThree = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = new AlienNymph(i * 40 + 170, -35 * i);
-            secondTenAliens.add(alienNymph);
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            roundThree.add(alienNymph);
         }
+
+        alienTimeMap.put(5L, roundThree);
+
+        List<Alien> roundFour = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = new AlienNymph(i * 40 + 250, -35 * i);
-            secondTenAliens.add(alienNymph);
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            roundFour.add(alienNymph);
         }
 
+        alienTimeMap.put(6L, roundFour);
 
-    //    alienTimeMap.put(15L, secondTenAliens);
-
-        //30 - Seconds
-
-        List<Alien> thirtySecondAliens = new ArrayList<>();
-
-        thirtySecondAliens.add(new AlienScout(AlienScout.Direction.LEFT_TO_RIGHT,50, -214));
-        thirtySecondAliens.add(new AlienScout(AlienScout.Direction.LEFT_TO_RIGHT,114, -154));
-        thirtySecondAliens.add(new AlienScout(AlienScout.Direction.LEFT_TO_RIGHT,178, -94));
+        List<Alien> roundfive = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = new AlienNymph(i * 40 + 100, -35 * i);
-            thirtySecondAliens.add(alienNymph);
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            roundfive.add(alienNymph);
         }
+
+        alienTimeMap.put(7L, roundfive);
+
+        List<Alien> roundSix = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = new AlienNymph(i * 40 + 170, -35 * i);
-            thirtySecondAliens.add(alienNymph);
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            roundSix.add(alienNymph);
         }
+
+        alienTimeMap.put(8L, roundSix);
+
+
+        List<Alien> roundSeven = new ArrayList<>();
+
+        roundSeven.add(new AlienScout(AlienScout.Direction.LEFT_TO_RIGHT, 328, -214));
+        roundSeven.add(new AlienScout(AlienScout.Direction.LEFT_TO_RIGHT,164, -154));
+        roundSeven.add(new AlienScout(AlienScout.Direction.LEFT_TO_RIGHT,100, -94));
+
+        alienTimeMap.put(10L, roundSeven);
 
         for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = new AlienNymph(i * 40 + 250, -35 * i);
-            thirtySecondAliens.add(alienNymph);
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            roundOne.add(alienNymph);
         }
 
-     //   alienTimeMap.put(30L, thirtySecondAliens);
+        alienTimeMap.put(3L, roundOne);
+
+        //1 - Second, Aka Start of the game:
+
+        roundTwo = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            roundTwo.add(alienNymph);
+        }
+
+        alienTimeMap.put(11L, roundTwo);
+
+        //1 - Second, Aka Start of the game:
+
+        roundThree = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            roundThree.add(alienNymph);
+        }
+
+        alienTimeMap.put(12L, roundThree);
+
+        roundFour = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            roundFour.add(alienNymph);
+        }
+
+        alienTimeMap.put(13L, roundFour);
+
+        roundfive = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            roundfive.add(alienNymph);
+        }
+
+        alienTimeMap.put(14L, roundfive);
+
+        roundSix = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            roundSix.add(alienNymph);
+        }
+
+        alienTimeMap.put(15L, roundSix);
 
     }
 }
