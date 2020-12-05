@@ -3,10 +3,13 @@ package com.comandante.spacetrigger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.SplittableRandom;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 
 public class LevelOne extends Level {
+
+    private final SplittableRandom random = new SplittableRandom();
 
     private AlienRogue configureAlienRogue(AlienRogue alienRogue) {
         alienRogue.pause(1);
@@ -39,7 +42,8 @@ public class LevelOne extends Level {
         List<Alien> roundTwo = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            int i1 = random.nextInt(35);
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -i1 * i));
             roundTwo.add(alienNymph);
         }
 
@@ -50,7 +54,7 @@ public class LevelOne extends Level {
         List<Alien> roundThree = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, random.nextInt(35) * i));
             roundThree.add(alienNymph);
         }
 
@@ -59,7 +63,7 @@ public class LevelOne extends Level {
         List<Alien> roundFour = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, random.nextInt(35) * i));
             roundFour.add(alienNymph);
         }
 
@@ -68,7 +72,7 @@ public class LevelOne extends Level {
         List<Alien> roundfive = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, random.nextInt(35) * i));
             roundfive.add(alienNymph);
         }
 
@@ -77,7 +81,7 @@ public class LevelOne extends Level {
         List<Alien> roundSix = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, -35 * i));
+            AlienNymph alienNymph = configureAlienRogue(new AlienRogue(i * 40 + 10, random.nextInt(35) * i));
             roundSix.add(alienNymph);
         }
 
