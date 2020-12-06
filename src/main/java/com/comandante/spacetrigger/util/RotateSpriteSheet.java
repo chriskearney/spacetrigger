@@ -1,4 +1,7 @@
-package com.comandante.spacetrigger;
+package com.comandante.spacetrigger.util;
+
+import com.comandante.spacetrigger.Assets;
+import com.comandante.spacetrigger.SpriteSheetAnimation;
 
 import javax.imageio.ImageIO;
 import java.awt.AlphaComposite;
@@ -21,7 +24,7 @@ public class RotateSpriteSheet {
         int columns = 8;
         int rows = 8;
 
-        BufferedImage bufferedImage = Assets.loadImage("thenew.png");
+        BufferedImage bufferedImage = Assets.loadImage("unused/thenew.png");
         SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(imageWidth, imageHeight, columns, rows, bufferedImage, 0, 0);
         List<BufferedImage> spriteFrames = spriteSheetAnimation.getSpriteFrames();
 

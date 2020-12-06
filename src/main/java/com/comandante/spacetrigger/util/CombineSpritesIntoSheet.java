@@ -1,4 +1,6 @@
-package com.comandante.spacetrigger;
+package com.comandante.spacetrigger.util;
+
+import com.comandante.spacetrigger.Assets;
 
 import javax.imageio.ImageIO;
 import java.awt.AlphaComposite;
@@ -32,7 +34,7 @@ public class CombineSpritesIntoSheet {
             graphics.drawImage(frameFiles.get(i), i * width, 0, null);
         }
 
-        File outputfile = new File("redwarp.png");
+        File outputfile = new File("unused/redwarp.png");
         ImageIO.write(destinationImage, "png", outputfile);
     }
 

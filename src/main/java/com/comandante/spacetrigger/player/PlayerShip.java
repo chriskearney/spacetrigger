@@ -1,5 +1,7 @@
-package com.comandante.spacetrigger;
+package com.comandante.spacetrigger.player;
 
+
+import com.comandante.spacetrigger.*;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -8,7 +10,7 @@ import java.util.List;
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
 
-public class SpaceShip extends Sprite {
+public class PlayerShip extends Sprite {
 
     private int dx;
     private int dy;
@@ -16,9 +18,9 @@ public class SpaceShip extends Sprite {
     private int missleCapacity = 10;
     private int currentMissles = 3;
 
-    private final List<Missile> missiles = new ArrayList<>();
+    private final List<Projectile> projectiles = new ArrayList<>();
 
-    public SpaceShip() {
+    public PlayerShip() {
         super(0, 0, 500);
         initSpaceShip();
         super.x = BOARD_X / 2;
@@ -27,8 +29,8 @@ public class SpaceShip extends Sprite {
     }
 
     private void initSpaceShip() {
-        loadImage(Assets.SPACESHIP);
-        loadExplosion(new SpriteSheetAnimation(376, 376, 8, 8, Assets.SPACESHIP_EXPLOSION, 2, 3));
+        loadImage(Assets.PLAYER_SHIP);
+        loadExplosion(new SpriteSheetAnimation(376, 376, 8, 8, Assets.PLAYER_SHIP_EXPLOSION, 2, 3));
     }
 
     public void move() {
@@ -70,21 +72,21 @@ public class SpaceShip extends Sprite {
         }
     }
 
-    public List<Missile> getMissiles() {
-        return missiles;
+    public List<Projectile> getMissiles() {
+        return projectiles;
     }
 
     public void fireMissle() {
         if (currentMissles == 0) {
             return;
         }
-        missiles.add(new Missile((x + width / 2) - 8, (y + height / 2) - 20, Direction.UP, 4, 1000));
+        projectiles.add(new PlayerMissleLevel1Bullet((x + width / 2) - 8, (y + height / 2) - 20));
         currentMissles--;
     }
 
     public void fireGun() {
-        missiles.add(new MachineGunMissle((x + width / 2) - 22, (y + height / 2) - 15, Direction.UP));
-        missiles.add(new MachineGunMissle((x + width / 2) + 3, (y + height / 2) - 15, Direction.UP));
+        projectiles.add(new PlayerGunLevel2Bullet((x + width / 2) - 22, (y + height / 2) - 15, Direction.UP));
+        projectiles.add(new PlayerGunLevel2Bullet((x + width / 2) + 3, (y + height / 2) - 15, Direction.UP));
     }
 
     public void keyPressed(KeyEvent e) {

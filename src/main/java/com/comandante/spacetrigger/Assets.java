@@ -9,51 +9,50 @@ public class Assets {
     public static final BufferedImage ALIEN_SCOUT;
     public static final BufferedImage ALIEN_SCOUT_EXPLOSION;
     public static final BufferedImage ALIEN_SCOUT_MISSLE;
+    public static final BufferedImage ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION;
 
     public static final BufferedImage ALIEN_NYMPH;
     public static final BufferedImage ALIEN_NYMPH_EXPLOSION;
+    public static final BufferedImage ALIEN_NYMPH_BULLET;
+    public static final BufferedImage ALIEN_NYMPH_BULLET_IMPACT_EXPLOSION;
 
-    public static final BufferedImage SPACESHIP;
-    public static final BufferedImage SPACESHIP_EXPLOSION;
-    public static final BufferedImage SPACESHIP_MISSLE;
+    public static final BufferedImage PLAYER_SHIP;
+    public static final BufferedImage PLAYER_SHIP_EXPLOSION;
+    public static final BufferedImage PLAYER_MISSLE_LEVEL_1_BULLET;
 
-    public static final BufferedImage MACHINEGUN_MISSLE;
-
+    public static final BufferedImage PLAYER_GUN_LEVEL_2_BULLET;
 
     public static final BufferedImage BOARD_BACKGROUND_1;
 
-    public static final BufferedImage SMALL_MACHINEGUN_ANIMATION;
-    public static final BufferedImage SMALL_MISSLE_ANIMATION;
+    public static final BufferedImage PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION;
+    public static final BufferedImage PLAYER_MISSLE_LEVEL_1_IMPACT_EXPLOSION;
 
-    public static final BufferedImage RED_WARP;
+    public static final BufferedImage ALIEN_NYMPH_WARP;
 
-    public static final BufferedImage RED_WARP_ALIEN_SCOUT;
+    public static final BufferedImage ALIEN_SCOUT_WARP;
 
     static {
 
         ALIEN_SCOUT = loadImage("alien-scout.png");
         ALIEN_SCOUT_EXPLOSION = loadImage("alien-scout-explosion.png");
         ALIEN_SCOUT_MISSLE = loadImage("alien-scout-missle.png");
+        ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION = loadImage("alien-scout-missle-impact-explosion.png");
+        ALIEN_SCOUT_WARP = loadImage("alien-scout-warp.png");
 
         ALIEN_NYMPH = loadImage("alien-nymph.png");
         ALIEN_NYMPH_EXPLOSION = loadImage("alien-nymph-explosion.png");
+        ALIEN_NYMPH_BULLET = loadImage("alien-nymph-bullet.png");
+        ALIEN_NYMPH_BULLET_IMPACT_EXPLOSION = loadImage("alien-nymph-bullet-impact-explosion.png");
+        ALIEN_NYMPH_WARP = loadImage("alien-nymph-warp.png");
 
-        SPACESHIP = loadImage("spaceship.png");
-        SPACESHIP_EXPLOSION = loadImage("spaceship-explosion.png");
-        SPACESHIP_MISSLE = loadImage("spaceship-missle.png");
+        PLAYER_SHIP = loadImage("player-ship.png");
+        PLAYER_SHIP_EXPLOSION = loadImage("player-ship-explosion.png");
+        PLAYER_GUN_LEVEL_2_BULLET = loadImage("player-gun-level-2-bullet.png");
+        PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION = loadImage("player-gun-level-2-bullet-impact-explosion.png");
+        PLAYER_MISSLE_LEVEL_1_BULLET = loadImage("player-missle-level-1-bullet.png");
+        PLAYER_MISSLE_LEVEL_1_IMPACT_EXPLOSION = loadImage("player-missle-level-1-impact-explosion.png");
 
-        MACHINEGUN_MISSLE = loadImage("small-machinegun-bullet.png");
-
-        SMALL_MACHINEGUN_ANIMATION = loadImage("small-machinegun-explosion-new.png");
-
-        SMALL_MISSLE_ANIMATION = loadImage("small-missle-explosion.png");
-
-        BOARD_BACKGROUND_1 = loadImage("spacebackground.png");
-
-        RED_WARP = loadImage("redwarp-small.png");
-
-        RED_WARP_ALIEN_SCOUT = loadImage("red_warp_alien_scout.png");
-
+        BOARD_BACKGROUND_1 = loadImage("board-background-1.png");
     }
 
     public static BufferedImage loadImage(String imageFilename) {

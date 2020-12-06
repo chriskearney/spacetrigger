@@ -1,5 +1,8 @@
 package com.comandante.spacetrigger;
 
+import com.comandante.spacetrigger.alienscout.AlienScout;
+import com.comandante.spacetrigger.player.PlayerShip;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -78,6 +81,9 @@ public abstract class Sprite {
     }
 
     public void move() {
+        if (isExploding) {
+            return;
+        }
         for (int i = 0; i < speed; i++) {
             Point remove = trajectory.get(ticks);
             x = remove.getLocation().x;
@@ -212,6 +218,9 @@ public abstract class Sprite {
     }
 
     public void setExploding(boolean exploding, boolean invisibleAfterExploding) {
+        if (this instanceof PlayerShip) {
+            System.out.println("ship explosing");
+        }
         this.isExploding = exploding;
         this.invisibleAfterExploding = invisibleAfterExploding;
     }
@@ -232,12 +241,12 @@ public abstract class Sprite {
         return bufferedImage;
     }
 
-    public boolean calculateDamage(Missile missile, Point point) {
-        hitPoints = hitPoints - missile.getDamage();
+    public boolean calculateDamage(Projectile projectile, Point point) {
+        hitPoints = hitPoints - projectile.getDamage();
         if (hitPoints <= 0) {
             return true;
         }
-        damageAnimations.add(missile.getDamageAnimation(removeBoardCoords(point)));
+        damageAnimations.add(projectile.getDamageAnimation(removeBoardCoords(point)));
         return false;
     }
 
@@ -282,10 +291,15 @@ public abstract class Sprite {
         return ret;
     }
 
-    public void addDownAnglePath(int xFactor, double speed, int amount, AlienScout.Direction direction) {
+    enum DownAnglePathDirection {
+        LEFT_TO_RIGHT,
+        RIGHT_TO_LEFT
+    }
+
+    public void addDownAnglePath(int xFactor, double speed, int amount, DownAnglePathDirection direction) {
         ArrayList<Point> points = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
-            if (direction.equals(AlienScout.Direction.RIGHT_TO_LEFT)) {
+            if (direction.equals(DownAnglePathDirection.RIGHT_TO_LEFT)) {
                 xFactor = -xFactor;
             }
             int proposedX = (int) (BOARD_X / 3 * sin(i * .5 * Math.PI / (BOARD_X * xFactor))) + previousAddedPoint.getLocation().x;

@@ -3,12 +3,12 @@ package com.comandante.spacetrigger;
 import java.awt.Point;
 import java.util.Optional;
 
-public class Missile extends Sprite {
+public abstract class Projectile extends Sprite {
 
     private final Direction direction;
     private final int damage;
 
-    public Missile(int x, int y, Direction direction, int speed, int damage) {
+    public Projectile(int x, int y, Direction direction, int speed, int damage) {
         super(x, y, speed);
         this.direction = direction;
         this.damage = damage;
@@ -16,9 +16,7 @@ public class Missile extends Sprite {
         visible = true;
     }
 
-    public void initMissile() {
-        loadImage(Assets.SPACESHIP_MISSLE);
-    }
+    public abstract void initMissile();
 
     public void move() {
         if (direction.equals(Direction.UP)) {
@@ -40,8 +38,5 @@ public class Missile extends Sprite {
         return damage;
     }
 
-    public SpriteSheetAnimation getDamageAnimation(Point point) {
-        SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(64, 64, 8, 8, Assets.SMALL_MISSLE_ANIMATION, 2, 3, Optional.of(point));
-        return spriteSheetAnimation;
-    }
+    public abstract SpriteSheetAnimation getDamageAnimation(Point point);
 }

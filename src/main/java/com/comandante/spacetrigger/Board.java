@@ -1,5 +1,7 @@
 package com.comandante.spacetrigger;
 
+import com.comandante.spacetrigger.player.PlayerShip;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -18,7 +20,7 @@ public class Board extends JPanel implements ActionListener {
 
     private final int DELAY = 10;
     private Timer timer;
-    private SpaceShip spaceShip;
+    private PlayerShip playerShip;
     private BufferedImage backgroundImage;
     private boolean ingame;
 
@@ -43,7 +45,7 @@ public class Board extends JPanel implements ActionListener {
     private void resetBoard() {
         this.backgroundImage = Assets.BOARD_BACKGROUND_1;
         ingame = true;
-        spaceShip = new SpaceShip();
+        playerShip = new PlayerShip();
         initAliens();
         startTime = System.currentTimeMillis();
         currentLevel = new LevelOne();
@@ -68,19 +70,19 @@ public class Board extends JPanel implements ActionListener {
     private void drawObjects(Graphics g) {
         g.drawImage(backgroundImage, 0, 0, this);
 
-        if (spaceShip.isVisible()) {
-            Sprite.SpriteRender spaceShipRender = spaceShip.getSpriteRender();
+        if (playerShip.isVisible()) {
+            Sprite.SpriteRender spaceShipRender = playerShip.getSpriteRender();
             g.drawImage(spaceShipRender.getImage(), spaceShipRender.getX(), spaceShipRender.getY(), this);
-            for (int i = 0; i < spaceShip.getDamageAnimations().size(); i++) {
-                SpriteSheetAnimation alienDamageAnimation = spaceShip.getDamageAnimations().get(i);
+            for (int i = 0; i < playerShip.getDamageAnimations().size(); i++) {
+                SpriteSheetAnimation alienDamageAnimation = playerShip.getDamageAnimations().get(i);
                 Point renderPoint = alienDamageAnimation.getRenderPoint().get();
                 alienDamageAnimation.updateAnimation();
                 Optional<BufferedImage> currentFrame = alienDamageAnimation.getCurrentFrame();
                 if (currentFrame.isPresent()) {
                     // Ship x/y position on the board + its relative position on the sprite - the /2 of the width/height of damage animation - centers the damage animation on the x/y collision point
-                    g.drawImage(currentFrame.get(), (spaceShip.getX() + renderPoint.getLocation().x) - currentFrame.get().getWidth() / 2, (spaceShip.getY() + renderPoint.getLocation().y) - currentFrame.get().getHeight() / 2, this);
+                    g.drawImage(currentFrame.get(), (playerShip.getX() + renderPoint.getLocation().x) - currentFrame.get().getWidth() / 2, (playerShip.getY() + renderPoint.getLocation().y) - currentFrame.get().getHeight() / 2, this);
                 } else {
-                    spaceShip.getDamageAnimations().remove(i);
+                    playerShip.getDamageAnimations().remove(i);
                 }
             }
         }
@@ -91,7 +93,13 @@ public class Board extends JPanel implements ActionListener {
                 Sprite.SpriteRender aliensRender = alien.getSpriteRender();
                 g.drawImage(aliensRender.getImage(), aliensRender.getX(), aliensRender.getY(), this);
 
-                if (alien.isExploding) {
+                // Alien projectiles
+                for (int j = 0; j < alien.getMissiles().size(); j++) {
+                    Sprite.SpriteRender alienMissleRender = alien.getMissiles().get(j).getSpriteRender();
+                    g.drawImage(alienMissleRender.getImage(), alienMissleRender.getX(), alienMissleRender.getY(), this);
+                }
+
+                if (alien.isExploding()) {
                     continue;
                 }
 
@@ -110,15 +118,10 @@ public class Board extends JPanel implements ActionListener {
                     }
                 }
 
-                // Alien projectiles
-                for (int j = 0; j < alien.getMissiles().size(); j++) {
-                    Sprite.SpriteRender alienMissleRender = alien.getMissiles().get(j).getSpriteRender();
-                    g.drawImage(alienMissleRender.getImage(), alienMissleRender.getX(), alienMissleRender.getY(), this);
-                }
             }
         }
 
-        List<Missile> space = spaceShip.getMissiles();
+        List<Projectile> space = playerShip.getMissiles();
         for (int i = 0; i < space.size(); i++) {
             if (space.get(i).isVisible()) {
                 Sprite.SpriteRender spaceShipMissleRender = space.get(i).getSpriteRender();
@@ -127,7 +130,7 @@ public class Board extends JPanel implements ActionListener {
         }
 
         g.setColor(Color.WHITE);
-        String draw = "Missles: " + spaceShip.getCurrentMissles() + " | Health: " + spaceShip.getHitPoints();
+        String draw = "Missles: " + playerShip.getCurrentMissles() + " | Health: " + playerShip.getHitPoints();
         g.drawString(draw, 5, 15);
     }
 
@@ -153,26 +156,26 @@ public class Board extends JPanel implements ActionListener {
 
     public void checkCollisions() {
         for (int i = 0; i < aliens.size(); i++) {
-            if (aliens.get(i).isCollison(spaceShip).isPresent()) {
-                spaceShip.setExploding(true, true);
+            if (aliens.get(i).isCollison(playerShip).isPresent()) {
+                playerShip.setExploding(true, true);
                 aliens.get(i).setExploding(true, true);
             }
 
-            List<Missile> missiles = aliens.get(i).getMissiles();
-            for (int j = 0; j < missiles.size(); j++) {
-                Missile missile = missiles.get(j);
-                Optional<Point> collison = missile.isCollison(spaceShip);
+            List<Projectile> projectiles = aliens.get(i).getMissiles();
+            for (int j = 0; j < projectiles.size(); j++) {
+                Projectile projectile = projectiles.get(j);
+                Optional<Point> collison = projectile.isCollison(playerShip);
                 if (collison.isPresent()) {
-                    boolean isDoneFor = spaceShip.calculateDamage(missile, collison.get());
-                    missile.setVisible(false);
+                    boolean isDoneFor = playerShip.calculateDamage(projectile, collison.get());
+                    projectile.setVisible(false);
                     if (isDoneFor) {
-                        spaceShip.setExploding(true, true);
+                        playerShip.setExploding(true, true);
                     }
                 }
             }
         }
 
-        List<Missile> spaceShipMissles = spaceShip.getMissiles();
+        List<Projectile> spaceShipMissles = playerShip.getMissiles();
         boolean newExplosion = false;
         for (int i = 0; i < spaceShipMissles.size(); i++) {
             for (int j = 0; j < aliens.size(); j++) {
@@ -196,20 +199,20 @@ public class Board extends JPanel implements ActionListener {
 
     private void updateMissiles() {
 
-        List<Missile> spaceShipMissiles = spaceShip.getMissiles();
+        List<Projectile> spaceShipProjectiles = playerShip.getMissiles();
 
-        for (int i = 0; i < spaceShipMissiles.size(); i++) {
-            Missile missile = spaceShipMissiles.get(i);
-            if (missile.isVisible()) {
-                missile.move();
+        for (int i = 0; i < spaceShipProjectiles.size(); i++) {
+            Projectile projectile = spaceShipProjectiles.get(i);
+            if (projectile.isVisible()) {
+                projectile.move();
             } else {
-                spaceShipMissiles.remove(i);
+                spaceShipProjectiles.remove(i);
             }
         }
 
         for (int i = 0; i < aliens.size(); i++) {
             for (int j = 0; j < aliens.get(i).getMissiles().size(); j++) {
-                Missile alienMissle = aliens.get(i).getMissiles().get(j);
+                Projectile alienMissle = aliens.get(i).getMissiles().get(j);
                 if (alienMissle.isVisible()) {
                     alienMissle.move();
                 } else {
@@ -220,7 +223,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void updateSpaceShip() {
-        spaceShip.move();
+        playerShip.move();
     }
 
     private void updateAliens() {
@@ -246,7 +249,7 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void keyReleased(KeyEvent e) {
-            spaceShip.keyReleased(e);
+            playerShip.keyReleased(e);
         }
 
         @Override
@@ -254,7 +257,7 @@ public class Board extends JPanel implements ActionListener {
             if (!ingame && e.getKeyCode() == KeyEvent.VK_R) {
                 resetBoard();
             } else {
-                spaceShip.keyPressed(e);
+                playerShip.keyPressed(e);
             }
         }
     }
