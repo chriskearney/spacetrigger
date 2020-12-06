@@ -25,6 +25,8 @@ public class Assets {
     public static final BufferedImage SMALL_MACHINEGUN_ANIMATION;
     public static final BufferedImage SMALL_MISSLE_ANIMATION;
 
+    public static final BufferedImage RED_WARP;
+
     static {
 
         ALIEN_SCOUT = loadImage("alien-scout.png");
@@ -45,6 +47,8 @@ public class Assets {
         SMALL_MISSLE_ANIMATION = loadImage("small-missle-explosion.png");
 
         BOARD_BACKGROUND_1 = loadImage("spacebackground.png");
+
+        RED_WARP = loadImage("redwarp-small.png");
     }
 
     public static BufferedImage loadImage(String imageFilename) {

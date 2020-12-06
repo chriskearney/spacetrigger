@@ -24,6 +24,7 @@ public abstract class Sprite {
     protected boolean visible;
     protected BufferedImage image;
     protected SpriteSheetAnimation explosion;
+    protected Optional<SpriteSheetAnimation> warpAnimation = Optional.empty();
     protected boolean isExploding;
     private boolean invisibleAfterExploding;
 
@@ -72,11 +73,29 @@ public abstract class Sprite {
         this.explosion = explosion;
     }
 
+    protected void loadWarpAnimation(SpriteSheetAnimation animation) {
+        this.warpAnimation = Optional.of(animation);
+    }
+
     public SpriteRender getSpriteRender() {
+
         if (!isExploding) {
             centerX = getX() + image.getWidth() / 2;
             centerY = getY() + image.getHeight() / 2;
         }
+
+        if (warpAnimation.isPresent()) {
+            warpAnimation.get().updateAnimation();
+            Optional<BufferedImage> currentFrame = warpAnimation.get().getCurrentFrame();
+            if (currentFrame.isPresent()) {
+                int warpX = centerX - (currentFrame.get().getWidth() / 2);
+                int warpY = centerY - (currentFrame.get().getHeight() / 2);
+                return new SpriteRender(warpX, warpY, currentFrame.get());
+            } else {
+                warpAnimation = Optional.empty();
+            }
+        }
+
         if (isExploding) {
             explosion.updateAnimation();
             Optional<BufferedImage> currentFrame = explosion.getCurrentFrame();

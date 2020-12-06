@@ -2,6 +2,7 @@ package com.comandante.spacetrigger;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class AlienRogue extends AlienNymph {
 
@@ -10,6 +11,7 @@ public class AlienRogue extends AlienNymph {
 
     public AlienRogue(int x, int y) {
         super(x, y);
+        loadWarpAnimation(new SpriteSheetAnimation(64, 64, 9, 1, Assets.RED_WARP, 0, 5));
     }
 
     public void fire() {
