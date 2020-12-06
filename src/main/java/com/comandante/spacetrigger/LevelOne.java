@@ -35,13 +35,16 @@ public class LevelOne extends Level {
 
 
         for (int i = 0; i < 3; i++) {
-            roundOne.add(configureAlienScout(new AlienScout(80 * i, 100)));
+            roundOne.add(configureAlienScout(new AlienScout(80 * i, 115)));
         }
 
         for (int i = 0; i < 5; i++) {
-            AlienNymph alienNymph = configureAlienRogue(i, new AlienNymph(i * 40, 55));
+            AlienNymph alienNymph = configureAlienRogue(i, new AlienNymph(i * 40, 70));
+            AlienNymph alienNymph2 = configureAlienRogue(i, new AlienNymph(i * 40, 20));
             roundOne.add(alienNymph);
+            roundOne.add(alienNymph2);
         }
+
 
 
         alienTimeMap.put(1L, roundOne);

@@ -81,7 +81,7 @@ public abstract class Sprite {
     }
 
     public void move() {
-        if (isExploding) {
+        if (isExploding || warpAnimation.isPresent()) {
             return;
         }
         for (int i = 0; i < speed; i++) {
@@ -218,9 +218,6 @@ public abstract class Sprite {
     }
 
     public void setExploding(boolean exploding, boolean invisibleAfterExploding) {
-        if (this instanceof PlayerShip) {
-            System.out.println("ship explosing");
-        }
         this.isExploding = exploding;
         this.invisibleAfterExploding = invisibleAfterExploding;
     }

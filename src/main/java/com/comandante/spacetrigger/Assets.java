@@ -10,26 +10,23 @@ public class Assets {
     public static final BufferedImage ALIEN_SCOUT_EXPLOSION;
     public static final BufferedImage ALIEN_SCOUT_MISSLE;
     public static final BufferedImage ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION;
+    public static final BufferedImage ALIEN_SCOUT_WARP;
 
     public static final BufferedImage ALIEN_NYMPH;
     public static final BufferedImage ALIEN_NYMPH_EXPLOSION;
     public static final BufferedImage ALIEN_NYMPH_BULLET;
     public static final BufferedImage ALIEN_NYMPH_BULLET_IMPACT_EXPLOSION;
+    public static final BufferedImage ALIEN_NYMPH_WARP;
 
     public static final BufferedImage PLAYER_SHIP;
     public static final BufferedImage PLAYER_SHIP_EXPLOSION;
     public static final BufferedImage PLAYER_MISSLE_LEVEL_1_BULLET;
-
+    public static final BufferedImage PLAYER_MISSLE_LEVEL_1_IMPACT_EXPLOSION;
     public static final BufferedImage PLAYER_GUN_LEVEL_2_BULLET;
+    public static final BufferedImage PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION;
 
     public static final BufferedImage BOARD_BACKGROUND_1;
 
-    public static final BufferedImage PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION;
-    public static final BufferedImage PLAYER_MISSLE_LEVEL_1_IMPACT_EXPLOSION;
-
-    public static final BufferedImage ALIEN_NYMPH_WARP;
-
-    public static final BufferedImage ALIEN_SCOUT_WARP;
 
     static {
 

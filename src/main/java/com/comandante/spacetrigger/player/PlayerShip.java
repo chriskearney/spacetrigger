@@ -21,7 +21,7 @@ public class PlayerShip extends Sprite {
     private final List<Projectile> projectiles = new ArrayList<>();
 
     public PlayerShip() {
-        super(0, 0, 500);
+        super(0, 0, 500,0);
         initSpaceShip();
         super.x = BOARD_X / 2;
         super.y = BOARD_Y - getHeight() * 4;
