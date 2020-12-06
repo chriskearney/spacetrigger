@@ -27,6 +27,8 @@ public class Assets {
 
     public static final BufferedImage RED_WARP;
 
+    public static final BufferedImage RED_WARP_ALIEN_SCOUT;
+
     static {
 
         ALIEN_SCOUT = loadImage("alien-scout.png");
@@ -49,6 +51,9 @@ public class Assets {
         BOARD_BACKGROUND_1 = loadImage("spacebackground.png");
 
         RED_WARP = loadImage("redwarp-small.png");
+
+        RED_WARP_ALIEN_SCOUT = loadImage("red_warp_alien_scout.png");
+
     }
 
     public static BufferedImage loadImage(String imageFilename) {

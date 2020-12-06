@@ -9,11 +9,8 @@ public abstract class Alien extends Sprite {
     protected int ticks = 0;
     protected List<Missile> missiles = new ArrayList<>();
 
-    protected final SplittableRandom random = new SplittableRandom();
-
-
-    public Alien(int x, int y, int hitPoints) {
-        super(x, y, hitPoints);
+    public Alien(int x, int y, int hitPoints, int speed) {
+        super(x, y, hitPoints, speed);
         initAlien();
         visible = true;
     }

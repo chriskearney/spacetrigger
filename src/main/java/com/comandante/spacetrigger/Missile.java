@@ -5,14 +5,12 @@ import java.util.Optional;
 
 public class Missile extends Sprite {
 
-    private final int speed;
     private final Direction direction;
     private final int damage;
 
     public Missile(int x, int y, Direction direction, int speed, int damage) {
-        super(x, y);
+        super(x, y, speed);
         this.direction = direction;
-        this.speed = speed;
         this.damage = damage;
         initMissile();
         visible = true;

@@ -27,7 +27,11 @@ public abstract class Sprite {
     protected Optional<SpriteSheetAnimation> warpAnimation = Optional.empty();
     protected boolean isExploding;
     private boolean invisibleAfterExploding;
+    protected int ticks = 0;
+    protected int speed;
+    protected boolean reverse = false;
 
+    protected final SplittableRandom random = new SplittableRandom();
 
     protected List<SpriteSheetAnimation> damageAnimations = new ArrayList<>();
 
@@ -44,21 +48,27 @@ public abstract class Sprite {
 
     private static final BufferedImage TRANSPARENT_ONE_PIXEL = createTransparentBufferedImage(1, 1);
 
-    public Sprite(int x, int y, int hitPoints) {
+    public Sprite(int x, int y, int hitPoints, int speed) {
         this.x = x;
         this.y = y;
         this.originalX = x;
         this.originalY = y;
         this.hitPoints = hitPoints;
+        this.speed = speed;
         this.previousAddedPoint = new Point(originalX, originalY);
+        this.trajectory.add(previousAddedPoint);
+        this.trajectory.add(previousAddedPoint);
     }
 
-    public Sprite(int x, int y) {
+    public Sprite(int x, int y, int speed) {
         this.x = x;
         this.y = y;
         this.originalX = x;
         this.originalY = y;
+        this.speed = speed;
         this.previousAddedPoint = new Point(originalX, originalY);
+        this.trajectory.add(previousAddedPoint);
+        this.trajectory.add(previousAddedPoint);
     }
 
     protected void loadImage(BufferedImage image) {
@@ -67,7 +77,23 @@ public abstract class Sprite {
         height = image.getHeight(null);
     }
 
-    public abstract void move();
+    public void move() {
+        for (int i = 0; i < speed; i++) {
+            Point remove = trajectory.get(ticks);
+            x = remove.getLocation().x;
+            y = remove.getLocation().y + (int) Math.round(speed);
+            if (reverse) {
+                ticks--;
+            } else {
+                ticks++;
+            }
+            if (ticks == trajectory.size() - 1) {
+                reverse = true;
+            } else if (ticks == 0) {
+                reverse = false;
+            }
+        }
+    }
 
     protected void loadExplosion(SpriteSheetAnimation explosion) {
         this.explosion = explosion;
@@ -256,10 +282,9 @@ public abstract class Sprite {
         return ret;
     }
 
-    public void addDownAnglePath(double speed, int amount, AlienScout.Direction direction) {
+    public void addDownAnglePath(int xFactor, double speed, int amount, AlienScout.Direction direction) {
         ArrayList<Point> points = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
-            int xFactor = 1;
             if (direction.equals(AlienScout.Direction.RIGHT_TO_LEFT)) {
                 xFactor = -xFactor;
             }
