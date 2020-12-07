@@ -85,9 +85,9 @@ public abstract class Sprite {
             return;
         }
         for (int i = 0; i < speed; i++) {
-            Point remove = trajectory.get(ticks);
-            x = remove.getLocation().x;
-            y = remove.getLocation().y + (int) Math.round(speed);
+            Point point = trajectory.get(ticks);
+            x = point.getLocation().x;
+            y = point.getLocation().y + (int) Math.round(speed);
             if (reverse) {
                 ticks--;
             } else {
