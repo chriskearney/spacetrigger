@@ -139,6 +139,7 @@ public abstract class Sprite {
 
             if (invisibleAfterExploding) {
                 visible = false;
+                isExploding = false;
             }
 
             return new SpriteRender(x, y, TRANSPARENT_ONE_PIXEL);

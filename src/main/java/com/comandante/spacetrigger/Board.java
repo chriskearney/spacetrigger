@@ -32,16 +32,14 @@ public class Board extends JPanel implements ActionListener {
     private BufferedImage background_2;
     private BufferedImage background_1;
 
-    private int ticks;
+    private double yOffset_3 = 0;
+    private double yDelta_3 = .1;
 
-    private int yOffset_3 = 0;
-    private int yDelta_3 = 1;
+    private double yOffset_2 = 0;
+    private double yDelta_2 = .2;
 
-    private int yOffset_2 = 0;
-    private int yDelta_2 = 2;
-
-    private int yOffset_1 = 0;
-    private int yDelta_1 = 3;
+    private double yOffset_1 = 0;
+    private double yDelta_1 = .3;
 
     public Board() {
         initBoard();
@@ -75,36 +73,47 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        drawBackgrounds(g);
         if (ingame) {
-            drawObjects(g);
+            drawPlayerShip(g);
+            drawAliens(g);
         } else {
             drawGameOver(g);
         }
         Toolkit.getDefaultToolkit().sync();
     }
 
+    private void drawDamageAnimations(Graphics g, Sprite sprite) {
+        for (int i = 0; i < sprite.getDamageAnimations().size(); i++) {
+            SpriteSheetAnimation spriteDamageAnimations = sprite.getDamageAnimations().get(i);
+            Point renderPoint = spriteDamageAnimations.getRenderPoint().get();
+            spriteDamageAnimations.updateAnimation();
+            Optional<BufferedImage> currentFrame = spriteDamageAnimations.getCurrentFrame();
+            if (currentFrame.isPresent()) {
+                // Ship x/y position on the board + its relative position on the sprite - the /2 of the width/height of damage animation - centers the damage animation on the x/y collision point
+                g.drawImage(currentFrame.get(), (sprite.getX() + renderPoint.getLocation().x) - currentFrame.get().getWidth() / 2, (sprite.getY() + renderPoint.getLocation().y) - currentFrame.get().getHeight() / 2, this);
+            } else {
+                sprite.getDamageAnimations().remove(i);
+            }
+        }
+    }
 
-    private void drawObjects(Graphics g) {
-
-        drawBackgrounds(g);
-
+    private void drawPlayerShip(Graphics g) {
         if (playerShip.isVisible()) {
             Sprite.SpriteRender spaceShipRender = playerShip.getSpriteRender();
             g.drawImage(spaceShipRender.getImage(), spaceShipRender.getX(), spaceShipRender.getY(), this);
-            for (int i = 0; i < playerShip.getDamageAnimations().size(); i++) {
-                SpriteSheetAnimation alienDamageAnimation = playerShip.getDamageAnimations().get(i);
-                Point renderPoint = alienDamageAnimation.getRenderPoint().get();
-                alienDamageAnimation.updateAnimation();
-                Optional<BufferedImage> currentFrame = alienDamageAnimation.getCurrentFrame();
-                if (currentFrame.isPresent()) {
-                    // Ship x/y position on the board + its relative position on the sprite - the /2 of the width/height of damage animation - centers the damage animation on the x/y collision point
-                    g.drawImage(currentFrame.get(), (playerShip.getX() + renderPoint.getLocation().x) - currentFrame.get().getWidth() / 2, (playerShip.getY() + renderPoint.getLocation().y) - currentFrame.get().getHeight() / 2, this);
-                } else {
-                    playerShip.getDamageAnimations().remove(i);
-                }
+            drawDamageAnimations(g, playerShip);
+        }
+        List<Projectile> space = playerShip.getMissiles();
+        for (int i = 0; i < space.size(); i++) {
+            if (space.get(i).isVisible()) {
+                Sprite.SpriteRender spaceShipMissleRender = space.get(i).getSpriteRender();
+                g.drawImage(spaceShipMissleRender.getImage(), spaceShipMissleRender.getX(), spaceShipMissleRender.getY(), this);
             }
         }
+    }
 
+    private void drawAliens(Graphics g) {
         for (int i = 0; i < aliens.size(); i++) {
             Alien alien = aliens.get(i);
             if (alien.isVisible()) {
@@ -122,31 +131,9 @@ public class Board extends JPanel implements ActionListener {
                 }
 
                 // Damage Animations
-                List<SpriteSheetAnimation> damageAnimations = alien.getDamageAnimations();
-                for (int j = 0; j < damageAnimations.size(); j++) {
-                    SpriteSheetAnimation alienDamageAnimation = damageAnimations.get(j);
-                    Point renderPoint = alienDamageAnimation.getRenderPoint().get();
-                    alienDamageAnimation.updateAnimation();
-                    Optional<BufferedImage> currentFrame = alienDamageAnimation.getCurrentFrame();
-                    if (currentFrame.isPresent()) {
-                        // Alien x/y position on the board + its relative position on the sprite - the /2 of the width/height of damage animation - centers the damage animation on the x/y collision point
-                        g.drawImage(currentFrame.get(), (alien.getX() + renderPoint.getLocation().x) - currentFrame.get().getWidth() / 2, (alien.getY() + renderPoint.getLocation().y) - currentFrame.get().getHeight() / 2, this);
-                    } else {
-                        alien.getDamageAnimations().remove(j);
-                    }
-                }
-
+                drawDamageAnimations(g, alien);
             }
         }
-
-        List<Projectile> space = playerShip.getMissiles();
-        for (int i = 0; i < space.size(); i++) {
-            if (space.get(i).isVisible()) {
-                Sprite.SpriteRender spaceShipMissleRender = space.get(i).getSpriteRender();
-                g.drawImage(spaceShipMissleRender.getImage(), spaceShipMissleRender.getX(), spaceShipMissleRender.getY(), this);
-            }
-        }
-
         g.setColor(Color.WHITE);
         String draw = "Missles: " + playerShip.getCurrentMissles() + " | Health: " + playerShip.getHitPoints();
         g.drawString(draw, 5, 15);
@@ -161,6 +148,45 @@ public class Board extends JPanel implements ActionListener {
         g.setColor(Color.white);
         g.setFont(small);
         g.drawString(msg, (BOARD_X - fm.stringWidth(msg)) / 2, BOARD_Y / 2);
+    }
+
+    private static void positionBackground(Graphics2D g2d, BufferedImage bg, double yOffset) {
+        if (bg != null) {
+            int xPos = (BOARD_X - bg.getWidth()) / 2;
+            int yPos = (int) Math.round(yOffset);
+
+            while (yPos > 0) {
+                yPos -= bg.getHeight();
+                g2d.drawImage(bg, xPos, yPos, null);
+            }
+
+            yPos = (int) Math.round(yOffset);
+            while (yPos < BOARD_Y) {
+                g2d.drawImage(bg, xPos, yPos, null);
+                yPos += bg.getHeight();
+            }
+        }
+    }
+
+    private static double incrementOffset(double offSet, double delta, int maxHeight) {
+        offSet += delta;
+        if (offSet > maxHeight) {
+            offSet = 0;
+        }
+        return offSet;
+    }
+
+    private void drawBackgrounds(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g.create();
+
+        yOffset_3 = incrementOffset(yOffset_3, yDelta_3, background_3.getHeight());
+        yOffset_2 = incrementOffset(yOffset_2, yDelta_2, background_2.getHeight());
+        yOffset_1 = incrementOffset(yOffset_1, yDelta_1, background_1.getHeight());
+
+        positionBackground(g2d, background_3, yOffset_3);
+        positionBackground(g2d, background_2, yOffset_2);
+        positionBackground(g2d, background_1, yOffset_1);
+        g2d.dispose();
     }
 
     @Override
@@ -214,7 +240,6 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-
     private void updateMissiles() {
 
         List<Projectile> spaceShipProjectiles = playerShip.getMissiles();
@@ -241,6 +266,9 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void updateSpaceShip() {
+        if (!playerShip.isVisible() && !playerShip.isExploding()) {
+            ingame = false;
+        }
         playerShip.move();
     }
 
@@ -260,51 +288,6 @@ public class Board extends JPanel implements ActionListener {
                 aliens.remove(i);
             }
         }
-    }
-
-    private void positionBackground(Graphics2D g2d, BufferedImage bg, int yOffset) {
-        if (bg != null) {
-
-            int xPos = (BOARD_X - bg.getWidth()) / 2;
-            int yPos = yOffset;
-
-            while (yPos > 0) {
-                yPos -= bg.getHeight();
-                g2d.drawImage(bg, xPos, yPos, this);
-            }
-
-            yPos = yOffset;
-            while (yPos < BOARD_Y) {
-                g2d.drawImage(bg, xPos, yPos, this);
-                yPos += bg.getHeight();
-            }
-        }
-    }
-
-    private void drawBackgrounds(Graphics g) {
-        ticks++;
-        Graphics2D g2d = (Graphics2D) g.create();
-
-        if (ticks % 2 == 0) {
-            yOffset_3 += yDelta_3;
-            if (yOffset_3 > background_1.getHeight()) {
-                yOffset_3 = 0;
-            }
-
-            yOffset_2 += yDelta_2;
-            if (yOffset_2 > background_1.getHeight()) {
-                yOffset_2 = 0;
-            }
-
-            yOffset_1 += yDelta_1;
-            if (yOffset_1 > background_1.getHeight()) {
-                yOffset_1 = 0;
-            }
-        }
-        positionBackground(g2d, background_3, yOffset_3);
-        positionBackground(g2d, background_2, yOffset_2);
-        positionBackground(g2d, background_1, yOffset_1);
-        g2d.dispose();
     }
 
 
