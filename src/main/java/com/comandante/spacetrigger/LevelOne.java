@@ -51,7 +51,7 @@ public class LevelOne extends Level {
 
 
         for (int i = 1; i < 6; i++) {
-            alienTimeMap.put(30000L + (i * 200), Collections.singletonList(configureAlienRogueA(i, new AlienNymph(BOARD_X - (i * 40), 70))));
+            alienTimeMap.put(20000L + (i * 200), Collections.singletonList(configureAlienRogueA(i, new AlienNymph(BOARD_X - (i * 40), 70))));
         }
 
     }

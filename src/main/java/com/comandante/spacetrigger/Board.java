@@ -32,6 +32,8 @@ public class Board extends JPanel implements ActionListener {
     private BufferedImage background_2;
     private BufferedImage background_1;
 
+    private int ticks;
+
     private int yOffset_3 = 0;
     private int yDelta_3 = 1;
 
@@ -260,12 +262,7 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    private void positionBackground(Graphics2D g2d, BufferedImage backgropund, int yOffset, int yDelta) {
-        yOffset += yDelta;
-        if (yOffset > BOARD_Y) {
-            yOffset = 0;
-        }
-
+    private void positionBackground(Graphics2D g2d, BufferedImage backgropund, int yOffset) {
         if (backgropund != null) {
 
             int xPos = (BOARD_X - backgropund.getWidth()) / 2;
@@ -285,91 +282,27 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void drawBackgrounds(Graphics g) {
+        ticks++;
         Graphics2D g2d = (Graphics2D) g.create();
 
-
-        {
+        if (ticks % 5 == 0) {
             yOffset_3 += yDelta_3;
-            if (yOffset_3 > BOARD_Y) {
+            if (yOffset_3 > background_1.getHeight()) {
                 yOffset_3 = 0;
             }
-
-            if (background_3 != null) {
-
-                int xPos = (BOARD_X - background_3.getWidth()) / 2;
-                int yPos = yOffset_3;
-
-                while (yPos > 0) {
-                    yPos -= background_3.getHeight();
-                    g2d.drawImage(background_3, xPos, yPos, this);
-                }
-
-                yPos = yOffset_3;
-                while (yPos < BOARD_Y) {
-                    g2d.drawImage(background_3, xPos, yPos, this);
-                    yPos += background_3.getHeight();
-                }
-            }
-        }
-
-        {
             yOffset_2 += yDelta_2;
-            if (yOffset_2 > BOARD_Y) {
+            if (yOffset_2 > background_1.getHeight()) {
                 yOffset_2 = 0;
             }
 
-            if (background_2 != null) {
-
-                int xPos = (BOARD_X - background_2.getWidth()) / 2;
-                int yPos = yOffset_2;
-
-                while (yPos > 0) {
-                    yPos -= background_2.getHeight();
-                    g2d.drawImage(background_2, xPos, yPos, this);
-                }
-
-                yPos = yOffset_2;
-                while (yPos < BOARD_Y) {
-                    g2d.drawImage(background_2, xPos, yPos, this);
-                    yPos += background_2.getHeight();
-                }
-
-            }
-        }
-
-
-        {
             yOffset_1 += yDelta_1;
-            if (yOffset_1 > BOARD_Y) {
+            if (yOffset_1 > background_1.getHeight()) {
                 yOffset_1 = 0;
             }
-
-            if (background_1 != null) {
-
-                int xPos = (BOARD_X - background_1.getWidth()) / 2;
-                int yPos = yOffset_1;
-
-                while (yPos > 0) {
-                    yPos -= background_1.getHeight();
-                    g2d.drawImage(background_1, xPos, yPos, this);
-                }
-
-                yPos = yOffset_1;
-                while (yPos < BOARD_Y) {
-                    g2d.drawImage(background_1, xPos, yPos, this);
-                    yPos += background_1.getHeight();
-                }
-
-            }
         }
-
-
-
-
-
-
-
-
+        positionBackground(g2d, background_3, yOffset_3);
+        positionBackground(g2d, background_2, yOffset_2);
+        positionBackground(g2d, background_1, yOffset_1);
         g2d.dispose();
     }
 
