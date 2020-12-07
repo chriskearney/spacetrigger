@@ -195,7 +195,7 @@ public abstract class Sprite {
     }
 
     public Optional<Point> isCollison(Sprite sprite) {
-        if (!visible || isExploding) {
+        if (!visible || isExploding || warpAnimation.isPresent()) {
             return Optional.empty();
         }
         if (!sprite.isVisible() || sprite.isExploding()) {
@@ -295,10 +295,10 @@ public abstract class Sprite {
 
     public void addDownAnglePath(int xFactor, double speed, int amount, DownAnglePathDirection direction) {
         ArrayList<Point> points = new ArrayList<>();
+        if (direction.equals(DownAnglePathDirection.RIGHT_TO_LEFT)) {
+            xFactor = -xFactor;
+        }
         for (int i = 0; i < amount; i++) {
-            if (direction.equals(DownAnglePathDirection.RIGHT_TO_LEFT)) {
-                xFactor = -xFactor;
-            }
             int proposedX = (int) (BOARD_X / 3 * sin(i * .5 * Math.PI / (BOARD_X * xFactor))) + previousAddedPoint.getLocation().x;
             speed = speed + .3;
             int proposedY = (int) Math.round(speed);
@@ -332,7 +332,7 @@ public abstract class Sprite {
     }
 
     public void addPoint(int destX, int destY) {
-        Point destPoint = new Point(originalX + destX, destY);
+        Point destPoint = new Point(destX, destY);
         trajectory.addAll(getLine(previousAddedPoint, destPoint));
         previousAddedPoint = destPoint;
     }

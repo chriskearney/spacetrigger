@@ -25,7 +25,10 @@ public class Assets {
     public static final BufferedImage PLAYER_GUN_LEVEL_2_BULLET;
     public static final BufferedImage PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION;
 
+    public static final BufferedImage BOARD_BACKGROUND_3;
+    public static final BufferedImage BOARD_BACKGROUND_2;
     public static final BufferedImage BOARD_BACKGROUND_1;
+
 
 
     static {
@@ -50,6 +53,9 @@ public class Assets {
         PLAYER_MISSLE_LEVEL_1_IMPACT_EXPLOSION = loadImage("player-missle-level-1-impact-explosion.png");
 
         BOARD_BACKGROUND_1 = loadImage("board-background-1.png");
+        BOARD_BACKGROUND_2 = loadImage("board-background-2.png");
+        BOARD_BACKGROUND_3 = loadImage("board-background-3.png");
+
     }
 
     public static BufferedImage loadImage(String imageFilename) {

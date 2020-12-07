@@ -21,13 +21,25 @@ public class Board extends JPanel implements ActionListener {
     private final int DELAY = 10;
     private Timer timer;
     private PlayerShip playerShip;
-    private BufferedImage backgroundImage;
     private boolean ingame;
 
     private long startTime;
     private Level currentLevel = new LevelOne();
 
     private ArrayList<Alien> aliens;
+
+    private BufferedImage background_3;
+    private BufferedImage background_2;
+    private BufferedImage background_1;
+
+    private int yOffset_3 = 0;
+    private int yDelta_3 = 1;
+
+    private int yOffset_2 = 0;
+    private int yDelta_2 = 2;
+
+    private int yOffset_1 = 0;
+    private int yDelta_1 = 3;
 
     public Board() {
         initBoard();
@@ -40,10 +52,13 @@ public class Board extends JPanel implements ActionListener {
         resetBoard();
         timer = new Timer(DELAY, this);
         timer.start();
+        background_1 = Assets.BOARD_BACKGROUND_1;
+        background_2 = Assets.BOARD_BACKGROUND_2;
+        background_3 = Assets.BOARD_BACKGROUND_3;
+
     }
 
     private void resetBoard() {
-        this.backgroundImage = Assets.BOARD_BACKGROUND_1;
         ingame = true;
         playerShip = new PlayerShip();
         initAliens();
@@ -61,14 +76,15 @@ public class Board extends JPanel implements ActionListener {
         if (ingame) {
             drawObjects(g);
         } else {
-           drawGameOver(g);
+            drawGameOver(g);
         }
         Toolkit.getDefaultToolkit().sync();
     }
 
 
     private void drawObjects(Graphics g) {
-        g.drawImage(backgroundImage, 0, 0, this);
+
+        drawBackgrounds(g);
 
         if (playerShip.isVisible()) {
             Sprite.SpriteRender spaceShipRender = playerShip.getSpriteRender();
@@ -242,6 +258,119 @@ public class Board extends JPanel implements ActionListener {
                 aliens.remove(i);
             }
         }
+    }
+
+    private void positionBackground(Graphics2D g2d, BufferedImage backgropund, int yOffset, int yDelta) {
+        yOffset += yDelta;
+        if (yOffset > BOARD_Y) {
+            yOffset = 0;
+        }
+
+        if (backgropund != null) {
+
+            int xPos = (BOARD_X - backgropund.getWidth()) / 2;
+            int yPos = yOffset;
+
+            while (yPos > 0) {
+                yPos -= backgropund.getHeight();
+                g2d.drawImage(backgropund, xPos, yPos, this);
+            }
+
+            yPos = yOffset;
+            while (yPos < BOARD_Y) {
+                g2d.drawImage(backgropund, xPos, yPos, this);
+                yPos += backgropund.getHeight();
+            }
+        }
+    }
+
+    private void drawBackgrounds(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g.create();
+
+
+        {
+            yOffset_3 += yDelta_3;
+            if (yOffset_3 > BOARD_Y) {
+                yOffset_3 = 0;
+            }
+
+            if (background_3 != null) {
+
+                int xPos = (BOARD_X - background_3.getWidth()) / 2;
+                int yPos = yOffset_3;
+
+                while (yPos > 0) {
+                    yPos -= background_3.getHeight();
+                    g2d.drawImage(background_3, xPos, yPos, this);
+                }
+
+                yPos = yOffset_3;
+                while (yPos < BOARD_Y) {
+                    g2d.drawImage(background_3, xPos, yPos, this);
+                    yPos += background_3.getHeight();
+                }
+            }
+        }
+
+        {
+            yOffset_2 += yDelta_2;
+            if (yOffset_2 > BOARD_Y) {
+                yOffset_2 = 0;
+            }
+
+            if (background_2 != null) {
+
+                int xPos = (BOARD_X - background_2.getWidth()) / 2;
+                int yPos = yOffset_2;
+
+                while (yPos > 0) {
+                    yPos -= background_2.getHeight();
+                    g2d.drawImage(background_2, xPos, yPos, this);
+                }
+
+                yPos = yOffset_2;
+                while (yPos < BOARD_Y) {
+                    g2d.drawImage(background_2, xPos, yPos, this);
+                    yPos += background_2.getHeight();
+                }
+
+            }
+        }
+
+
+        {
+            yOffset_1 += yDelta_1;
+            if (yOffset_1 > BOARD_Y) {
+                yOffset_1 = 0;
+            }
+
+            if (background_1 != null) {
+
+                int xPos = (BOARD_X - background_1.getWidth()) / 2;
+                int yPos = yOffset_1;
+
+                while (yPos > 0) {
+                    yPos -= background_1.getHeight();
+                    g2d.drawImage(background_1, xPos, yPos, this);
+                }
+
+                yPos = yOffset_1;
+                while (yPos < BOARD_Y) {
+                    g2d.drawImage(background_1, xPos, yPos, this);
+                    yPos += background_1.getHeight();
+                }
+
+            }
+        }
+
+
+
+
+
+
+
+
+        g2d.dispose();
     }
 
 

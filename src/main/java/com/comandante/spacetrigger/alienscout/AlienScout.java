@@ -16,7 +16,7 @@ public class AlienScout extends Alien {
      protected void initAlien() {
         loadImage(Assets.ALIEN_SCOUT);
         loadExplosion(new SpriteSheetAnimation(188, 188, 8, 8, Assets.ALIEN_SCOUT_EXPLOSION, 2, 3));
-        loadWarpAnimation(new SpriteSheetAnimation(188, 188, 9, 1, Assets.ALIEN_SCOUT_WARP, 0, 3));
+        loadWarpAnimation(new SpriteSheetAnimation(160, 182, 7, 1, Assets.ALIEN_SCOUT_WARP, 0, 4));
     }
 
     public void fire() {

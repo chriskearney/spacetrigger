@@ -14,7 +14,7 @@ public class Level {
         List<Alien> readyToRenderAlien = new ArrayList<>();
         List<Long> timeKeys = new ArrayList<>();
         for (Map.Entry<Long, List<Alien>> alientTimeMapEntry : alienTimeMap.entrySet()) {
-            if (roundTimeElapsed >= alientTimeMapEntry.getKey() * 1000) {
+            if (roundTimeElapsed >= alientTimeMapEntry.getKey()) {
                 readyToRenderAlien.addAll(alientTimeMapEntry.getValue());
                 timeKeys.add(alientTimeMapEntry.getKey());
             }
