@@ -262,21 +262,21 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    private void positionBackground(Graphics2D g2d, BufferedImage backgropund, int yOffset) {
-        if (backgropund != null) {
+    private void positionBackground(Graphics2D g2d, BufferedImage bg, int yOffset) {
+        if (bg != null) {
 
-            int xPos = (BOARD_X - backgropund.getWidth()) / 2;
+            int xPos = (BOARD_X - bg.getWidth()) / 2;
             int yPos = yOffset;
 
             while (yPos > 0) {
-                yPos -= backgropund.getHeight();
-                g2d.drawImage(backgropund, xPos, yPos, this);
+                yPos -= bg.getHeight();
+                g2d.drawImage(bg, xPos, yPos, this);
             }
 
             yPos = yOffset;
             while (yPos < BOARD_Y) {
-                g2d.drawImage(backgropund, xPos, yPos, this);
-                yPos += backgropund.getHeight();
+                g2d.drawImage(bg, xPos, yPos, this);
+                yPos += bg.getHeight();
             }
         }
     }
@@ -285,11 +285,12 @@ public class Board extends JPanel implements ActionListener {
         ticks++;
         Graphics2D g2d = (Graphics2D) g.create();
 
-        if (ticks % 5 == 0) {
+        if (ticks % 2 == 0) {
             yOffset_3 += yDelta_3;
             if (yOffset_3 > background_1.getHeight()) {
                 yOffset_3 = 0;
             }
+
             yOffset_2 += yDelta_2;
             if (yOffset_2 > background_1.getHeight()) {
                 yOffset_2 = 0;
