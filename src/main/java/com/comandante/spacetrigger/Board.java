@@ -84,6 +84,9 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void drawDamageAnimations(Graphics g, Sprite sprite) {
+        if (sprite.isExploding() || !sprite.isVisible()) {
+            return;
+        }
         for (int i = 0; i < sprite.getDamageAnimations().size(); i++) {
             SpriteSheetAnimation spriteDamageAnimations = sprite.getDamageAnimations().get(i);
             Point renderPoint = spriteDamageAnimations.getRenderPoint().get();
