@@ -136,7 +136,7 @@ public class Board extends JPanel implements ActionListener {
             if (playerShip.isShield()) {
                 g.drawImage(playerShip.getShield(), spaceShipRender.getX() + (playerShip.getWidth() / 2) - (playerShip.getShield().getWidth() / 2), spaceShipRender.getY() + (playerShip.getHeight() / 2) - (playerShip.getShield().getHeight() / 2), this);
             }
-            if (playerShip.isMovement()) {
+            if (playerShip.isMovement() && !playerShip.isExploding()) {
                 SpriteSheetAnimation exhaust = playerShip.getExhaust();
                 Optional<BufferedImage> currentFrame = exhaust.updateAnimation();
                 if (currentFrame.isPresent()) {
