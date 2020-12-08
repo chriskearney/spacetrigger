@@ -20,6 +20,7 @@ public class Assets {
 
     public static final BufferedImage PLAYER_SHIP;
     public static final BufferedImage PLAYER_SHIP_EXPLOSION;
+    public static final BufferedImage PLAYER_SHIP_SHIELD;
     public static final BufferedImage PLAYER_MISSLE_LEVEL_1_BULLET;
     public static final BufferedImage PLAYER_MISSLE_LEVEL_1_IMPACT_EXPLOSION;
     public static final BufferedImage PLAYER_GUN_LEVEL_2_BULLET;
@@ -30,6 +31,7 @@ public class Assets {
     public static final BufferedImage BOARD_BACKGROUND_1;
 
     public static final BufferedImage MISSLE_DROP;
+
 
     static {
 
@@ -47,6 +49,7 @@ public class Assets {
 
         PLAYER_SHIP = loadImage("player-ship.png");
         PLAYER_SHIP_EXPLOSION = loadImage("player-ship-explosion.png");
+        PLAYER_SHIP_SHIELD = loadImage("player-ship-shield.png");
         PLAYER_GUN_LEVEL_2_BULLET = loadImage("player-gun-level-2-bullet.png");
         PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION = loadImage("player-gun-level-2-bullet-impact-explosion.png");
         PLAYER_MISSLE_LEVEL_1_BULLET = loadImage("player-missle-level-1-bullet.png");

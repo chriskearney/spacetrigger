@@ -133,6 +133,9 @@ public class Board extends JPanel implements ActionListener {
             Sprite.SpriteRender spaceShipRender = playerShip.getSpriteRender();
             g.drawImage(spaceShipRender.getImage(), spaceShipRender.getX(), spaceShipRender.getY(), this);
             drawDamageAnimations(g, playerShip);
+            if (playerShip.isShield()) {
+                g.drawImage(playerShip.getShield(), spaceShipRender.getX() + (playerShip.getWidth() / 2) - (playerShip.getShield().getWidth() / 2), spaceShipRender.getY() + (playerShip.getHeight() / 2) - (playerShip.getShield().getHeight() / 2), this);
+            }
         }
         List<Projectile> space = playerShip.getMissiles();
         for (int i = 0; i < space.size(); i++) {
@@ -227,17 +230,6 @@ public class Board extends JPanel implements ActionListener {
         updateDrops();
         checkCollisions();
         repaint();
-    }
-
-    private void updateDrops() {
-        for (int i = 0; i < drops.size(); i++) {
-            Drop drop = drops.get(i);
-            if (drop.isVisible()) {
-                drop.move();
-            } else {
-                drops.remove(i);
-            }
-        }
     }
 
     public void checkCollisions() {
@@ -357,6 +349,18 @@ public class Board extends JPanel implements ActionListener {
             }
         }
     }
+
+    private void updateDrops() {
+        for (int i = 0; i < drops.size(); i++) {
+            Drop drop = drops.get(i);
+            if (drop.isVisible()) {
+                drop.move();
+            } else {
+                drops.remove(i);
+            }
+        }
+    }
+
 
     private class BoardKeyAdapter extends KeyAdapter {
 

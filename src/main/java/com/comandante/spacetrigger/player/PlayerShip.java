@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.eventbus.Subscribe;
 
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,9 @@ public class PlayerShip extends Sprite {
     private int currentMissles = 3;
 
     private final List<Projectile> projectiles = Lists.newArrayList();
+
+    private final BufferedImage shield = Assets.PLAYER_SHIP_SHIELD;
+    private boolean isShield = false;
 
     public PlayerShip() {
         super(0, 0, 500,0);
@@ -127,6 +131,10 @@ public class PlayerShip extends Sprite {
         if (key == KeyEvent.VK_S) {
             dy = 4;
         }
+
+        if (key == KeyEvent.VK_M) {
+            isShield = true;
+        }
     }
 
     public void keyReleased(KeyEvent e) {
@@ -160,6 +168,18 @@ public class PlayerShip extends Sprite {
                 dy = 0;
             }
         }
+
+        if (key == KeyEvent.VK_M) {
+            isShield = false;
+        }
+    }
+
+    public boolean isShield() {
+        return isShield;
+    }
+
+    public BufferedImage getShield() {
+        return shield;
     }
 
     public int getCurrentMissles() {
