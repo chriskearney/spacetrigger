@@ -9,7 +9,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CombineSpritesIntoSheet {
@@ -19,23 +18,23 @@ public class CombineSpritesIntoSheet {
 
         List<BufferedImage> frameFiles = Lists.newArrayList();
 
-        for (int i = 1; i <= 9; i++) {
-            BufferedImage image = Assets.loadImage("redwarp/warp_" + i + ".png");
+        for (int i = 1; i <= 8; i++) {
+            BufferedImage image = Assets.loadImage("engine_exhaust/engine_exhaust_" + i + ".png");
             frameFiles.add(image);
         }
 
 
-        int width = 320;
-        int heigth = 320;
+        int width = 8;
+        int heigth = 15;
 
-        BufferedImage destinationImage = new BufferedImage(width * 9, heigth, frameFiles.get(0).getType());
+        BufferedImage destinationImage = new BufferedImage(width * 8, heigth, frameFiles.get(0).getType());
         Graphics2D graphics = destinationImage.createGraphics();
         graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
         for (int i = 0; i < 8; i++) {
             graphics.drawImage(frameFiles.get(i), i * width, 0, null);
         }
 
-        File outputfile = new File("unused/redwarp.png");
+        File outputfile = new File("player-ship-exhaust.png");
         ImageIO.write(destinationImage, "png", outputfile);
     }
 

@@ -18,6 +18,8 @@ public class SpriteSheetAnimation {
 
     private final Optional<Point> renderPoint;
 
+    private boolean looping;
+
     private Optional<BufferedImage> currentFrame;
 
     public SpriteSheetAnimation(int x_size,
@@ -27,10 +29,12 @@ public class SpriteSheetAnimation {
                                 BufferedImage spriteSheet,
                                 int skipFrame,
                                 int frameDelay,
+                                boolean looping,
                                 Optional<Point> renderPoint) {
         this.frameDelay = frameDelay;
         this.spriteSheet = spriteSheet;
         this.spriteFrames = Lists.newArrayList();
+        this.looping = looping;
         this.renderPoint = renderPoint;
         for (int j = 0; j < rows; j++) {
             for (int i = 0; i < columns; i++) {
@@ -43,14 +47,23 @@ public class SpriteSheetAnimation {
         currentFrame = Optional.ofNullable(spriteFrames.get(0));
     }
 
-    public SpriteSheetAnimation(int x_size, int y_size, int columns, int rows, BufferedImage spriteSheet, int skipFrame, int frameDelay) {
-        this(x_size, y_size, columns, rows, spriteSheet, skipFrame, frameDelay, Optional.empty());
+    public SpriteSheetAnimation(int x_size, int y_size, int columns, int rows, BufferedImage spriteSheet, int skipFrame, int frameDelay, Optional<Point> renderPoint) {
+        this(x_size, y_size, columns, rows, spriteSheet, skipFrame, frameDelay, false, renderPoint);
     }
 
-    public void updateAnimation() {
+    public SpriteSheetAnimation(int x_size, int y_size, int columns, int rows, BufferedImage spriteSheet, int skipFrame, int frameDelay) {
+        this(x_size, y_size, columns, rows, spriteSheet, skipFrame, frameDelay, false, Optional.empty());
+    }
+
+    public Optional<BufferedImage> updateAnimation() {
         if (frameTicker >= frameDelay) {
             if (frameNumber >= getTotalFrames()) {
-                currentFrame = Optional.empty();
+                if (looping) {
+                    frameNumber = 0;
+                    currentFrame = Optional.ofNullable(spriteFrames.get(0));
+                } else {
+                    currentFrame = Optional.empty();
+                }
             } else if (frameNumber < 0) {
                 currentFrame = Optional.ofNullable(spriteFrames.get(getTotalFrames() - 1));
                 frameNumber = getTotalFrames() - 1;
@@ -62,10 +75,8 @@ public class SpriteSheetAnimation {
         } else {
             frameTicker = frameTicker + 1;
         }
-    }
-
-    // When this returns Optional.empty, the SpriteSheet has completed a single loop of its frame.
-    public Optional<BufferedImage> getCurrentFrame() {
+        // Never reached if looping
+        // When this returns Optional.empty, the SpriteSheet has completed a single loop of its frame.
         return currentFrame;
     }
 

@@ -119,8 +119,7 @@ public abstract class Sprite {
         }
 
         if (warpAnimation.isPresent()) {
-            warpAnimation.get().updateAnimation();
-            Optional<BufferedImage> currentFrame = warpAnimation.get().getCurrentFrame();
+            Optional<BufferedImage> currentFrame = warpAnimation.get().updateAnimation();;
             if (currentFrame.isPresent()) {
                 int warpX = centerX - (currentFrame.get().getWidth() / 2);
                 int warpY = centerY - (currentFrame.get().getHeight() / 2);
@@ -131,8 +130,7 @@ public abstract class Sprite {
         }
 
         if (isExploding) {
-            explosion.updateAnimation();
-            Optional<BufferedImage> currentFrame = explosion.getCurrentFrame();
+            Optional<BufferedImage> currentFrame = explosion.updateAnimation();
             if (currentFrame.isPresent()) {
                 int explosionX = centerX - (currentFrame.get().getWidth() / 2);
                 int explosionY = centerY - (currentFrame.get().getHeight() / 2);

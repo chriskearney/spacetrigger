@@ -109,8 +109,8 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < sprite.getDamageAnimations().size(); i++) {
             SpriteSheetAnimation spriteDamageAnimations = sprite.getDamageAnimations().get(i);
             Point renderPoint = spriteDamageAnimations.getRenderPoint().get();
-            spriteDamageAnimations.updateAnimation();
-            Optional<BufferedImage> currentFrame = spriteDamageAnimations.getCurrentFrame();
+
+            Optional<BufferedImage> currentFrame = spriteDamageAnimations.updateAnimation();
             if (currentFrame.isPresent()) {
                 // Ship x/y position on the board + its relative position on the sprite - the /2 of the width/height of damage animation - centers the damage animation on the x/y collision point
                 g.drawImage(currentFrame.get(), (sprite.getX() + renderPoint.getLocation().x) - currentFrame.get().getWidth() / 2, (sprite.getY() + renderPoint.getLocation().y) - currentFrame.get().getHeight() / 2, this);
@@ -135,6 +135,14 @@ public class Board extends JPanel implements ActionListener {
             drawDamageAnimations(g, playerShip);
             if (playerShip.isShield()) {
                 g.drawImage(playerShip.getShield(), spaceShipRender.getX() + (playerShip.getWidth() / 2) - (playerShip.getShield().getWidth() / 2), spaceShipRender.getY() + (playerShip.getHeight() / 2) - (playerShip.getShield().getHeight() / 2), this);
+            }
+            if (playerShip.isMovement()) {
+                SpriteSheetAnimation exhaust = playerShip.getExhaust();
+                Optional<BufferedImage> currentFrame = exhaust.updateAnimation();
+                if (currentFrame.isPresent()) {
+                    g.drawImage(currentFrame.get(), spaceShipRender.getX() + (playerShip.getWidth() / 2) + 8, spaceShipRender.getY() + (playerShip.getHeight() / 2) + 11, this);
+                    g.drawImage(currentFrame.get(), spaceShipRender.getX() + (playerShip.getWidth() / 2) - 16, spaceShipRender.getY() + (playerShip.getHeight() / 2) + 11, this);
+                }
             }
         }
         List<Projectile> space = playerShip.getMissiles();

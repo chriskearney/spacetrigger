@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
@@ -25,6 +26,9 @@ public class PlayerShip extends Sprite {
     private final List<Projectile> projectiles = Lists.newArrayList();
 
     private final BufferedImage shield = Assets.PLAYER_SHIP_SHIELD;
+    private final SpriteSheetAnimation exhaust = new SpriteSheetAnimation(8, 15, 8, 1, Assets.PLAYER_SHIP_EXHAUST, 0, 3, true, Optional.empty());
+
+
     private boolean isShield = false;
 
     public PlayerShip() {
@@ -172,6 +176,14 @@ public class PlayerShip extends Sprite {
         if (key == KeyEvent.VK_M) {
             isShield = false;
         }
+    }
+
+    public SpriteSheetAnimation getExhaust() {
+        return exhaust;
+    }
+
+    public boolean isMovement() {
+        return dy != 0 || dx != 0;
     }
 
     public boolean isShield() {
