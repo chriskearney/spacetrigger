@@ -8,8 +8,8 @@ import java.awt.image.BufferedImage;
 
 public class MissleDrop extends Drop {
 
-    public MissleDrop() {
-        super(0, 0, 1, DropRate.UNUSUAL);
+    public MissleDrop(DropRate dropRate) {
+        super(0, 0, 1, dropRate);
         initMissile();
     }
 

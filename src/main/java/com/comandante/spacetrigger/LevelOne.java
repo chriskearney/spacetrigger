@@ -18,7 +18,7 @@ public class LevelOne extends Level {
         alienNymph.pause(3);
         alienNymph.addPoint(350 + (i * 40), 400);
         alienNymph.pause(3);
-        alienNymph.addDrop(new MissleDrop());
+        alienNymph.addDrop(new MissleDrop(Drop.DropRate.RARE));
         eventBus.register(alienNymph);
         return alienNymph;
     }
@@ -26,7 +26,7 @@ public class LevelOne extends Level {
     private AlienScout configureAlienScout(int pause, AlienScout alienScout) {
         alienScout.addDownAnglePath(3, .06, 700, Sprite.DownAnglePathDirection.LEFT_TO_RIGHT);
         alienScout.pause(4);
-        alienScout.addDrop(new MissleDrop());
+        alienScout.addDrop(new MissleDrop(Drop.DropRate.COMMON));
         eventBus.register(alienScout);
         return alienScout;
     }
@@ -34,7 +34,7 @@ public class LevelOne extends Level {
     private AlienScout configureAlienScoutRight(int pause, AlienScout alienScout) {
         alienScout.addDownAnglePath(7, .06, 700, Sprite.DownAnglePathDirection.RIGHT_TO_LEFT);
         alienScout.pause(4);
-        alienScout.addDrop(new MissleDrop());
+        alienScout.addDrop(new MissleDrop(Drop.DropRate.COMMON));
         eventBus.register(alienScout);
         return alienScout;
     }
