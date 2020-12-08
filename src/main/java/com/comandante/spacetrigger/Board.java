@@ -297,9 +297,9 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < alien.getDrops().size(); i++) {
             Drop drop = alien.getDrops().get(i);
             int dropPercent = drop.getDropRate().getPercent();
-            if (true) {
-                drop.setOriginalX(alien.getX());
-                drop.setOriginalY(alien.getY());
+            if (rnd < dropPercent) {
+                drop.setOriginalX(alien.getX() + (alien.getWidth() / 2) - (drop.getWidth() / 2));
+                drop.setOriginalY(alien.getY() + (alien.getHeight() / 2) - (drop.getHeight() / 2));
                 drop.setVisible(true);
                 drops.add(drop);
             }
