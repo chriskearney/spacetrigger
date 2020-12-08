@@ -1,6 +1,7 @@
 package com.comandante.spacetrigger.util;
 
 import com.comandante.spacetrigger.Assets;
+import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
 import java.awt.AlphaComposite;
@@ -16,7 +17,7 @@ public class CombineSpritesIntoSheet {
     public static void main(String[] args) throws IOException {
 
 
-        List<BufferedImage> frameFiles = new ArrayList<>();
+        List<BufferedImage> frameFiles = Lists.newArrayList();
 
         for (int i = 1; i <= 9; i++) {
             BufferedImage image = Assets.loadImage("redwarp/warp_" + i + ".png");

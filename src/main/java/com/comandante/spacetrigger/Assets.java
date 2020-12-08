@@ -29,7 +29,7 @@ public class Assets {
     public static final BufferedImage BOARD_BACKGROUND_2;
     public static final BufferedImage BOARD_BACKGROUND_1;
 
-
+    public static final BufferedImage MISSLE_DROP;
 
     static {
 
@@ -56,6 +56,7 @@ public class Assets {
         BOARD_BACKGROUND_2 = loadImage("board-background-2.png");
         BOARD_BACKGROUND_3 = loadImage("board-background-3.png");
 
+        MISSLE_DROP = loadImage("missle-drop.png");
     }
 
     public static BufferedImage loadImage(String imageFilename) {

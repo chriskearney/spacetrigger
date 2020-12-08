@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.SplittableRandom;
+import com.google.common.collect.Lists;
+
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static java.lang.Math.sin;
@@ -36,16 +38,16 @@ public abstract class Sprite {
 
     protected final SplittableRandom random = new SplittableRandom();
 
-    protected List<SpriteSheetAnimation> damageAnimations = new ArrayList<>();
+    protected List<SpriteSheetAnimation> damageAnimations = Lists.newArrayList();
 
 
     private int centerX;
     private int centerY;
 
-    protected final int originalX;
-    protected final int originalY;
+    protected int originalX;
+    protected int originalY;
 
-    protected ArrayList<Point> trajectory = new ArrayList<>();
+    protected ArrayList<Point> trajectory = Lists.newArrayList();
 
     private Point previousAddedPoint;
 
@@ -138,12 +140,13 @@ public abstract class Sprite {
             }
 
             if (invisibleAfterExploding) {
-                visible = false;
+                setVisible(false);
                 isExploding = false;
             }
 
             return new SpriteRender(x, y, TRANSPARENT_ONE_PIXEL);
         }
+
         return new SpriteRender(x, y, image);
     }
 
@@ -153,6 +156,16 @@ public abstract class Sprite {
 
     public int getY() {
         return y;
+    }
+
+    public void setOriginalX(int x) {
+        this.originalX = x;
+        this.x = x;
+    }
+
+    public void setOriginalY(int y) {
+        this.originalY = y;
+        this.y = y;
     }
 
     public int getWidth() {
@@ -295,7 +308,7 @@ public abstract class Sprite {
     }
 
     public void addDownAnglePath(int xFactor, double speed, int amount, DownAnglePathDirection direction) {
-        ArrayList<Point> points = new ArrayList<>();
+        ArrayList<Point> points = Lists.newArrayList();
         if (direction.equals(DownAnglePathDirection.RIGHT_TO_LEFT)) {
             xFactor = -xFactor;
         }
@@ -312,7 +325,7 @@ public abstract class Sprite {
     }
 
     public void addCircle(double speed, int amount) {
-        ArrayList<Point> points = new ArrayList<>();
+        ArrayList<Point> points = Lists.newArrayList();
         for (int i = 1; i < amount; i++) {
             double orbitalPeriod = 1600;
             double portion = (i % orbitalPeriod) / orbitalPeriod; // [0, 1)

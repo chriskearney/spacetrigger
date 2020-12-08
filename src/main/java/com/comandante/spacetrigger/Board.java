@@ -1,6 +1,8 @@
 package com.comandante.spacetrigger;
 
 import com.comandante.spacetrigger.player.PlayerShip;
+import com.google.common.collect.Lists;
+import com.google.common.eventbus.EventBus;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.SplittableRandom;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
@@ -24,9 +27,10 @@ public class Board extends JPanel implements ActionListener {
     private boolean ingame;
 
     private long startTime;
-    private Level currentLevel = new LevelOne();
+    private Level currentLevel;
 
     private ArrayList<Alien> aliens;
+    private ArrayList<Drop> drops;
 
     private BufferedImage background_3;
     private BufferedImage background_2;
@@ -34,6 +38,11 @@ public class Board extends JPanel implements ActionListener {
 
     private double yOffset_3 = 0;
     private double yDelta_3 = .1;
+    private final SplittableRandom random = new SplittableRandom();
+
+    private final EventBus eventBus;
+
+    private int ticks;
 
     private double yOffset_2 = 0;
     private double yDelta_2 = .2;
@@ -42,6 +51,7 @@ public class Board extends JPanel implements ActionListener {
     private double yDelta_1 = .3;
 
     public Board() {
+        eventBus = new EventBus();
         initBoard();
     }
 
@@ -55,19 +65,27 @@ public class Board extends JPanel implements ActionListener {
         background_1 = Assets.BOARD_BACKGROUND_1;
         background_2 = Assets.BOARD_BACKGROUND_2;
         background_3 = Assets.BOARD_BACKGROUND_3;
-
     }
 
     private void resetBoard() {
         ingame = true;
+        if (playerShip != null) {
+            eventBus.unregister(playerShip);
+        }
         playerShip = new PlayerShip();
+        eventBus.register(playerShip);
         initAliens();
+        initDrops();
         startTime = System.currentTimeMillis();
-        currentLevel = new LevelOne();
+        currentLevel = new LevelOne(eventBus);
     }
 
     public void initAliens() {
-        aliens = new ArrayList<>();
+        aliens = Lists.newArrayList();;
+    }
+
+    public void initDrops() {
+        drops = Lists.newArrayList();
     }
 
     @Override
@@ -75,8 +93,9 @@ public class Board extends JPanel implements ActionListener {
         super.paintComponent(g);
         drawBackgrounds(g);
         if (ingame) {
-            drawPlayerShip(g);
             drawAliens(g);
+            drawPlayerShip(g);
+            drawDrops(g);
         } else {
             drawGameOver(g);
         }
@@ -98,6 +117,14 @@ public class Board extends JPanel implements ActionListener {
             } else {
                 sprite.getDamageAnimations().remove(i);
             }
+        }
+    }
+
+    private void drawDrops(Graphics g) {
+        for (int i = 0; i < drops.size(); i++) {
+            Drop drop = drops.get(i);
+            Sprite.SpriteRender spriteRender = drop.getSpriteRender();
+            g.drawImage(spriteRender.getImage(), spriteRender.getX(), spriteRender.getY(), this);
         }
     }
 
@@ -197,8 +224,20 @@ public class Board extends JPanel implements ActionListener {
         updateMissiles();
         updateSpaceShip();
         updateAliens();
+        updateDrops();
         checkCollisions();
         repaint();
+    }
+
+    private void updateDrops() {
+        for (int i = 0; i < drops.size(); i++) {
+            Drop drop = drops.get(i);
+            if (drop.isVisible()) {
+                drop.move();
+            } else {
+                drops.remove(i);
+            }
+        }
     }
 
     public void checkCollisions() {
@@ -231,6 +270,7 @@ public class Board extends JPanel implements ActionListener {
                     boolean isDoneFor = aliens.get(j).calculateDamage(spaceShipMissles.get(i), collisonPoint.get());
                     spaceShipMissles.get(i).setVisible(false);
                     if (isDoneFor) {
+                        processDrops(aliens.get(j));
                         aliens.get(j).setExploding(true, true);
                         newExplosion = true;
                     }
@@ -238,10 +278,34 @@ public class Board extends JPanel implements ActionListener {
             }
         }
 
+        for (int i = 0; i < drops.size(); i++) {
+            Drop drop = drops.get(i);
+            Optional<Point> collison = drop.isCollison(playerShip);
+            if (collison.isPresent()) {
+                eventBus.post(drop.getEvent());
+                drop.setVisible(false);
+            }
+        }
+
         if (newExplosion) {
             aliens.sort((abc1, abc2) -> Boolean.compare(abc1.isExploding, abc2.isExploding));
         }
     }
+
+    private void processDrops(Alien alien) {
+        int rnd = random.nextInt(0 ,100);
+        for (int i = 0; i < alien.getDrops().size(); i++) {
+            Drop drop = alien.getDrops().get(i);
+            int dropPercent = drop.getDropRate().getPercent();
+            if (true) {
+                drop.setOriginalX(alien.getX());
+                drop.setOriginalY(alien.getY());
+                drop.setVisible(true);
+                drops.add(drop);
+            }
+        }
+    }
+
 
     private void updateMissiles() {
 
@@ -288,11 +352,11 @@ public class Board extends JPanel implements ActionListener {
             if (a.isVisible()) {
                 a.move();
             } else {
+                eventBus.unregister(a);
                 aliens.remove(i);
             }
         }
     }
-
 
     private class BoardKeyAdapter extends KeyAdapter {
 

@@ -1,5 +1,7 @@
 package com.comandante.spacetrigger;
 
+import com.google.common.collect.Lists;
+
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class SpriteSheetAnimation {
                                 Optional<Point> renderPoint) {
         this.frameDelay = frameDelay;
         this.spriteSheet = spriteSheet;
-        this.spriteFrames = new ArrayList<>();
+        this.spriteFrames = Lists.newArrayList();
         this.renderPoint = renderPoint;
         for (int j = 0; j < rows; j++) {
             for (int i = 0; i < columns; i++) {

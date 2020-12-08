@@ -2,6 +2,9 @@ package com.comandante.spacetrigger.player;
 
 
 import com.comandante.spacetrigger.*;
+import com.comandante.spacetrigger.events.MisslePickUpEvent;
+import com.google.common.collect.Lists;
+import com.google.common.eventbus.Subscribe;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -18,7 +21,7 @@ public class PlayerShip extends Sprite {
     private int missleCapacity = 10;
     private int currentMissles = 3;
 
-    private final List<Projectile> projectiles = new ArrayList<>();
+    private final List<Projectile> projectiles = Lists.newArrayList();
 
     public PlayerShip() {
         super(0, 0, 500,0);
@@ -70,6 +73,10 @@ public class PlayerShip extends Sprite {
             x += dx;
             y += dy;
         }
+    }
+
+    public void addMissles(int number) {
+        currentMissles += number;
     }
 
     public List<Projectile> getMissiles() {
@@ -157,6 +164,11 @@ public class PlayerShip extends Sprite {
 
     public int getCurrentMissles() {
         return currentMissles;
+    }
+
+    @Subscribe
+    public void processMisslePickUp(MisslePickUpEvent misslePickUpEvent) {
+        this.currentMissles += misslePickUpEvent.getAmount();
     }
 }
 

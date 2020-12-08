@@ -2,6 +2,7 @@ package com.comandante.spacetrigger;
 
 import com.comandante.spacetrigger.aliennymph.AlienNymph;
 import com.comandante.spacetrigger.alienscout.AlienScout;
+import com.google.common.eventbus.EventBus;
 
 import java.util.*;
 
@@ -11,29 +12,35 @@ import static com.comandante.spacetrigger.Main.BOARD_Y;
 public class LevelOne extends Level {
 
     private final SplittableRandom random = new SplittableRandom();
+    private final EventBus eventBus;
 
     private AlienNymph configureAlienRogueA(int i, AlienNymph alienNymph) {
         alienNymph.pause(3);
         alienNymph.addPoint(350 + (i * 40), 400);
         alienNymph.pause(3);
+        alienNymph.addDrop(new MissleDrop());
+        eventBus.register(alienNymph);
         return alienNymph;
     }
-
 
     private AlienScout configureAlienScout(int pause, AlienScout alienScout) {
         alienScout.addDownAnglePath(3, .06, 700, Sprite.DownAnglePathDirection.LEFT_TO_RIGHT);
         alienScout.pause(4);
+        alienScout.addDrop(new MissleDrop());
+        eventBus.register(alienScout);
         return alienScout;
     }
 
     private AlienScout configureAlienScoutRight(int pause, AlienScout alienScout) {
         alienScout.addDownAnglePath(7, .06, 700, Sprite.DownAnglePathDirection.RIGHT_TO_LEFT);
         alienScout.pause(4);
+        alienScout.addDrop(new MissleDrop());
+        eventBus.register(alienScout);
         return alienScout;
     }
 
-    public LevelOne() {
-
+    public LevelOne(EventBus eventBus) {
+        this.eventBus = eventBus;
         //1 - Second, Aka Start of the game:
 
 

@@ -1,5 +1,7 @@
 package com.comandante.spacetrigger;
 
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,8 +13,8 @@ public class Level {
     final Map<Long, List<Alien>> alienTimeMap = new HashMap<>();
 
     public List<Alien> getAlien(long roundTimeElapsed) {
-        List<Alien> readyToRenderAlien = new ArrayList<>();
-        List<Long> timeKeys = new ArrayList<>();
+        List<Alien> readyToRenderAlien = Lists.newArrayList();
+        List<Long> timeKeys = Lists.newArrayList();
         for (Map.Entry<Long, List<Alien>> alientTimeMapEntry : alienTimeMap.entrySet()) {
             if (roundTimeElapsed >= alientTimeMapEntry.getKey()) {
                 readyToRenderAlien.addAll(alientTimeMapEntry.getValue());

@@ -2,6 +2,7 @@ package com.comandante.spacetrigger.util;
 
 import com.comandante.spacetrigger.Assets;
 import com.comandante.spacetrigger.SpriteSheetAnimation;
+import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
 import java.awt.AlphaComposite;
@@ -28,7 +29,7 @@ public class RotateSpriteSheet {
         SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(imageWidth, imageHeight, columns, rows, bufferedImage, 0, 0);
         List<BufferedImage> spriteFrames = spriteSheetAnimation.getSpriteFrames();
 
-        List<BufferedImage> rotatedImages = new ArrayList<>();
+        List<BufferedImage> rotatedImages = Lists.newArrayList();
 
         Graphics2D graphics = bufferedImage.createGraphics();
         graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
