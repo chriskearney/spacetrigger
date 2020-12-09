@@ -25,11 +25,10 @@ public class PlayerShip extends Sprite {
 
     private final List<Projectile> projectiles = Lists.newArrayList();
 
-    private final BufferedImage shield = Assets.PLAYER_SHIP_SHIELD;
     private final SpriteSheetAnimation exhaust = new SpriteSheetAnimation(8, 15, 8, 1, Assets.PLAYER_SHIP_EXHAUST, 0, 3, true, Optional.empty());
 
 
-    private boolean isShield = false;
+    private final Shield shield = new Shield();
 
     public PlayerShip() {
         super(0, 0, 500,0);
@@ -137,7 +136,7 @@ public class PlayerShip extends Sprite {
         }
 
         if (key == KeyEvent.VK_M) {
-            isShield = true;
+            shield.setVisible(true);
         }
     }
 
@@ -174,7 +173,7 @@ public class PlayerShip extends Sprite {
         }
 
         if (key == KeyEvent.VK_M) {
-            isShield = false;
+            shield.setVisible(false);
         }
     }
 
@@ -187,10 +186,10 @@ public class PlayerShip extends Sprite {
     }
 
     public boolean isShield() {
-        return isShield;
+        return shield.isVisible();
     }
 
-    public BufferedImage getShield() {
+    public Sprite getShield() {
         return shield;
     }
 

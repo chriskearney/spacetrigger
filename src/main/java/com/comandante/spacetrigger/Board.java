@@ -81,7 +81,8 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void initAliens() {
-        aliens = Lists.newArrayList();;
+        aliens = Lists.newArrayList();
+        ;
     }
 
     public void initDrops() {
@@ -133,8 +134,13 @@ public class Board extends JPanel implements ActionListener {
             Sprite.SpriteRender spaceShipRender = playerShip.getSpriteRender();
             g.drawImage(spaceShipRender.getImage(), spaceShipRender.getX(), spaceShipRender.getY(), this);
             drawDamageAnimations(g, playerShip);
-            if (playerShip.isShield()) {
-                g.drawImage(playerShip.getShield(), spaceShipRender.getX() + (playerShip.getWidth() / 2) - (playerShip.getShield().getWidth() / 2), spaceShipRender.getY() + (playerShip.getHeight() / 2) - (playerShip.getShield().getHeight() / 2), this);
+            drawDamageAnimations(g, playerShip.getShield());
+            if (playerShip.getShield().isVisible()) {
+                Sprite shield = playerShip.getShield();
+                shield.setOriginalX(spaceShipRender.getX() + (playerShip.getWidth() / 2) - (playerShip.getShield().getWidth() / 2));
+                shield.setOriginalY(spaceShipRender.getY() + (playerShip.getHeight() / 2) - (playerShip.getShield().getHeight() / 2));
+                Sprite.SpriteRender spriteRender = shield.getSpriteRender();
+                g.drawImage(spriteRender.getImage(), spriteRender.getX(), spriteRender.getY(), this);
             }
             if (playerShip.isMovement() && !playerShip.isExploding()) {
                 SpriteSheetAnimation exhaust = playerShip.getExhaust();
@@ -250,12 +256,21 @@ public class Board extends JPanel implements ActionListener {
             List<Projectile> projectiles = aliens.get(i).getMissiles();
             for (int j = 0; j < projectiles.size(); j++) {
                 Projectile projectile = projectiles.get(j);
-                Optional<Point> collison = projectile.isCollison(playerShip);
-                if (collison.isPresent()) {
-                    boolean isDoneFor = playerShip.calculateDamage(projectile, collison.get());
-                    projectile.setVisible(false);
-                    if (isDoneFor) {
-                        playerShip.setExploding(true, true);
+                if (playerShip.isShield()) {
+                    playerShip.getShield().setVisible(true);
+                    Optional<Point> shieldCollision = projectile.isCollison(playerShip.getShield(), 60);
+                    if (shieldCollision.isPresent()) {
+                        projectile.setVisible(false);
+                        playerShip.getShield().addDamageAnimation(projectile, shieldCollision.get());
+                    }
+                } else {
+                    Optional<Point> collison = projectile.isCollison(playerShip);
+                    if (collison.isPresent()) {
+                        boolean isDoneFor = playerShip.calculateDamage(projectile, collison.get());
+                        projectile.setVisible(false);
+                        if (isDoneFor) {
+                            playerShip.setExploding(true, true);
+                        }
                     }
                 }
             }
@@ -293,7 +308,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void processDrops(Alien alien) {
-        int rnd = random.nextInt(0 ,100);
+        int rnd = random.nextInt(0, 100);
         for (int i = 0; i < alien.getDrops().size(); i++) {
             Drop drop = alien.getDrops().get(i);
             int dropPercent = drop.getDropRate().getPercent();

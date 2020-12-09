@@ -187,13 +187,17 @@ public abstract class Sprite {
     }
 
     public HashSet<String> getMask() {
+        // can't have any transparency to make the msak in this case
+        return getMask(254);
+    }
+    public HashSet<String> getMask(int threshold) {
         HashSet<String> mask = new HashSet<String>();
         int pixel;
 
         for (int i = 0; i < (getWidth()); i++) {
             for (int j = 0; j < getHeight(); j++) {
                 pixel = image.getRGB(i, j);
-                if (!hasTransparency(pixel)) {
+                if (!hasTransparency(pixel, threshold)) {
                     mask.add((getX() + i) + "," + (getY() + j));
                 }
             }
@@ -201,12 +205,16 @@ public abstract class Sprite {
         return mask;
     }
 
-    public static boolean hasTransparency(int pixel) {
+    public static boolean hasTransparency(int pixel, int threshold) {
         int alpha = (pixel >> 24) & 0xff;
-        return alpha < 254;
+        return alpha < threshold;
     }
 
     public Optional<Point> isCollison(Sprite sprite) {
+        return isCollison(sprite, 254);
+    }
+
+    public Optional<Point> isCollison(Sprite sprite, int transparencyThreshold) {
         if (!visible || isExploding || warpAnimation.isPresent()) {
             return Optional.empty();
         }
@@ -217,7 +225,7 @@ public abstract class Sprite {
         Rectangle incomingSpriteRectangle = sprite.getBounds();
         if (thisSpriteRectangle.intersects(incomingSpriteRectangle)) {
             HashSet<String> thisMask = getMask();
-            HashSet<String> incomingMask = sprite.getMask();
+            HashSet<String> incomingMask = sprite.getMask(transparencyThreshold);
             thisMask.retainAll(incomingMask);// Check to see if any pixels in maskPlayer2 are the same as those in maskPlayer1
             if (!thisMask.isEmpty()) {
                 String next = thisMask.iterator().next();
@@ -255,8 +263,12 @@ public abstract class Sprite {
         if (hitPoints <= 0) {
             return true;
         }
-        damageAnimations.add(projectile.getDamageAnimation(removeBoardCoords(point)));
+        addDamageAnimation(projectile, point);
         return false;
+    }
+
+    public void addDamageAnimation(Projectile projectile, Point point) {
+        damageAnimations.add(projectile.getDamageAnimation(removeBoardCoords(point)));
     }
 
     private Point removeBoardCoords(Point point) {
