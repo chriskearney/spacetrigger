@@ -9,7 +9,7 @@ public class AlienNymph extends Alien {
     private int nymphTicks = 0;
 
     public AlienNymph(int x, int y) {
-        super(x, y, 160, 2);
+        super(x, y, 400, 2);
         loadWarpAnimation(new SpriteSheetAnimation(64, 64, 9, 1, Assets.ALIEN_NYMPH_WARP, 0, 5));
     }
 

@@ -14,7 +14,7 @@ public class PlayerMissleLevel1Bullet extends Projectile {
         super(x, y, Direction.UP, 4, 1000);
     }
 
-    public void initMissile() {
+    public void init() {
         loadImage(Assets.PLAYER_MISSLE_LEVEL_1_BULLET);
     }
 

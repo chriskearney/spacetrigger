@@ -18,23 +18,27 @@ public class CombineSpritesIntoSheet {
 
         List<BufferedImage> frameFiles = Lists.newArrayList();
 
-        for (int i = 1; i <= 8; i++) {
-            BufferedImage image = Assets.loadImage("engine_exhaust/engine_exhaust_" + i + ".png");
+        int numberOfImages = 6;
+
+        for (int i = 1; i <= numberOfImages; i++) {
+            BufferedImage image = null;
+                image = Assets.loadImage("SpaceShip_by_phobi/l0_SpaceShip001" + i + ".png");
+
             frameFiles.add(image);
         }
 
 
-        int width = 8;
-        int heigth = 15;
+        int width = frameFiles.get(0).getWidth();
+        int heigth = frameFiles.get(0).getHeight();
 
-        BufferedImage destinationImage = new BufferedImage(width * 8, heigth, frameFiles.get(0).getType());
+        BufferedImage destinationImage = new BufferedImage(width * numberOfImages, heigth, frameFiles.get(0).getType());
         Graphics2D graphics = destinationImage.createGraphics();
         graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < numberOfImages; i++) {
             graphics.drawImage(frameFiles.get(i), i * width, 0, null);
         }
 
-        File outputfile = new File("player-ship-exhaust.png");
+        File outputfile = new File("animated-ship.png");
         ImageIO.write(destinationImage, "png", outputfile);
     }
 

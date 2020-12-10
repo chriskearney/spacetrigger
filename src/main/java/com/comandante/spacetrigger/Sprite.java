@@ -28,6 +28,7 @@ public abstract class Sprite {
     protected int hitPoints = 0;
     protected boolean visible;
     protected BufferedImage image;
+    protected Optional<SpriteSheetAnimation> animatedImage = Optional.empty();
     protected SpriteSheetAnimation explosion;
     protected Optional<SpriteSheetAnimation> warpAnimation = Optional.empty();
     protected boolean isExploding;
@@ -82,6 +83,12 @@ public abstract class Sprite {
         height = image.getHeight(null);
     }
 
+    protected void loadSpriteSheetAnimation(SpriteSheetAnimation spriteSheetAnimation) {
+        this.animatedImage = Optional.of(spriteSheetAnimation);
+        this.width = spriteSheetAnimation.getX_size();
+        this.height = spriteSheetAnimation.getX_size();
+    }
+
     public void move() {
         if (isExploding || warpAnimation.isPresent()) {
             return;
@@ -114,8 +121,8 @@ public abstract class Sprite {
     public SpriteRender getSpriteRender() {
 
         if (!isExploding) {
-            centerX = getX() + image.getWidth() / 2;
-            centerY = getY() + image.getHeight() / 2;
+            centerX = getX() + width / 2;
+            centerY = getY() + height / 2;
         }
 
         if (warpAnimation.isPresent()) {
@@ -143,6 +150,14 @@ public abstract class Sprite {
             }
 
             return new SpriteRender(x, y, TRANSPARENT_ONE_PIXEL);
+        }
+
+        if (animatedImage.isPresent()) {
+            Optional<BufferedImage> bufferedImage = animatedImage.get().updateAnimation();
+            if (!bufferedImage.isPresent()) {
+                throw new RuntimeException("Need a looping animation.");
+            }
+            return new SpriteRender(x, y, bufferedImage.get());
         }
 
         return new SpriteRender(x, y, image);
@@ -196,7 +211,13 @@ public abstract class Sprite {
 
         for (int i = 0; i < (getWidth()); i++) {
             for (int j = 0; j < getHeight(); j++) {
-                pixel = image.getRGB(i, j);
+                BufferedImage maskImage = null;
+                if (animatedImage.isPresent()) {
+                    maskImage = animatedImage.get().getCurrentFrame().get();
+                } else {
+                    maskImage = image;
+                }
+                pixel = maskImage.getRGB(i, j);
                 if (!hasTransparency(pixel, threshold)) {
                     mask.add((getX() + i) + "," + (getY() + j));
                 }

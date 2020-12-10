@@ -15,7 +15,7 @@ public class PlayerGunLevel2Bullet extends Projectile {
     }
 
     @Override
-    public void initMissile() {
+    public void init() {
         loadImage(Assets.PLAYER_GUN_LEVEL_2_BULLET);
     }
 

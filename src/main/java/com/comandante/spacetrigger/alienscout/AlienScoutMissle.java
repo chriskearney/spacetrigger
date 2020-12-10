@@ -15,7 +15,7 @@ public class AlienScoutMissle extends Projectile {
     }
 
     @Override
-    public void initMissile() {
+    public void init() {
         loadImage(Assets.ALIEN_SCOUT_MISSLE);
     }
 

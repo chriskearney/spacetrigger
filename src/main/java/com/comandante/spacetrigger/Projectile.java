@@ -1,7 +1,6 @@
 package com.comandante.spacetrigger;
 
 import java.awt.Point;
-import java.util.Optional;
 
 public abstract class Projectile extends Sprite {
 
@@ -12,11 +11,11 @@ public abstract class Projectile extends Sprite {
         super(x, y, speed);
         this.direction = direction;
         this.damage = damage;
-        initMissile();
+        init();
         visible = true;
     }
 
-    public abstract void initMissile();
+    public abstract void init();
 
     public void move() {
         if (direction.equals(Direction.UP)) {

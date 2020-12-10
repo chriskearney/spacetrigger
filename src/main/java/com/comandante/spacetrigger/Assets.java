@@ -21,6 +21,7 @@ public class Assets {
     public static final BufferedImage PLAYER_SHIP;
     public static final BufferedImage PLAYER_SHIP_EXPLOSION;
     public static final BufferedImage PLAYER_SHIP_SHIELD;
+    public static final BufferedImage PLAYER_SHIP_ANIMATED_SHIELD;
     public static final BufferedImage PLAYER_SHIP_EXHAUST;
     public static final BufferedImage PLAYER_MISSLE_LEVEL_1_BULLET;
     public static final BufferedImage PLAYER_MISSLE_LEVEL_1_IMPACT_EXPLOSION;
@@ -33,6 +34,7 @@ public class Assets {
 
     public static final BufferedImage MISSLE_DROP;
 
+    public static final BufferedImage ALIEN_BUZZ;
 
     static {
 
@@ -41,6 +43,8 @@ public class Assets {
         ALIEN_SCOUT_MISSLE = loadImage("alien-scout-missle.png");
         ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION = loadImage("alien-scout-missle-impact-explosion.png");
         ALIEN_SCOUT_WARP = loadImage("alien-scout-warp.png");
+
+        ALIEN_BUZZ = loadImage("alien-buzz.png");
 
         ALIEN_NYMPH = loadImage("alien-nymph.png");
         ALIEN_NYMPH_EXPLOSION = loadImage("alien-nymph-explosion.png");
@@ -51,6 +55,8 @@ public class Assets {
         PLAYER_SHIP = loadImage("player-ship.png");
         PLAYER_SHIP_EXPLOSION = loadImage("player-ship-explosion.png");
         PLAYER_SHIP_SHIELD = loadImage("player-ship-shield.png");
+        PLAYER_SHIP_ANIMATED_SHIELD = loadImage("player-ship-animated-shield.png");
+
         PLAYER_SHIP_EXHAUST = loadImage("player-ship-exhaust.png");
         PLAYER_GUN_LEVEL_2_BULLET = loadImage("player-gun-level-2-bullet.png");
         PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION = loadImage("player-gun-level-2-bullet-impact-explosion.png");
@@ -72,5 +78,4 @@ public class Assets {
             throw new RuntimeException(imageFilename + e);
         }
     }
-
 }

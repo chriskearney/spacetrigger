@@ -258,7 +258,7 @@ public class Board extends JPanel implements ActionListener {
                 Projectile projectile = projectiles.get(j);
                 if (playerShip.isShield()) {
                     playerShip.getShield().setVisible(true);
-                    Optional<Point> shieldCollision = projectile.isCollison(playerShip.getShield(), 60);
+                    Optional<Point> shieldCollision = projectile.isCollison(playerShip.getShield(), 100);
                     if (shieldCollision.isPresent()) {
                         projectile.setVisible(false);
                         playerShip.getShield().addDamageAnimation(projectile, shieldCollision.get());

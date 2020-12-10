@@ -14,7 +14,7 @@ public class AlienNymphBullet extends Projectile {
     }
 
     @Override
-    public void initMissile() {
+    public void init() {
         loadImage(Assets.ALIEN_NYMPH_BULLET);
     }
 

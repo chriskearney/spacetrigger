@@ -20,6 +20,9 @@ public class SpriteSheetAnimation {
 
     private boolean looping;
 
+    private final int x_size;
+    private final int y_size;
+
     private Optional<BufferedImage> currentFrame;
 
     public SpriteSheetAnimation(int x_size,
@@ -31,6 +34,8 @@ public class SpriteSheetAnimation {
                                 int frameDelay,
                                 boolean looping,
                                 Optional<Point> renderPoint) {
+        this.x_size = x_size;
+        this.y_size = y_size;
         this.frameDelay = frameDelay;
         this.spriteSheet = spriteSheet;
         this.spriteFrames = Lists.newArrayList();
@@ -90,5 +95,17 @@ public class SpriteSheetAnimation {
 
     public List<BufferedImage> getSpriteFrames() {
         return spriteFrames;
+    }
+
+    public Optional<BufferedImage> getCurrentFrame() {
+        return currentFrame;
+    }
+
+    public int getX_size() {
+        return x_size;
+    }
+
+    public int getY_size() {
+        return y_size;
     }
 }
