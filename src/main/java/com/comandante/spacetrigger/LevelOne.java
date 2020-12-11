@@ -17,9 +17,9 @@ public class LevelOne extends Level {
 
     private AlienNymph configureAlienRogueA(int i, AlienNymph alienNymph) {
         alienNymph.pause(random.nextInt(4));
-        for (int j = 0; j < 1000; j++) {
-            alienNymph.addPoint(random.nextInt(500), random.nextInt(40, 800));
-        }
+//        for (int j = 0; j < 1000; j++) {
+//            alienNymph.addPoint(random.nextInt(500), random.nextInt(40, 800));
+//        }
         alienNymph.pause(random.nextInt(4));
         alienNymph.addDrop(new MissleDrop(Drop.DropRate.RARE));
         eventBus.register(alienNymph);
@@ -48,13 +48,13 @@ public class LevelOne extends Level {
         //1 - Second, Aka Start of the game:
 
 
-        for (int i = 0; i < 20; i++) {
-            alienTimeMap.put(4000L + (i * random.nextInt(200, 400)), Collections.singletonList(configureAlienBuzz(i, new AlienBuzz(random.nextInt(40, 80) * i, random.nextInt(50, 115)))));
-        }
-
-        for (int i = 0; i < 3; i++) {
-            alienTimeMap.put(6000L + (i * random.nextInt(200, 400)), Collections.singletonList(configureAlienScout(i, new AlienScout(random.nextInt(40, 80) * i, random.nextInt(50, 115)))));
-        }
+//        for (int i = 0; i < 20; i++) {
+//            alienTimeMap.put(4000L + (i * random.nextInt(200, 400)), Collections.singletonList(configureAlienBuzz(i, new AlienBuzz(random.nextInt(40, 80) * i, random.nextInt(50, 115)))));
+//        }
+//
+//        for (int i = 0; i < 3; i++) {
+//            alienTimeMap.put(6000L + (i * random.nextInt(200, 400)), Collections.singletonList(configureAlienScout(i, new AlienScout(random.nextInt(40, 80) * i, random.nextInt(50, 115)))));
+//        }
 
         for (int i = 0; i < 5; i++) {
             alienTimeMap.put(4000L + (i * random.nextInt(40, 80)), Collections.singletonList(configureAlienRogueA(i, new AlienNymph(i * random.nextInt(40, 160), random.nextInt(100, 350)))));

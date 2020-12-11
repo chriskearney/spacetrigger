@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SplittableRandom;
 import com.google.common.collect.Lists;
+import com.google.common.eventbus.EventBus;
 
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
@@ -26,6 +27,7 @@ public abstract class Sprite {
     protected int width;
     protected int height;
     protected int hitPoints = 0;
+    protected int maxHitpoints;
     protected boolean visible;
     protected BufferedImage image;
     protected Optional<SpriteSheetAnimation> animatedImage = Optional.empty();
@@ -60,6 +62,7 @@ public abstract class Sprite {
         this.originalX = x;
         this.originalY = y;
         this.hitPoints = hitPoints;
+        this.maxHitpoints = hitPoints;
         this.speed = speed;
         this.previousAddedPoint = new Point(originalX, originalY);
         this.trajectory.add(previousAddedPoint);
@@ -279,13 +282,14 @@ public abstract class Sprite {
         return bufferedImage;
     }
 
-    public boolean calculateDamage(Projectile projectile, Point point) {
+    public int calculateDamage(Projectile projectile, Point point) {
         hitPoints = hitPoints - projectile.getDamage();
         if (hitPoints <= 0) {
-            return true;
+            return 0;
         }
         addDamageAnimation(projectile, point);
-        return false;
+        float percent = (hitPoints * 100.0f) / maxHitpoints;
+        return (int) Math.round(percent);
     }
 
     public void addDamageAnimation(Projectile projectile, Point point) {

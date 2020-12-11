@@ -1,5 +1,7 @@
 package com.comandante.spacetrigger;
 
+import com.comandante.spacetrigger.events.PlayerShipHealthUpdateEvent;
+import com.comandante.spacetrigger.player.PlayerStatusBars;
 import com.comandante.spacetrigger.player.PlayerShip;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
@@ -50,6 +52,8 @@ public class Board extends JPanel implements ActionListener {
     private double yOffset_1 = 0;
     private double yDelta_1 = .3;
 
+    private PlayerStatusBars playerStatusBars;
+
     public Board() {
         eventBus = new EventBus();
         initBoard();
@@ -72,7 +76,12 @@ public class Board extends JPanel implements ActionListener {
         if (playerShip != null) {
             eventBus.unregister(playerShip);
         }
+        if (playerStatusBars != null) {
+            eventBus.unregister(playerStatusBars);
+        }
+        this.playerStatusBars = new PlayerStatusBars(0, 0);
         playerShip = new PlayerShip();
+        eventBus.register(playerStatusBars);
         eventBus.register(playerShip);
         initAliens();
         initDrops();
@@ -94,6 +103,7 @@ public class Board extends JPanel implements ActionListener {
         super.paintComponent(g);
         drawBackgrounds(g);
         if (ingame) {
+            drawStatusBars(g);
             drawAliens(g);
             drawPlayerShip(g);
             drawDrops(g);
@@ -101,6 +111,13 @@ public class Board extends JPanel implements ActionListener {
             drawGameOver(g);
         }
         Toolkit.getDefaultToolkit().sync();
+    }
+
+    private void drawStatusBars(Graphics g) {
+        g.drawImage(playerStatusBars.drawStatusBars(), playerStatusBars.getX(), playerStatusBars.getY(), this);
+//        g.setColor(Color.WHITE);
+//        String draw = "Missles: " + playerShip.getCurrentMissles() + " | Health: " + playerShip.getHitPoints();
+//        g.drawString(draw, 5, 15);
     }
 
     private void drawDamageAnimations(Graphics g, Sprite sprite) {
@@ -181,9 +198,6 @@ public class Board extends JPanel implements ActionListener {
                 drawDamageAnimations(g, alien);
             }
         }
-        g.setColor(Color.WHITE);
-        String draw = "Missles: " + playerShip.getCurrentMissles() + " | Health: " + playerShip.getHitPoints();
-        g.drawString(draw, 5, 15);
     }
 
     private void drawGameOver(Graphics g) {
@@ -266,11 +280,12 @@ public class Board extends JPanel implements ActionListener {
                 } else {
                     Optional<Point> collison = projectile.isCollison(playerShip);
                     if (collison.isPresent()) {
-                        boolean isDoneFor = playerShip.calculateDamage(projectile, collison.get());
+                        int newHitPointsPct = playerShip.calculateDamage(projectile, collison.get());
                         projectile.setVisible(false);
-                        if (isDoneFor) {
+                        if (newHitPointsPct == 0) {
                             playerShip.setExploding(true, true);
                         }
+                        eventBus.post(new PlayerShipHealthUpdateEvent(newHitPointsPct));
                     }
                 }
             }
@@ -282,9 +297,9 @@ public class Board extends JPanel implements ActionListener {
             for (int j = 0; j < aliens.size(); j++) {
                 Optional<Point> collisonPoint = aliens.get(j).isCollison(spaceShipMissles.get(i));
                 if (collisonPoint.isPresent()) {
-                    boolean isDoneFor = aliens.get(j).calculateDamage(spaceShipMissles.get(i), collisonPoint.get());
+                    int newHitPointsPercentage = aliens.get(j).calculateDamage(spaceShipMissles.get(i), collisonPoint.get());
                     spaceShipMissles.get(i).setVisible(false);
-                    if (isDoneFor) {
+                    if (newHitPointsPercentage <= 0) {
                         processDrops(aliens.get(j));
                         aliens.get(j).setExploding(true, true);
                         newExplosion = true;
