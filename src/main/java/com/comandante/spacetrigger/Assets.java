@@ -36,6 +36,11 @@ public class Assets {
 
     public static final BufferedImage ALIEN_BUZZ;
 
+    public static final BufferedImage PLAYER_HEALTH_BAR_FRAME;
+    public static final BufferedImage PLAYER_HEALTH_BAR_EMPTY;
+    public static final BufferedImage PLAYER_HEALTH_BAR_FULL;
+
+
     static {
 
         ALIEN_SCOUT = loadImage("alien-scout.png");
@@ -68,6 +73,11 @@ public class Assets {
         BOARD_BACKGROUND_3 = loadImage("board-background-3.png");
 
         MISSLE_DROP = loadImage("missle-drop.png");
+
+        PLAYER_HEALTH_BAR_FRAME = Assets.loadImage("player-health-bar/player-health-bar-frame.png");
+        PLAYER_HEALTH_BAR_FULL = Assets.loadImage("player-health-bar/player-health-bar-full.png");
+        PLAYER_HEALTH_BAR_EMPTY = Assets.loadImage("player-health-bar/player-health-bar-empty.png");
+
     }
 
     public static BufferedImage loadImage(String imageFilename) {
