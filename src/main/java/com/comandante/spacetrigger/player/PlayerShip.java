@@ -3,12 +3,12 @@ package com.comandante.spacetrigger.player;
 
 import com.comandante.spacetrigger.*;
 import com.comandante.spacetrigger.events.MisslePickUpEvent;
+import com.comandante.spacetrigger.events.PlayerShipShieldUpdateEvent;
 import com.google.common.collect.Lists;
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,19 +23,23 @@ public class PlayerShip extends Sprite {
     private int missleCapacity = 10;
     private int currentMissles = 3;
 
+    private int maxShield = 100;
+    private int currentShield = 100;
+
     private final List<Projectile> projectiles = Lists.newArrayList();
-
     private final SpriteSheetAnimation exhaust = new SpriteSheetAnimation(8, 15, 8, 1, Assets.PLAYER_SHIP_EXHAUST, 0, 3, true, Optional.empty());
-
-
     private final Shield shield = new Shield();
+    private final EventBus eventBus;
 
-    public PlayerShip() {
-        super(0, 0, 500,0);
+    private int ticks;
+
+    public PlayerShip(EventBus eventBus) {
+        super(0, 0, 500, 0);
         initSpaceShip();
         super.x = BOARD_X / 2;
         super.y = BOARD_Y - getHeight() * 4;
-        visible = true;
+        this.eventBus = eventBus;
+        this.visible = true;
     }
 
     private void initSpaceShip() {
@@ -46,6 +50,24 @@ public class PlayerShip extends Sprite {
     public void move() {
         if (isExploding) {
             return;
+        }
+
+        if (currentShield <= 0) {
+            shield.setVisible(false);
+        }
+
+        if (isShield()) {
+            if (ticks % 2 == 0) {
+                currentShield--;
+                eventBus.post(new PlayerShipShieldUpdateEvent(Math.round(currentShield * 100.f) / maxShield));
+            }
+        } else {
+            if (currentShield < maxShield) {
+                if (ticks % 6 == 0) {
+                    currentShield++;
+                    eventBus.post(new PlayerShipShieldUpdateEvent(Math.round(currentShield * 100.f) / maxShield));
+                }
+            }
         }
 
         if (dx != 0 || dy != 0) {
@@ -80,6 +102,7 @@ public class PlayerShip extends Sprite {
             x += dx;
             y += dy;
         }
+        ticks++;
     }
 
     public void addMissles(int number) {
@@ -136,7 +159,9 @@ public class PlayerShip extends Sprite {
         }
 
         if (key == KeyEvent.VK_M) {
-            shield.setVisible(true);
+            if (currentShield > 24) {
+                shield.setVisible(true);
+            }
         }
     }
 

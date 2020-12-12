@@ -3,6 +3,7 @@ package com.comandante.spacetrigger.player;
 import com.comandante.spacetrigger.Assets;
 import com.comandante.spacetrigger.Sprite;
 import com.comandante.spacetrigger.events.PlayerShipHealthUpdateEvent;
+import com.comandante.spacetrigger.events.PlayerShipShieldUpdateEvent;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.Subscribe;
 
@@ -12,14 +13,16 @@ import java.util.List;
 
 public class PlayerStatusBars extends Sprite {
 
-    private int healthPctFull = 100;
-    private int shieldPctFull = 100;
-    private final BufferedImage statusBarFrame = Assets.PLAYER_HEALTH_BAR_FRAME;
-    private final BufferedImage healthBarSingle = Assets.PLAYER_HEALTH_BAR_FULL;
-    private final BufferedImage shieldBarSingle = Assets.PLAYER_HEALTH_BAR_FULL;
+    private static int healthPctFull = 100;
+    private static int shieldPctFull = 100;
+
+    private final static BufferedImage STATUS_BAR_FRAME = Assets.PLAYER_HEALTH_BAR_FRAME;
+    private final static BufferedImage HEALTH_BAR_SINGLE = Assets.PLAYER_HEALTH_BAR_FULL;
+    private final static BufferedImage SHIELD_BAR_SINGLE = Assets.PLAYER_SHIELD_BAR_FULL;
 
     private final static int TOTAL_BARS = 218;
     private final static int BAR_SINGLE_WIDTH = 1;
+    private final static double PER_BAR_HEALTH_AMOUNT = 100.0f / TOTAL_BARS;
 
     private final List<Boolean> healthMutations = Lists.newArrayList();
     private final List<Boolean> shieldMutations = Lists.newArrayList();
@@ -36,13 +39,9 @@ public class PlayerStatusBars extends Sprite {
     }
 
     private List<Boolean> calculateBars(int pctFull) {
-        //(12 * 4) + 4 (black line seperators)
-        // 48 lines, every 12, there's a 1x16 blank
-        List<Boolean> bars;
-        double perBarHealthAmount = 100.0f / TOTAL_BARS;
-        double numberOfFullBars = Math.round(pctFull / perBarHealthAmount);
-        double numberOfEmptyBars = BAR_SINGLE_WIDTH - numberOfFullBars;
-        bars = Lists.newArrayList();
+        double numberOfFullBars = Math.round(pctFull / PER_BAR_HEALTH_AMOUNT);
+        double numberOfEmptyBars = TOTAL_BARS - numberOfFullBars;
+        List<Boolean> bars = Lists.newArrayList();
         for (int i = 0; i < numberOfFullBars; i++) {
             bars.add(true);
         }
@@ -51,8 +50,14 @@ public class PlayerStatusBars extends Sprite {
         }
         return bars;
     }
-    
-    public BufferedImage drawStatusBars() {
+
+    @Override
+    public SpriteRender getSpriteRender() {
+        this.image = drawStatusBars();
+        return super.getSpriteRender();
+    }
+
+    private BufferedImage drawStatusBars() {
 
         if (ticks % 3 == 0) {
             if (!healthMutations.isEmpty()) {
@@ -63,40 +68,41 @@ public class PlayerStatusBars extends Sprite {
                     healthPctFull--;
                 }
             }
-            if (!shieldMutations.isEmpty()) {
-                Boolean aBoolean = shieldMutations.remove(0);
-                if (aBoolean) {
-                    shieldPctFull++;
-                } else {
-                    shieldPctFull--;
-                }
+        }
+        if (!shieldMutations.isEmpty()) {
+            Boolean aBoolean = shieldMutations.remove(0);
+            if (aBoolean) {
+                shieldPctFull++;
+            } else {
+                shieldPctFull--;
             }
         }
 
         this.healthBars = calculateBars(healthPctFull);
         this.shieldBars = calculateBars(shieldPctFull);
 
-        BufferedImage healthBar = new BufferedImage(statusBarFrame.getWidth(), statusBarFrame.getHeight(), statusBarFrame.getType());
+        BufferedImage healthBar = new BufferedImage(STATUS_BAR_FRAME.getWidth(), STATUS_BAR_FRAME.getHeight(), STATUS_BAR_FRAME.getType());
         Graphics graphics = healthBar.getGraphics();
         int xPos = 2;
         for (int i = 0; i < healthBars.size(); i++) {
             Boolean healthBarLineStatus = healthBars.get(i);
             if (healthBarLineStatus) {
-                graphics.drawImage(healthBarSingle, xPos, 2, null);
+                graphics.drawImage(HEALTH_BAR_SINGLE, xPos, 2, null);
             }
             Boolean shieldBarLineStatus = shieldBars.get(i);
             if (shieldBarLineStatus) {
-                graphics.drawImage(shieldBarSingle, xPos, 16, null);
+                graphics.drawImage(SHIELD_BAR_SINGLE, xPos, 16, null);
             }
             xPos += BAR_SINGLE_WIDTH;
         }
-        graphics.drawImage(statusBarFrame, 0, 0, null);
+
+        graphics.drawImage(STATUS_BAR_FRAME, 0, 0, null);
         graphics.dispose();
         ticks++;
         return healthBar;
     }
 
-    public void addHealthMutation(int amt) {
+    private void addHealthMutation(int amt) {
         boolean isNegative = false;
         if (amt < 0) {
             amt = -amt;
@@ -107,6 +113,21 @@ public class PlayerStatusBars extends Sprite {
                 healthMutations.add(false);
             } else {
                 healthMutations.add(true);
+            }
+        }
+    }
+
+    public void addShieldMutation(int amt) {
+        boolean isNegative = false;
+        if (amt < 0) {
+            amt = -amt;
+            isNegative = true;
+        }
+        for (int i = 0; i < amt; i++) {
+            if (isNegative) {
+                shieldMutations.add(false);
+            } else {
+                shieldMutations.add(true);
             }
         }
     }
@@ -122,9 +143,15 @@ public class PlayerStatusBars extends Sprite {
         }
     }
 
-    public static void main(String[] args) {
-        PlayerStatusBars playerStatusBars = new PlayerStatusBars(0, 0);
-        BufferedImage image = playerStatusBars.drawStatusBars();
-        System.out.println("hi");
+    @Subscribe
+    public void processShieldChange(PlayerShipShieldUpdateEvent playerShipShieldUpdateEvent) {
+        if (playerShipShieldUpdateEvent.getNewPct() < shieldPctFull) {
+            int difference = shieldPctFull - playerShipShieldUpdateEvent.getNewPct();
+            addShieldMutation(-difference);
+        } else {
+            int difference = playerShipShieldUpdateEvent.getNewPct() - shieldPctFull;
+            addShieldMutation(difference);
+        }
     }
+
 }

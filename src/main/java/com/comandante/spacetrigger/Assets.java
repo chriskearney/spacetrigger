@@ -39,7 +39,7 @@ public class Assets {
     public static final BufferedImage PLAYER_HEALTH_BAR_FRAME;
     public static final BufferedImage PLAYER_HEALTH_BAR_EMPTY;
     public static final BufferedImage PLAYER_HEALTH_BAR_FULL;
-
+    public static final BufferedImage PLAYER_SHIELD_BAR_FULL;
 
     static {
 
@@ -77,6 +77,7 @@ public class Assets {
         PLAYER_HEALTH_BAR_FRAME = Assets.loadImage("player-health-bar/player-health-bar-frame.png");
         PLAYER_HEALTH_BAR_FULL = Assets.loadImage("player-health-bar/player-health-bar-full.png");
         PLAYER_HEALTH_BAR_EMPTY = Assets.loadImage("player-health-bar/player-health-bar-empty.png");
+        PLAYER_SHIELD_BAR_FULL = Assets.loadImage("player-health-bar/player-shield-bar-full.png");
 
     }
 

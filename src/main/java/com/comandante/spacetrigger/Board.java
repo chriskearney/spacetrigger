@@ -55,24 +55,24 @@ public class Board extends JPanel implements ActionListener {
     private PlayerStatusBars playerStatusBars;
 
     public Board() {
-        eventBus = new EventBus();
-        initBoard();
+        this.eventBus = new EventBus();
+        this.initBoard();
     }
 
     private void initBoard() {
-        addKeyListener(new BoardKeyAdapter());
-        setBackground(Color.BLACK);
-        setFocusable(true);
-        resetBoard();
-        timer = new Timer(DELAY, this);
-        timer.start();
-        background_1 = Assets.BOARD_BACKGROUND_1;
-        background_2 = Assets.BOARD_BACKGROUND_2;
-        background_3 = Assets.BOARD_BACKGROUND_3;
+        this.addKeyListener(new BoardKeyAdapter());
+        this.setBackground(Color.BLACK);
+        this.setFocusable(true);
+        this.resetBoard();
+        this.timer = new Timer(DELAY, this);
+        this.timer.start();
+        this.background_1 = Assets.BOARD_BACKGROUND_1;
+        this.background_2 = Assets.BOARD_BACKGROUND_2;
+        this.background_3 = Assets.BOARD_BACKGROUND_3;
     }
 
     private void resetBoard() {
-        ingame = true;
+        this.ingame = true;
         if (playerShip != null) {
             eventBus.unregister(playerShip);
         }
@@ -80,18 +80,17 @@ public class Board extends JPanel implements ActionListener {
             eventBus.unregister(playerStatusBars);
         }
         this.playerStatusBars = new PlayerStatusBars(0, 0);
-        playerShip = new PlayerShip();
-        eventBus.register(playerStatusBars);
-        eventBus.register(playerShip);
+        this.playerShip = new PlayerShip(eventBus);
+        this.eventBus.register(playerStatusBars);
+        this.eventBus.register(playerShip);
         initAliens();
         initDrops();
-        startTime = System.currentTimeMillis();
-        currentLevel = new LevelOne(eventBus);
+        this.startTime = System.currentTimeMillis();
+        this.currentLevel = new LevelOne(eventBus);
     }
 
     public void initAliens() {
         aliens = Lists.newArrayList();
-        ;
     }
 
     public void initDrops() {
@@ -114,10 +113,8 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void drawStatusBars(Graphics g) {
-        g.drawImage(playerStatusBars.drawStatusBars(), playerStatusBars.getX(), playerStatusBars.getY(), this);
-//        g.setColor(Color.WHITE);
-//        String draw = "Missles: " + playerShip.getCurrentMissles() + " | Health: " + playerShip.getHitPoints();
-//        g.drawString(draw, 5, 15);
+        Sprite.SpriteRender spriteRender = playerStatusBars.getSpriteRender();
+        g.drawImage(spriteRender.getImage(), spriteRender.getX(), spriteRender.getY(), this);
     }
 
     private void drawDamageAnimations(Graphics g, Sprite sprite) {
