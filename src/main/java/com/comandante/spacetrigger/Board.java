@@ -39,7 +39,7 @@ public class Board extends JPanel implements ActionListener {
     private BufferedImage background_1;
 
     private double yOffset_3 = 0;
-    private double yDelta_3 = .1;
+    private double yDelta_3 = .9;
     private final SplittableRandom random = new SplittableRandom();
 
     private final EventBus eventBus;
@@ -47,10 +47,10 @@ public class Board extends JPanel implements ActionListener {
     private int ticks;
 
     private double yOffset_2 = 0;
-    private double yDelta_2 = .2;
+    private double yDelta_2 = 1;
 
     private double yOffset_1 = 0;
-    private double yDelta_1 = .3;
+    private double yDelta_1 = 1.4;
 
     private PlayerStatusBars playerStatusBars;
 
