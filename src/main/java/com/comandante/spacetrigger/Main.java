@@ -5,8 +5,8 @@ import java.io.IOException;
 
 public class Main extends JFrame {
 
-    public static final int BOARD_X = 600;
-    public static final int BOARD_Y = 900;
+    public static final int BOARD_X = 650;
+    public static final int BOARD_Y = 700;
 
     public Main() {
         initUI();

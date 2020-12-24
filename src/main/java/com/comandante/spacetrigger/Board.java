@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.SplittableRandom;
+import java.util.function.Predicate;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
@@ -31,7 +32,7 @@ public class Board extends JPanel implements ActionListener {
     private long startTime;
     private Level currentLevel;
 
-    private ArrayList<Alien> aliens;
+    private ArrayList<AlienGroup> alienGroups;
     private ArrayList<Drop> drops;
 
     private BufferedImage background_3;
@@ -90,7 +91,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void initAliens() {
-        aliens = Lists.newArrayList();
+        alienGroups = Lists.newArrayList();
     }
 
     public void initDrops() {
@@ -153,7 +154,8 @@ public class Board extends JPanel implements ActionListener {
                 shield.setOriginalY(spaceShipRender.getY() + (playerShip.getHeight() / 2) - (playerShip.getShield().getHeight() / 2));
                 Sprite.SpriteRender spriteRender = shield.getSpriteRender();
                 g.drawImage(spriteRender.getImage(), spriteRender.getX(), spriteRender.getY(), this);
-                drawDamageAnimations(g, playerShip.getShield());;
+                drawDamageAnimations(g, playerShip.getShield());
+                ;
             }
             drawDamageAnimations(g, playerShip);
             if (playerShip.isMovement() && !playerShip.isExploding()) {
@@ -175,24 +177,27 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void drawAliens(Graphics g) {
-        for (int i = 0; i < aliens.size(); i++) {
-            Alien alien = aliens.get(i);
-            if (alien.isVisible()) {
-                Sprite.SpriteRender aliensRender = alien.getSpriteRender();
-                g.drawImage(aliensRender.getImage(), aliensRender.getX(), aliensRender.getY(), this);
+        for (int i = 0; i < alienGroups.size(); i++) {
+            AlienGroup alienGroup = alienGroups.get(i);
+            for (int j = 0; j < alienGroup.getSize(); j++) {
+                Alien alien = alienGroup.getAlien(i);
+                if (alien.isVisible()) {
+                    Sprite.SpriteRender aliensRender = alien.getSpriteRender();
+                    g.drawImage(aliensRender.getImage(), aliensRender.getX(), aliensRender.getY(), this);
 
-                // Alien projectiles
-                for (int j = 0; j < alien.getMissiles().size(); j++) {
-                    Sprite.SpriteRender alienMissleRender = alien.getMissiles().get(j).getSpriteRender();
-                    g.drawImage(alienMissleRender.getImage(), alienMissleRender.getX(), alienMissleRender.getY(), this);
+                    // Alien projectiles
+                    for (int k = 0; k < alien.getMissiles().size(); k++) {
+                        Sprite.SpriteRender alienMissleRender = alien.getMissiles().get(k).getSpriteRender();
+                        g.drawImage(alienMissleRender.getImage(), alienMissleRender.getX(), alienMissleRender.getY(), this);
+                    }
+
+                    if (alien.isExploding()) {
+                        continue;
+                    }
+
+                    // Damage Animations
+                    drawDamageAnimations(g, alien);
                 }
-
-                if (alien.isExploding()) {
-                    continue;
-                }
-
-                // Damage Animations
-                drawDamageAnimations(g, alien);
             }
         }
     }
@@ -258,53 +263,61 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void checkCollisions() {
-        for (int i = 0; i < aliens.size(); i++) {
-            if (aliens.get(i).isCollison(playerShip).isPresent()) {
-                playerShip.setExploding(true, true);
-                aliens.get(i).setExploding(true, true);
-            }
-
-            List<Projectile> projectiles = aliens.get(i).getMissiles();
-            for (int j = 0; j < projectiles.size(); j++) {
-                Projectile projectile = projectiles.get(j);
-                if (playerShip.isShield()) {
-                    playerShip.getShield().setVisible(true);
-                    Optional<Point> shieldCollision = projectile.isCollison(playerShip.getShield(), 100);
-                    if (shieldCollision.isPresent()) {
-                        projectile.setVisible(false);
-                        playerShip.getShield().addDamageAnimation(projectile, shieldCollision.get());
-                    }
-                } else {
-                    Optional<Point> collison = projectile.isCollison(playerShip);
-                    if (collison.isPresent()) {
-                        int newHitPointsPct = playerShip.calculateDamage(projectile, collison.get());
-                        projectile.setVisible(false);
-                        if (newHitPointsPct == 0) {
-                            playerShip.setExploding(true, true);
-                        }
-                        eventBus.post(new PlayerShipHealthUpdateEvent(newHitPointsPct));
-                    }
-                }
-            }
-        }
-
-        List<Projectile> spaceShipMissles = playerShip.getMissiles();
         boolean newExplosion = false;
-        for (int i = 0; i < spaceShipMissles.size(); i++) {
-            for (int j = 0; j < aliens.size(); j++) {
-                Optional<Point> collisonPoint = aliens.get(j).isCollison(spaceShipMissles.get(i));
-                if (collisonPoint.isPresent()) {
-                    int newHitPointsPercentage = aliens.get(j).calculateDamage(spaceShipMissles.get(i), collisonPoint.get());
-                    spaceShipMissles.get(i).setVisible(false);
-                    if (newHitPointsPercentage <= 0) {
-                        processDrops(aliens.get(j));
-                        aliens.get(j).setExploding(true, true);
-                        newExplosion = true;
+
+        for (int i = 0; i < alienGroups.size(); i++) {
+            AlienGroup alienGroup = alienGroups.get(i);
+            for (int j = 0; j < alienGroup.getSize(); j++) {
+                Alien alien = alienGroup.getAlien(j);
+
+                // Check if Alien is colliding with PlayerShip.
+                if (alien.isCollison(playerShip).isPresent()) {
+                    playerShip.setExploding(true, true);
+                    alien.setExploding(true, true);
+                }
+
+                // Check all projectiles belonging to the alien, and if they are colliding
+                List<Projectile> projectiles = alien.getMissiles();
+                for (int k = 0; k < projectiles.size(); k++) {
+                    Projectile projectile = projectiles.get(k);
+                    if (playerShip.isShield()) {
+                        playerShip.getShield().setVisible(true);
+                        Optional<Point> shieldCollision = projectile.isCollison(playerShip.getShield(), 100);
+                        if (shieldCollision.isPresent()) {
+                            projectile.setVisible(false);
+                            playerShip.getShield().addDamageAnimation(projectile, shieldCollision.get());
+                        }
+                    } else {
+                        Optional<Point> collison = projectile.isCollison(playerShip);
+                        if (collison.isPresent()) {
+                            int newHitPointsPct = playerShip.calculateDamage(projectile, collison.get());
+                            projectile.setVisible(false);
+                            if (newHitPointsPct == 0) {
+                                playerShip.setExploding(true, true);
+                            }
+                            eventBus.post(new PlayerShipHealthUpdateEvent(newHitPointsPct));
+                        }
+                    }
+                }
+
+                // Check if any of the spaceship's missles are colliding with this alien
+                List<Projectile> spaceShipMissles = playerShip.getMissiles();
+                for (int l = 0; l < spaceShipMissles.size(); l++) {
+                    Optional<Point> collisonPoint = alien.isCollison(spaceShipMissles.get(l));
+                    if (collisonPoint.isPresent()) {
+                        int newHitPointsPercentage = alien.calculateDamage(spaceShipMissles.get(l), collisonPoint.get());
+                        spaceShipMissles.get(l).setVisible(false);
+                        if (newHitPointsPercentage <= 0) {
+                            processDrops(alien);
+                            alien.setExploding(true, true);
+                            newExplosion = true;
+                        }
                     }
                 }
             }
         }
 
+        // Process drops (missles, health, etc), see if they are colliding with the playership
         for (int i = 0; i < drops.size(); i++) {
             Drop drop = drops.get(i);
             Optional<Point> collison = drop.isCollison(playerShip);
@@ -313,10 +326,9 @@ public class Board extends JPanel implements ActionListener {
                 drop.setVisible(false);
             }
         }
-
-        if (newExplosion) {
-            aliens.sort((abc1, abc2) -> Boolean.compare(abc1.isExploding, abc2.isExploding));
-        }
+//        if (newExplosion) {
+//            alienGroups.sort((abc1, abc2) -> Boolean.compare(abc1.isExploding, abc2.isExploding));
+//        }
     }
 
     private void processDrops(Alien alien) {
@@ -347,14 +359,17 @@ public class Board extends JPanel implements ActionListener {
             }
         }
 
-        for (int i = 0; i < aliens.size(); i++) {
-            for (int j = 0; j < aliens.get(i).getMissiles().size(); j++) {
-                Projectile alienMissle = aliens.get(i).getMissiles().get(j);
-                if (alienMissle.isVisible()) {
-                    alienMissle.move();
-                } else {
-                    aliens.get(i).getMissiles().remove(j);
-                }
+        for (int i = 0; i < alienGroups.size(); i++) {
+            for (int j = 0; j < alienGroups.get(i).getSize(); j++) {
+                Alien alien = alienGroups.get(i).getAlien(j);
+                alien.getMissiles().removeIf(alienMissle -> {
+                    if (alienMissle.isVisible()) {
+                        alienMissle.move();
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
             }
         }
     }
@@ -367,21 +382,32 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void updateAliens() {
-        aliens.addAll(currentLevel.getAlien(System.currentTimeMillis() - startTime));
+        alienGroups.addAll(currentLevel.getAlien(System.currentTimeMillis() - startTime));
 
-        if (currentLevel.isEmpty() && aliens.isEmpty()) {
+        if (currentLevel.isEmpty() && alienGroups.isEmpty()) {
             ingame = false;
             return;
         }
 
-        for (int i = 0; i < aliens.size(); i++) {
-            Alien a = aliens.get(i);
-            if (a.isVisible()) {
-                a.move();
-            } else {
-                eventBus.unregister(a);
-                aliens.remove(i);
+        boolean groupsNeedRemoval = false;
+        for (int i = 0; i < alienGroups.size(); i++) {
+            AlienGroup alienGroup = alienGroups.get(i);
+            alienGroup.getAliens().removeIf(alien -> {
+                if (!alien.isVisible()) {
+                    eventBus.unregister(alien);
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+            alienGroup.move();
+            if (alienGroup.getAliens().isEmpty()) {
+                groupsNeedRemoval = true;
             }
+        }
+
+        if (groupsNeedRemoval) {
+            alienGroups.removeIf(alienGroup -> alienGroup.getAliens().isEmpty());
         }
     }
 

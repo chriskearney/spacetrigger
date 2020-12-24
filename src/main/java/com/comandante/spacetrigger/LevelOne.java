@@ -23,18 +23,18 @@ public class LevelOne extends Level {
         AlienBuzz aB = new AlienBuzz(0, 0);
         int alienBuzzWidth = aB.getWidth();
 
-        List<Alien> aliens = Lists.newArrayList();
-        int firstX = 0 - ((alienBuzzWidth + 8) * 5);
-        for (int i = 1; i < 6; i++) {
-            int alienX = 0 - ((alienBuzzWidth + 8) * i);
-            int alienY = 100;
-            AlienBuzz alienBuzz = new AlienBuzz(alienX, alienY);
-            eventBus.register(alienBuzz);
-            alienBuzz.addPoint(alienX + 300, 100);
-            aliens.add(alienBuzz);
-        }
-        alienTimeMap.put(1000L, aliens);
+
+        AlienBuzz alienBuzz = new AlienBuzz(50, 100);
+        eventBus.register(alienBuzz);
+        alienBuzz.addPoint(300, 100);
+        alienBuzz.addPoint(400, 100 + (50));
+
+        AlienGroup alienGroup = new AlienGroup(AlienGroup.GroupOrientation.HORIZONTAL, 100, 100, eventBus);
+        alienGroup.add(alienBuzz);
+        alienGroup.add(new AlienBuzz(0, 0));
+        alienGroup.add(new AlienBuzz(0, 0));
+        alienGroup.add(new AlienBuzz(0, 0));
+
+        alienTimeMap.put(1000L, Collections.singletonList(alienGroup));
     }
-
-
 }

@@ -1,7 +1,9 @@
 package com.comandante.spacetrigger;
 
+import com.comandante.spacetrigger.alienbuzz.AlienBuzz;
 import com.google.common.collect.Lists;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ public abstract class Alien extends Sprite {
 
     protected int ticks = 0;
     protected List<Projectile> projectiles = Lists.newArrayList();
+    private boolean isInGroup = false;
 
     protected List<Drop> drops = Lists.newArrayList();
 
@@ -30,5 +33,13 @@ public abstract class Alien extends Sprite {
 
     public void addDrop(Drop drop) {
         this.drops.add(drop);
+    }
+
+    public boolean isInGroup() {
+        return isInGroup;
+    }
+
+    public void setInGroup(boolean inGroup) {
+        isInGroup = inGroup;
     }
 }

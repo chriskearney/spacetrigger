@@ -10,12 +10,12 @@ import java.util.Map;
 
 public class Level {
 
-    final Map<Long, List<Alien>> alienTimeMap = new HashMap<>();
+    final Map<Long, List<AlienGroup>> alienTimeMap = new HashMap<>();
 
-    public List<Alien> getAlien(long roundTimeElapsed) {
-        List<Alien> readyToRenderAlien = Lists.newArrayList();
+    public List<AlienGroup> getAlien(long roundTimeElapsed) {
+        List<AlienGroup> readyToRenderAlien = Lists.newArrayList();
         List<Long> timeKeys = Lists.newArrayList();
-        for (Map.Entry<Long, List<Alien>> alientTimeMapEntry : alienTimeMap.entrySet()) {
+        for (Map.Entry<Long, List<AlienGroup>> alientTimeMapEntry : alienTimeMap.entrySet()) {
             if (roundTimeElapsed >= alientTimeMapEntry.getKey()) {
                 readyToRenderAlien.addAll(alientTimeMapEntry.getValue());
                 timeKeys.add(alientTimeMapEntry.getKey());

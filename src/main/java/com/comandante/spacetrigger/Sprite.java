@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.SplittableRandom;
+
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
 
@@ -97,20 +98,32 @@ public abstract class Sprite {
             return;
         }
         for (int i = 0; i < speed; i++) {
-            Point point = trajectory.get(ticks);
+            Point point = getNextMove();
             x = point.getLocation().x;
-            y = point.getLocation().y + (int) Math.round(speed);
+            y = point.getLocation().y;
             if (reverse) {
                 ticks--;
             } else {
                 ticks++;
             }
-            if (ticks == trajectory.size() - 1) {
+            if (isAtEndOfTrajectory()) {
                 reverse = true;
             } else if (ticks == 0) {
                 reverse = false;
             }
         }
+    }
+
+    public void setReverse(boolean reverse) {
+        this.reverse = reverse;
+    }
+
+    public boolean isAtEndOfTrajectory() {
+        return ticks == trajectory.size() - 1;
+    }
+
+    public Point getNextMove() {
+        return trajectory.get(ticks);
     }
 
     protected void loadExplosion(SpriteSheetAnimation explosion) {
@@ -129,7 +142,8 @@ public abstract class Sprite {
         }
 
         if (warpAnimation.isPresent()) {
-            Optional<BufferedImage> currentFrame = warpAnimation.get().updateAnimation();;
+            Optional<BufferedImage> currentFrame = warpAnimation.get().updateAnimation();
+            ;
             if (currentFrame.isPresent()) {
                 int warpX = centerX - (currentFrame.get().getWidth() / 2);
                 int warpY = centerY - (currentFrame.get().getHeight() / 2);
@@ -208,6 +222,7 @@ public abstract class Sprite {
         // can't have any transparency to make the msak in this case
         return getMask(254);
     }
+
     public HashSet<String> getMask(int threshold) {
         HashSet<String> mask = new HashSet<String>();
         int pixel;
@@ -245,12 +260,14 @@ public abstract class Sprite {
         if (!sprite.isVisible() || sprite.isExploding()) {
             return Optional.empty();
         }
+        return isCollidingAtBounds(sprite.getBounds(), sprite.getMask(transparencyThreshold));
+    }
+
+    public Optional<Point> isCollidingAtBounds(Rectangle bounds, HashSet<String> mask) {
         Rectangle thisSpriteRectangle = getBounds();
-        Rectangle incomingSpriteRectangle = sprite.getBounds();
-        if (thisSpriteRectangle.intersects(incomingSpriteRectangle)) {
+        if (thisSpriteRectangle.intersects(bounds)) {
             HashSet<String> thisMask = getMask();
-            HashSet<String> incomingMask = sprite.getMask(transparencyThreshold);
-            thisMask.retainAll(incomingMask);// Check to see if any pixels in maskPlayer2 are the same as those in maskPlayer1
+            thisMask.retainAll(mask);// Check to see if any pixels in maskPlayer2 are the same as those in maskPlayer1
             if (!thisMask.isEmpty()) {
                 String next = thisMask.iterator().next();
                 int x = Integer.parseInt(next.split(",")[0]);
@@ -335,6 +352,10 @@ public abstract class Sprite {
         }
 
         return ret;
+    }
+
+    public ArrayList<Point> getTrajectory() {
+        return trajectory;
     }
 
     enum DownAnglePathDirection {
