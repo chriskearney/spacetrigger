@@ -282,7 +282,17 @@ public abstract class Sprite {
         return bufferedImage;
     }
 
-    public int calculateDamage(Projectile projectile, Point point) {
+    public int calculateHitPointsPercentAfterHealthApplied(int amt) {
+        if ((hitPoints + amt) > maxHitpoints) {
+            this.hitPoints = maxHitpoints;
+            return 100;
+        }
+        hitPoints += amt;
+        float percent = (hitPoints * 100.0f) / maxHitpoints;
+        return (int) Math.round(percent);
+    }
+
+    public int calculateHitPointsPercentAfterDamageApplied(Projectile projectile, Point point) {
         hitPoints = hitPoints - projectile.getDamage();
         if (hitPoints <= 0) {
             return 0;

@@ -2,7 +2,9 @@ package com.comandante.spacetrigger.player;
 
 
 import com.comandante.spacetrigger.*;
+import com.comandante.spacetrigger.events.HealthPickUpEvent;
 import com.comandante.spacetrigger.events.MisslePickUpEvent;
+import com.comandante.spacetrigger.events.PlayerShipHealthUpdateEvent;
 import com.comandante.spacetrigger.events.PlayerShipShieldUpdateEvent;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
@@ -225,6 +227,11 @@ public class PlayerShip extends Sprite {
     @Subscribe
     public void processMisslePickUp(MisslePickUpEvent misslePickUpEvent) {
         this.currentMissles += misslePickUpEvent.getAmount();
+    }
+
+    @Subscribe
+    public void processHealthPickUp(HealthPickUpEvent healthPickUpEvent) {
+        eventBus.post(new PlayerShipHealthUpdateEvent(calculateHitPointsPercentAfterHealthApplied(healthPickUpEvent.getAmt())));
     }
 }
 

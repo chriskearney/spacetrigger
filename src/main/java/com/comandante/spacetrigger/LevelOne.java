@@ -25,7 +25,7 @@ public class LevelOne extends Level {
 
         List<Alien> aliens = Lists.newArrayList();
         int firstX = 0 - ((alienBuzzWidth + 8) * 5);
-        for (int i = 1; i < 39; i++) {
+        for (int i = 1; i < 7; i++) {
             int alienX = 0 - ((alienBuzzWidth + 8) * i);
             int alienY = 100;
             AlienBuzz alienBuzz = new AlienBuzz(alienX, alienY);

@@ -79,8 +79,8 @@ public class Board extends JPanel implements ActionListener {
         if (playerStatusBars != null) {
             eventBus.unregister(playerStatusBars);
         }
-        this.playerStatusBars = new PlayerStatusBars(0, 0);
         this.playerShip = new PlayerShip(eventBus);
+        this.playerStatusBars = new PlayerStatusBars(0, 0);
         this.eventBus.register(playerStatusBars);
         this.eventBus.register(playerShip);
         initAliens();
@@ -277,7 +277,7 @@ public class Board extends JPanel implements ActionListener {
                 } else {
                     Optional<Point> collison = projectile.isCollison(playerShip);
                     if (collison.isPresent()) {
-                        int newHitPointsPct = playerShip.calculateDamage(projectile, collison.get());
+                        int newHitPointsPct = playerShip.calculateHitPointsPercentAfterDamageApplied(projectile, collison.get());
                         projectile.setVisible(false);
                         if (newHitPointsPct == 0) {
                             playerShip.setExploding(true, true);
@@ -294,7 +294,7 @@ public class Board extends JPanel implements ActionListener {
             for (int j = 0; j < aliens.size(); j++) {
                 Optional<Point> collisonPoint = aliens.get(j).isCollison(spaceShipMissles.get(i));
                 if (collisonPoint.isPresent()) {
-                    int newHitPointsPercentage = aliens.get(j).calculateDamage(spaceShipMissles.get(i), collisonPoint.get());
+                    int newHitPointsPercentage = aliens.get(j).calculateHitPointsPercentAfterDamageApplied(spaceShipMissles.get(i), collisonPoint.get());
                     spaceShipMissles.get(i).setVisible(false);
                     if (newHitPointsPercentage <= 0) {
                         processDrops(aliens.get(j));
@@ -329,6 +329,7 @@ public class Board extends JPanel implements ActionListener {
                 drop.setOriginalY(alien.getY() + (alien.getHeight() / 2) - (drop.getHeight() / 2));
                 drop.setVisible(true);
                 drops.add(drop);
+                return;
             }
         }
     }
