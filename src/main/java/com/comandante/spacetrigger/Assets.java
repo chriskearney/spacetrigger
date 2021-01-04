@@ -33,6 +33,8 @@ public class Assets {
     public static final BufferedImage BOARD_BACKGROUND_1;
 
     public static final BufferedImage MISSLE_DROP;
+    public static final BufferedImage HEALTH_DROP;
+
 
     public static final BufferedImage ALIEN_BUZZ;
 
@@ -73,6 +75,8 @@ public class Assets {
         BOARD_BACKGROUND_3 = loadImage("board-background-3.png");
 
         MISSLE_DROP = loadImage("missle-drop.png");
+        HEALTH_DROP = loadImage("health-drop.png");
+
 
         PLAYER_HEALTH_BAR_FRAME = Assets.loadImage("player-health-bar/player-health-bar-frame.png");
         PLAYER_HEALTH_BAR_FULL = Assets.loadImage("player-health-bar/player-health-bar-full.png");
