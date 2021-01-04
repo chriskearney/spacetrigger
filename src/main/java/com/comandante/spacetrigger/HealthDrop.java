@@ -5,7 +5,7 @@ import com.comandante.spacetrigger.events.STEvent;
 
 public class HealthDrop extends Drop {
     public HealthDrop(DropRate dropRate) {
-        super(0, 0, 1, dropRate);
+        super(0, 0, 2, dropRate);
         init();
     }
 

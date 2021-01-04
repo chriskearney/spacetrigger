@@ -65,7 +65,7 @@ public class PlayerShip extends Sprite {
             }
         } else {
             if (currentShield < maxShield) {
-                if (ticks % 6 == 0) {
+                if (ticks % 10 == 0) {
                     currentShield++;
                     eventBus.post(new PlayerShipShieldUpdateEvent(Math.round(currentShield * 100.f) / maxShield));
                 }
