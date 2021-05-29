@@ -34,7 +34,7 @@ public abstract class Sprite {
     protected boolean isExploding;
     private boolean invisibleAfterExploding;
     protected int ticks = 0;
-    protected int speed;
+    protected double speed;
     protected boolean reverse = false;
 
     protected final SplittableRandom random = new SplittableRandom();
@@ -54,7 +54,7 @@ public abstract class Sprite {
 
     private static final BufferedImage TRANSPARENT_ONE_PIXEL = createTransparentBufferedImage(1, 1);
 
-    public Sprite(double x, double y, int hitPoints, int speed) {
+    public Sprite(double x, double y, int hitPoints, double speed) {
         this.x = x;
         this.y = y;
         this.originalX = x;
@@ -67,7 +67,7 @@ public abstract class Sprite {
         this.trajectory.add(previousAddedPoint);
     }
 
-    public Sprite(double x, double y, int speed) {
+    public Sprite(double x, double y, double speed) {
         this.x = x;
         this.y = y;
         this.originalX = x;

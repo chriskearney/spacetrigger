@@ -12,7 +12,7 @@ public abstract class Alien extends Sprite {
 
     protected List<Drop> drops = Lists.newArrayList();
 
-    public Alien(int x, int y, int hitPoints, int speed) {
+    public Alien(int x, int y, int hitPoints, double speed) {
         super(x, y, hitPoints, speed);
         initAlien();
         visible = true;

@@ -20,7 +20,6 @@ public class AlienNymphBullet extends Projectile {
     }
 
     public SpriteSheetAnimation getDamageAnimation(Point2D point) {
-        SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(32, 32, 8, 8, Assets.ALIEN_NYMPH_BULLET_IMPACT_EXPLOSION, 2, 3, Optional.of(point));
-        return spriteSheetAnimation;
+        return Assets.getAlienNymphBulletImpactExplosion(point);
     }
 }

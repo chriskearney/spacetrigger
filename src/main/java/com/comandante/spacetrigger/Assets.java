@@ -1,6 +1,7 @@
 package com.comandante.spacetrigger;
 
 import javax.imageio.ImageIO;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.Optional;
@@ -101,5 +102,41 @@ public class Assets {
 
     public static SpriteSheetAnimation getPlayerShipExhaustAnimation() {
         return new SpriteSheetAnimation(8, 15, 8, 1, Assets.PLAYER_SHIP_EXHAUST, 0, 3, true, Optional.empty());
+    }
+
+    public static SpriteSheetAnimation getAlienScoutExplosionAnimation() {
+        return new SpriteSheetAnimation(188, 188, 8, 8, Assets.ALIEN_SCOUT_EXPLOSION, 2, 3);
+    }
+
+    public static SpriteSheetAnimation getAlientScoutWarpAnimation() {
+        return new SpriteSheetAnimation(160, 182, 7, 1, Assets.ALIEN_SCOUT_WARP, 0, 4);
+    }
+
+    public static SpriteSheetAnimation getAlienScoutMissleImpactExplosion(Point2D point) {
+        return new SpriteSheetAnimation(64, 64, 8, 8, Assets.ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION, 2, 3, Optional.of(point));
+    }
+
+    public static SpriteSheetAnimation getAlienNymphBulletImpactExplosion(Point2D point) {
+        return new SpriteSheetAnimation(32, 32, 8, 8, Assets.ALIEN_NYMPH_BULLET_IMPACT_EXPLOSION, 2, 3, Optional.of(point));
+    }
+
+    public static SpriteSheetAnimation getAlienNymphWarpAnimation() {
+        return new SpriteSheetAnimation(64, 64, 9, 1, Assets.ALIEN_NYMPH_WARP, 0, 5);
+    }
+
+    public static SpriteSheetAnimation getAlienNymphExplosion() {
+        return new SpriteSheetAnimation(128, 128, 8, 8, Assets.ALIEN_NYMPH_EXPLOSION, 2, 3);
+    }
+
+    public static SpriteSheetAnimation getAlienBuzzWarpAnimation() {
+        return new SpriteSheetAnimation(64, 64, 9, 1, Assets.ALIEN_NYMPH_WARP, 0, 5);
+    }
+
+    public static SpriteSheetAnimation getAlienBuzzAnimation() {
+        return new SpriteSheetAnimation(32, 32, 6, 1, Assets.ALIEN_BUZZ, 0, 7, true, Optional.empty());
+    }
+
+    public static SpriteSheetAnimation getAlienBuzzExplosion() {
+       return new SpriteSheetAnimation(128, 128, 8, 8, Assets.ALIEN_NYMPH_EXPLOSION, 2, 3);
     }
 }

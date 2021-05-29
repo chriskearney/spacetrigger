@@ -8,7 +8,7 @@ public abstract class Projectile extends Sprite {
     private final Direction direction;
     private final int damage;
 
-    public Projectile(double x, double y, Direction direction, int speed, int damage) {
+    public Projectile(double x, double y, Direction direction, double speed, int damage) {
         super(x, y, speed);
         this.direction = direction;
         this.damage = damage;

@@ -22,9 +22,7 @@ public class AlienScoutMissle extends Projectile {
 
     @Override
     public SpriteSheetAnimation getDamageAnimation(Point2D point) {
-        SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(
-                64, 64, 8, 8, Assets.ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION, 2, 3, Optional.of(point));
-        return spriteSheetAnimation;
+        return Assets.getAlienScoutMissleImpactExplosion(point);
     }
 
 }

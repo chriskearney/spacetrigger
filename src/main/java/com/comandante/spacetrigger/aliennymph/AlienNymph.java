@@ -10,7 +10,7 @@ public class AlienNymph extends Alien {
 
     public AlienNymph(int x, int y) {
         super(x, y, 400, 1);
-        loadWarpAnimation(new SpriteSheetAnimation(64, 64, 9, 1, Assets.ALIEN_NYMPH_WARP, 0, 5));
+        loadWarpAnimation(Assets.getAlienNymphWarpAnimation());
     }
 
     public void fire() {
@@ -20,7 +20,7 @@ public class AlienNymph extends Alien {
     @Override
     protected void initAlien() {
         loadImage(Assets.ALIEN_NYMPH);
-        loadExplosion(new SpriteSheetAnimation(128, 128, 8, 8, Assets.ALIEN_NYMPH_EXPLOSION, 2, 3));
+        loadExplosion(Assets.getAlienNymphExplosion());
     }
 
     @Override
