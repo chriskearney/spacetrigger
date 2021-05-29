@@ -1,12 +1,11 @@
 package com.comandante.spacetrigger;
 
-import com.comandante.spacetrigger.alienscout.AlienScout;
-import com.comandante.spacetrigger.player.PlayerShip;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SplittableRandom;
 import com.google.common.collect.Lists;
-import com.google.common.eventbus.EventBus;
 
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
@@ -22,8 +20,8 @@ import static java.lang.Math.sin;
 
 public abstract class Sprite {
 
-    protected int x;
-    protected int y;
+    protected double x;
+    protected double y;
     protected int width;
     protected int height;
     protected int hitPoints = 0;
@@ -44,19 +42,19 @@ public abstract class Sprite {
     protected List<SpriteSheetAnimation> damageAnimations = Lists.newArrayList();
 
 
-    private int centerX;
-    private int centerY;
+    private double centerX;
+    private double centerY;
 
-    protected int originalX;
-    protected int originalY;
+    protected double originalX;
+    protected double originalY;
 
-    protected ArrayList<Point> trajectory = Lists.newArrayList();
+    protected ArrayList<Point2D> trajectory = Lists.newArrayList();
 
-    private Point previousAddedPoint;
+    private Point2D previousAddedPoint;
 
     private static final BufferedImage TRANSPARENT_ONE_PIXEL = createTransparentBufferedImage(1, 1);
 
-    public Sprite(int x, int y, int hitPoints, int speed) {
+    public Sprite(double x, double y, int hitPoints, int speed) {
         this.x = x;
         this.y = y;
         this.originalX = x;
@@ -64,18 +62,18 @@ public abstract class Sprite {
         this.hitPoints = hitPoints;
         this.maxHitpoints = hitPoints;
         this.speed = speed;
-        this.previousAddedPoint = new Point(originalX, originalY);
+        this.previousAddedPoint = new Point2D.Double(originalX, originalY);
         this.trajectory.add(previousAddedPoint);
         this.trajectory.add(previousAddedPoint);
     }
 
-    public Sprite(int x, int y, int speed) {
+    public Sprite(double x, double y, int speed) {
         this.x = x;
         this.y = y;
         this.originalX = x;
         this.originalY = y;
         this.speed = speed;
-        this.previousAddedPoint = new Point(originalX, originalY);
+        this.previousAddedPoint = new Point2D.Double(originalX, originalY);
         this.trajectory.add(previousAddedPoint);
         this.trajectory.add(previousAddedPoint);
     }
@@ -97,9 +95,9 @@ public abstract class Sprite {
             return;
         }
         for (int i = 0; i < speed; i++) {
-            Point point = trajectory.get(ticks);
-            x = point.getLocation().x;
-            y = point.getLocation().y + (int) Math.round(speed);
+            Point2D point = trajectory.get(ticks);
+            x = point.getX();
+            y = point.getY() + (int) Math.round(speed);
             if (reverse) {
                 ticks--;
             } else {
@@ -131,8 +129,8 @@ public abstract class Sprite {
         if (warpAnimation.isPresent()) {
             Optional<BufferedImage> currentFrame = warpAnimation.get().updateAnimation();;
             if (currentFrame.isPresent()) {
-                int warpX = centerX - (currentFrame.get().getWidth() / 2);
-                int warpY = centerY - (currentFrame.get().getHeight() / 2);
+                double warpX = centerX - (currentFrame.get().getWidth() / 2);
+                double warpY = centerY - (currentFrame.get().getHeight() / 2);
                 return new SpriteRender(warpX, warpY, currentFrame.get());
             } else {
                 warpAnimation = Optional.empty();
@@ -142,8 +140,8 @@ public abstract class Sprite {
         if (isExploding) {
             Optional<BufferedImage> currentFrame = explosion.updateAnimation();
             if (currentFrame.isPresent()) {
-                int explosionX = centerX - (currentFrame.get().getWidth() / 2);
-                int explosionY = centerY - (currentFrame.get().getHeight() / 2);
+                double explosionX = centerX - (currentFrame.get().getWidth() / 2);
+                double explosionY = centerY - (currentFrame.get().getHeight() / 2);
                 return new SpriteRender(explosionX, explosionY, currentFrame.get());
             }
 
@@ -166,20 +164,20 @@ public abstract class Sprite {
         return new SpriteRender(x, y, image);
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
-    public void setOriginalX(int x) {
+    public void setOriginalX(double x) {
         this.originalX = x;
         this.x = x;
     }
 
-    public void setOriginalY(int y) {
+    public void setOriginalY(double y) {
         this.originalY = y;
         this.y = y;
     }
@@ -200,8 +198,8 @@ public abstract class Sprite {
         this.visible = visible;
     }
 
-    public Rectangle getBounds() {
-        return new Rectangle(x, y, width, height);
+    public Rectangle2D getBounds() {
+        return new Rectangle2D.Double(x, y, width, height);
     }
 
     public HashSet<String> getMask() {
@@ -234,28 +232,28 @@ public abstract class Sprite {
         return alpha < threshold;
     }
 
-    public Optional<Point> isCollison(Sprite sprite) {
+    public Optional<Point2D> isCollison(Sprite sprite) {
         return isCollison(sprite, 254);
     }
 
-    public Optional<Point> isCollison(Sprite sprite, int transparencyThreshold) {
+    public Optional<Point2D> isCollison(Sprite sprite, int transparencyThreshold) {
         if (!visible || isExploding || warpAnimation.isPresent()) {
             return Optional.empty();
         }
         if (!sprite.isVisible() || sprite.isExploding()) {
             return Optional.empty();
         }
-        Rectangle thisSpriteRectangle = getBounds();
-        Rectangle incomingSpriteRectangle = sprite.getBounds();
+        Rectangle2D thisSpriteRectangle = getBounds();
+        Rectangle2D incomingSpriteRectangle = sprite.getBounds();
         if (thisSpriteRectangle.intersects(incomingSpriteRectangle)) {
             HashSet<String> thisMask = getMask();
             HashSet<String> incomingMask = sprite.getMask(transparencyThreshold);
             thisMask.retainAll(incomingMask);// Check to see if any pixels in maskPlayer2 are the same as those in maskPlayer1
             if (!thisMask.isEmpty()) {
                 String next = thisMask.iterator().next();
-                int x = Integer.parseInt(next.split(",")[0]);
-                int y = Integer.parseInt(next.split(",")[1]);
-                return Optional.of(new Point(x, y));
+                double x = Double.parseDouble(next.split(",")[0]);
+                double y = Double.parseDouble(next.split(",")[1]);
+                return Optional.of(new Point2D.Double(x, y));
             }
         }
         return Optional.empty();
@@ -292,7 +290,7 @@ public abstract class Sprite {
         return (int) Math.round(percent);
     }
 
-    public int calculateHitPointsPercentAfterDamageApplied(Projectile projectile, Point point) {
+    public int calculateHitPointsPercentAfterDamageApplied(Projectile projectile, Point2D point) {
         hitPoints = hitPoints - projectile.getDamage();
         if (hitPoints <= 0) {
             return 0;
@@ -302,36 +300,36 @@ public abstract class Sprite {
         return (int) Math.round(percent);
     }
 
-    public void addDamageAnimation(Projectile projectile, Point point) {
+    public void addDamageAnimation(Projectile projectile, Point2D point) {
         damageAnimations.add(projectile.getDamageAnimation(removeBoardCoords(point)));
     }
 
-    private Point removeBoardCoords(Point point) {
-        int relativeX = point.getLocation().x - x;
-        int relativeY = point.getLocation().y - y;
-        return new Point(relativeX, relativeY);
+    private Point2D removeBoardCoords(Point2D point) {
+        double relativeX = point.getX() - x;
+        double relativeY = point.getY() - y;
+        return new Point2D.Double(relativeX, relativeY);
     }
 
-    public static ArrayList<Point> getLine(Point start, Point target) {
-        ArrayList<Point> ret = new ArrayList<Point>();
+    public static ArrayList<Point2D> getLine(Point2D start, Point2D target) {
+        ArrayList<Point2D> ret = new ArrayList<>();
 
-        int x0 = start.x;
-        int y0 = start.y;
+        double x0 = start.getX();
+        double y0 = start.getY();
 
-        int x1 = target.x;
-        int y1 = target.y;
+        double x1 = target.getX();
+        double y1 = target.getY();
 
         int sx = 0;
         int sy = 0;
 
-        int dx = Math.abs(x1 - x0);
+        double dx = Math.abs(x1 - x0);
         sx = x0 < x1 ? 1 : -1;
-        int dy = -1 * Math.abs(y1 - y0);
+        double dy = -1 * Math.abs(y1 - y0);
         sy = y0 < y1 ? 1 : -1;
-        int err = dx + dy, e2; /* error value e_xy */
+        double err = dx + dy, e2; /* error value e_xy */
 
         for (; ; ) {  /* loop */
-            ret.add(new Point(x0, y0));
+            ret.add(new Point2D.Double(x0, y0));
             if (x0 == x1 && y0 == y1) break;
             e2 = 2 * err;
             if (e2 >= dy) {
@@ -353,17 +351,17 @@ public abstract class Sprite {
     }
 
     public void addDownAnglePath(int xFactor, double speed, int amount, DownAnglePathDirection direction) {
-        ArrayList<Point> points = Lists.newArrayList();
+        ArrayList<Point2D> points = Lists.newArrayList();
         if (direction.equals(DownAnglePathDirection.RIGHT_TO_LEFT)) {
             xFactor = -xFactor;
         }
         for (int i = 0; i < amount; i++) {
-            int proposedX = (int) (BOARD_X / 3 * sin(i * .5 * Math.PI / (BOARD_X * xFactor))) + previousAddedPoint.getLocation().x;
+            double proposedX = (int) (BOARD_X / 3 * sin(i * .5 * Math.PI / (BOARD_X * xFactor))) + previousAddedPoint.getX();
             speed = speed + .3;
             int proposedY = (int) Math.round(speed);
-            int x = proposedX;
-            int y = proposedY + previousAddedPoint.getLocation().y;
-            points.add(new Point(x, y));
+            double x = proposedX;
+            double y = proposedY + previousAddedPoint.getY();
+            points.add(new Point2D.Double(x, y));
         }
         trajectory.addAll(points);
         previousAddedPoint = points.get(points.size() - 1);
@@ -378,8 +376,8 @@ public abstract class Sprite {
 
             double radius = 80;
 
-            double planetX = previousAddedPoint.getLocation().x + radius * Math.cos(angle);
-            double planetY = previousAddedPoint.getLocation().y + radius * Math.sin(angle);
+            double planetX = previousAddedPoint.getX() + radius * Math.cos(angle);
+            double planetY = previousAddedPoint.getY() + radius * Math.sin(angle);
 
             int newX = (int) Math.round(planetX);
             speed += .1;
@@ -402,7 +400,7 @@ public abstract class Sprite {
         }
     }
 
-    public Point getPreviousAddedPoint() {
+    public Point2D getPreviousAddedPoint() {
         return previousAddedPoint;
     }
 
@@ -420,21 +418,21 @@ public abstract class Sprite {
     }
 
     public static class SpriteRender {
-        private final int x;
-        private final int y;
+        private final double x;
+        private final double y;
         private final BufferedImage image;
 
-        public SpriteRender(int x, int y, BufferedImage image) {
+        public SpriteRender(double x, double y, BufferedImage image) {
             this.x = x;
             this.y = y;
             this.image = image;
         }
 
-        public int getX() {
+        public double getX() {
             return x;
         }
 
-        public int getY() {
+        public double getY() {
             return y;
         }
 

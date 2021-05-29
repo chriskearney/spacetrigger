@@ -1,13 +1,14 @@
 package com.comandante.spacetrigger;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 
 public abstract class Projectile extends Sprite {
 
     private final Direction direction;
     private final int damage;
 
-    public Projectile(int x, int y, Direction direction, int speed, int damage) {
+    public Projectile(double x, double y, Direction direction, int speed, int damage) {
         super(x, y, speed);
         this.direction = direction;
         this.damage = damage;
@@ -37,5 +38,5 @@ public abstract class Projectile extends Sprite {
         return damage;
     }
 
-    public abstract SpriteSheetAnimation getDamageAnimation(Point point);
+    public abstract SpriteSheetAnimation getDamageAnimation(Point2D point);
 }

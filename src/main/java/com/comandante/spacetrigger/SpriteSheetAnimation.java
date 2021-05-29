@@ -3,6 +3,7 @@ package com.comandante.spacetrigger;
 import com.google.common.collect.Lists;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class SpriteSheetAnimation {
     private int frameDelay;
     private int frameNumber = 0;
 
-    private final Optional<Point> renderPoint;
+    private final Optional<Point2D> renderPoint;
 
     private boolean looping;
 
@@ -33,7 +34,7 @@ public class SpriteSheetAnimation {
                                 int skipFrame,
                                 int frameDelay,
                                 boolean looping,
-                                Optional<Point> renderPoint) {
+                                Optional<Point2D> renderPoint) {
         this.x_size = x_size;
         this.y_size = y_size;
         this.frameDelay = frameDelay;
@@ -52,7 +53,7 @@ public class SpriteSheetAnimation {
         currentFrame = Optional.ofNullable(spriteFrames.get(0));
     }
 
-    public SpriteSheetAnimation(int x_size, int y_size, int columns, int rows, BufferedImage spriteSheet, int skipFrame, int frameDelay, Optional<Point> renderPoint) {
+    public SpriteSheetAnimation(int x_size, int y_size, int columns, int rows, BufferedImage spriteSheet, int skipFrame, int frameDelay, Optional<Point2D> renderPoint) {
         this(x_size, y_size, columns, rows, spriteSheet, skipFrame, frameDelay, false, renderPoint);
     }
 
@@ -89,7 +90,7 @@ public class SpriteSheetAnimation {
         return spriteFrames.size();
     }
 
-    public Optional<Point> getRenderPoint() {
+    public Optional<Point2D> getRenderPoint() {
         return renderPoint;
     }
 

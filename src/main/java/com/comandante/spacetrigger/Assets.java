@@ -3,6 +3,7 @@ package com.comandante.spacetrigger;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.util.Optional;
 
 public class Assets {
 
@@ -92,5 +93,13 @@ public class Assets {
         } catch (Exception e) {
             throw new RuntimeException(imageFilename + e);
         }
+    }
+
+    public static SpriteSheetAnimation getPlayerShipExplosionAnimation() {
+        return new SpriteSheetAnimation(376, 376, 8, 8, Assets.PLAYER_SHIP_EXPLOSION, 2, 3);
+    }
+
+    public static SpriteSheetAnimation getPlayerShipExhaustAnimation() {
+        return new SpriteSheetAnimation(8, 15, 8, 1, Assets.PLAYER_SHIP_EXHAUST, 0, 3, true, Optional.empty());
     }
 }

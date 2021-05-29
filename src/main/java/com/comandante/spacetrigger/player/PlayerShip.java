@@ -19,8 +19,8 @@ import static com.comandante.spacetrigger.Main.BOARD_Y;
 
 public class PlayerShip extends Sprite {
 
-    private int dx;
-    private int dy;
+    private double dx;
+    private double dy;
 
     private int missleCapacity = 10;
     private int currentMissles = 3;
@@ -29,7 +29,7 @@ public class PlayerShip extends Sprite {
     private int currentShield = 100;
 
     private final List<Projectile> projectiles = Lists.newArrayList();
-    private final SpriteSheetAnimation exhaust = new SpriteSheetAnimation(8, 15, 8, 1, Assets.PLAYER_SHIP_EXHAUST, 0, 3, true, Optional.empty());
+    private final SpriteSheetAnimation exhaust = Assets.getPlayerShipExhaustAnimation();
     private final Shield shield = new Shield();
     private final EventBus eventBus;
 
@@ -46,7 +46,7 @@ public class PlayerShip extends Sprite {
 
     private void initSpaceShip() {
         loadImage(Assets.PLAYER_SHIP);
-        loadExplosion(new SpriteSheetAnimation(376, 376, 8, 8, Assets.PLAYER_SHIP_EXPLOSION, 2, 3));
+        loadExplosion(Assets.getPlayerShipExplosionAnimation());
     }
 
     public void move() {

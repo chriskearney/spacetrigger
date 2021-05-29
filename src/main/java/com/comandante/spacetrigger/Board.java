@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,57 +104,68 @@ public class Board extends JPanel implements ActionListener {
         super.paintComponent(g);
         drawBackgrounds(g);
         if (ingame) {
-            drawStatusBars(g);
-            drawAliens(g);
-            drawPlayerShip(g);
-            drawDrops(g);
+            drawStatusBars((Graphics2D) g);
+            drawAliens((Graphics2D) g);
+            drawPlayerShip((Graphics2D) g);
+            drawDrops((Graphics2D) g);
         } else {
             drawGameOver(g);
         }
         Toolkit.getDefaultToolkit().sync();
     }
 
-    private void drawStatusBars(Graphics g) {
+    private void drawStatusBars(Graphics2D g) {
         Sprite.SpriteRender spriteRender = playerStatusBars.getSpriteRender();
-        g.drawImage(spriteRender.getImage(), spriteRender.getX(), spriteRender.getY(), this);
+        AffineTransform t = getAffineTransform(spriteRender.getX(), spriteRender.getY());// x/y set here, ball.x/y = double, ie: 10.33
+        g.drawImage(spriteRender.getImage(), t, null);
     }
 
-    private void drawDamageAnimations(Graphics g, Sprite sprite) {
+    private void drawDamageAnimations(Graphics2D g, Sprite sprite) {
         if (sprite.isExploding() || !sprite.isVisible()) {
             return;
         }
         for (int i = 0; i < sprite.getDamageAnimations().size(); i++) {
             SpriteSheetAnimation spriteDamageAnimations = sprite.getDamageAnimations().get(i);
-            Point renderPoint = spriteDamageAnimations.getRenderPoint().get();
+            Point2D renderPoint = spriteDamageAnimations.getRenderPoint().get();
 
             Optional<BufferedImage> currentFrame = spriteDamageAnimations.updateAnimation();
             if (currentFrame.isPresent()) {
                 // Ship x/y position on the board + its relative position on the sprite - the /2 of the width/height of damage animation - centers the damage animation on the x/y collision point
-                g.drawImage(currentFrame.get(), (sprite.getX() + renderPoint.getLocation().x) - currentFrame.get().getWidth() / 2, (sprite.getY() + renderPoint.getLocation().y) - currentFrame.get().getHeight() / 2, this);
+                AffineTransform t = getAffineTransform((sprite.getX() + renderPoint.getX()) - currentFrame.get().getWidth() / 2, (sprite.getY() + renderPoint.getY()) - currentFrame.get().getHeight() / 2);// x/y set here, ball.x/y = double, ie: 10.33
+                g.drawImage(currentFrame.get(),  t, this);
             } else {
                 sprite.getDamageAnimations().remove(i);
             }
         }
     }
+    private static AffineTransform getAffineTransform(double x, double y) {
+        AffineTransform t = new AffineTransform();
+        t.translate(x, y); // x/y set here, ball.x/y = double, ie: 10.33
+        t.scale(1, 1); // scale = 1
+        return t;
+    }
 
-    private void drawDrops(Graphics g) {
+    private void drawDrops(Graphics2D g) {
         for (int i = 0; i < drops.size(); i++) {
             Drop drop = drops.get(i);
             Sprite.SpriteRender spriteRender = drop.getSpriteRender();
-            g.drawImage(spriteRender.getImage(), spriteRender.getX(), spriteRender.getY(), this);
+            AffineTransform t = getAffineTransform(spriteRender.getX(), spriteRender.getY()); // x/y set here, ball.x/y = double, ie: 10.33
+            g.drawImage(spriteRender.getImage(), t, this);
         }
     }
 
-    private void drawPlayerShip(Graphics g) {
+    private void drawPlayerShip(Graphics2D g) {
         if (playerShip.isVisible()) {
             Sprite.SpriteRender spaceShipRender = playerShip.getSpriteRender();
-            g.drawImage(spaceShipRender.getImage(), spaceShipRender.getX(), spaceShipRender.getY(), this);
+            AffineTransform t = getAffineTransform(spaceShipRender.getX(), spaceShipRender.getY());
+            g.drawImage(spaceShipRender.getImage(), t, this);
             if (playerShip.getShield().isVisible() && !playerShip.isExploding()) {
                 Sprite shield = playerShip.getShield();
                 shield.setOriginalX(spaceShipRender.getX() + (playerShip.getWidth() / 2) - (playerShip.getShield().getWidth() / 2));
                 shield.setOriginalY(spaceShipRender.getY() + (playerShip.getHeight() / 2) - (playerShip.getShield().getHeight() / 2));
                 Sprite.SpriteRender spriteRender = shield.getSpriteRender();
-                g.drawImage(spriteRender.getImage(), spriteRender.getX(), spriteRender.getY(), this);
+                AffineTransform transform = getAffineTransform(spriteRender.getX(), spriteRender.getY());
+                g.drawImage(spriteRender.getImage(), transform, this);
                 drawDamageAnimations(g, playerShip.getShield());;
             }
             drawDamageAnimations(g, playerShip);
@@ -160,8 +173,8 @@ public class Board extends JPanel implements ActionListener {
                 SpriteSheetAnimation exhaust = playerShip.getExhaust();
                 Optional<BufferedImage> currentFrame = exhaust.updateAnimation();
                 if (currentFrame.isPresent()) {
-                    g.drawImage(currentFrame.get(), spaceShipRender.getX() + (playerShip.getWidth() / 2) + 8, spaceShipRender.getY() + (playerShip.getHeight() / 2) + 11, this);
-                    g.drawImage(currentFrame.get(), spaceShipRender.getX() + (playerShip.getWidth() / 2) - 16, spaceShipRender.getY() + (playerShip.getHeight() / 2) + 11, this);
+                    g.drawImage(currentFrame.get(), getAffineTransform(spaceShipRender.getX() + (playerShip.getWidth() / 2) + 8, spaceShipRender.getY() + (playerShip.getHeight() / 2) + 11), this);
+                    g.drawImage(currentFrame.get(), getAffineTransform(spaceShipRender.getX() + (playerShip.getWidth() / 2) - 16, spaceShipRender.getY() + (playerShip.getHeight() / 2) + 11), this);
                 }
             }
         }
@@ -169,22 +182,22 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < space.size(); i++) {
             if (space.get(i).isVisible()) {
                 Sprite.SpriteRender spaceShipMissleRender = space.get(i).getSpriteRender();
-                g.drawImage(spaceShipMissleRender.getImage(), spaceShipMissleRender.getX(), spaceShipMissleRender.getY(), this);
+                g.drawImage(spaceShipMissleRender.getImage(), getAffineTransform(spaceShipMissleRender.getX(), spaceShipMissleRender.getY()), this);
             }
         }
     }
 
-    private void drawAliens(Graphics g) {
+    private void drawAliens(Graphics2D g) {
         for (int i = 0; i < aliens.size(); i++) {
             Alien alien = aliens.get(i);
             if (alien.isVisible()) {
                 Sprite.SpriteRender aliensRender = alien.getSpriteRender();
-                g.drawImage(aliensRender.getImage(), aliensRender.getX(), aliensRender.getY(), this);
+                g.drawImage(aliensRender.getImage(), getAffineTransform(aliensRender.getX(), aliensRender.getY()), this);
 
                 // Alien projectiles
                 for (int j = 0; j < alien.getMissiles().size(); j++) {
                     Sprite.SpriteRender alienMissleRender = alien.getMissiles().get(j).getSpriteRender();
-                    g.drawImage(alienMissleRender.getImage(), alienMissleRender.getX(), alienMissleRender.getY(), this);
+                    g.drawImage(alienMissleRender.getImage(), getAffineTransform(alienMissleRender.getX(), alienMissleRender.getY()), this);
                 }
 
                 if (alien.isExploding()) {
@@ -269,13 +282,13 @@ public class Board extends JPanel implements ActionListener {
                 Projectile projectile = projectiles.get(j);
                 if (playerShip.isShield()) {
                     playerShip.getShield().setVisible(true);
-                    Optional<Point> shieldCollision = projectile.isCollison(playerShip.getShield(), 100);
+                    Optional<Point2D> shieldCollision = projectile.isCollison(playerShip.getShield(), 100);
                     if (shieldCollision.isPresent()) {
                         projectile.setVisible(false);
                         playerShip.getShield().addDamageAnimation(projectile, shieldCollision.get());
                     }
                 } else {
-                    Optional<Point> collison = projectile.isCollison(playerShip);
+                    Optional<Point2D> collison = projectile.isCollison(playerShip);
                     if (collison.isPresent()) {
                         int newHitPointsPct = playerShip.calculateHitPointsPercentAfterDamageApplied(projectile, collison.get());
                         projectile.setVisible(false);
@@ -292,7 +305,7 @@ public class Board extends JPanel implements ActionListener {
         boolean newExplosion = false;
         for (int i = 0; i < spaceShipMissles.size(); i++) {
             for (int j = 0; j < aliens.size(); j++) {
-                Optional<Point> collisonPoint = aliens.get(j).isCollison(spaceShipMissles.get(i));
+                Optional<Point2D> collisonPoint = aliens.get(j).isCollison(spaceShipMissles.get(i));
                 if (collisonPoint.isPresent()) {
                     int newHitPointsPercentage = aliens.get(j).calculateHitPointsPercentAfterDamageApplied(spaceShipMissles.get(i), collisonPoint.get());
                     spaceShipMissles.get(i).setVisible(false);
@@ -307,7 +320,7 @@ public class Board extends JPanel implements ActionListener {
 
         for (int i = 0; i < drops.size(); i++) {
             Drop drop = drops.get(i);
-            Optional<Point> collison = drop.isCollison(playerShip);
+            Optional<Point2D> collison = drop.isCollison(playerShip);
             if (collison.isPresent()) {
                 eventBus.post(drop.getEvent());
                 drop.setVisible(false);
