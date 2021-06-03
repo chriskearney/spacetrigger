@@ -5,6 +5,7 @@ import com.comandante.spacetrigger.*;
 import com.comandante.spacetrigger.events.HealthPickUpEvent;
 import com.comandante.spacetrigger.events.MisslePickUpEvent;
 import com.comandante.spacetrigger.events.PlayerShipHealthUpdateEvent;
+import com.comandante.spacetrigger.events.PlayerShipLocationUpdateEvent;
 import com.comandante.spacetrigger.events.PlayerShipShieldUpdateEvent;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
@@ -105,6 +106,7 @@ public class PlayerShip extends Sprite {
             location.y += dy;
         }
         ticks++;
+        eventBus.post(new PlayerShipLocationUpdateEvent(location));
     }
 
     public void addMissles(int number) {

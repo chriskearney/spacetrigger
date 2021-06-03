@@ -14,13 +14,14 @@ import static com.comandante.spacetrigger.Main.BOARD_Y;
 public class LevelOne extends Level {
 
     private final SplittableRandom random = new SplittableRandom();
-    private final EventBus eventBus;
-
 
     public LevelOne(EventBus eventBus) {
-        this.eventBus = eventBus;
-        AlienBuzz aB = new AlienBuzz(new PVector(0, 0));
-        alienTimeMap.put(1000L, Lists.newArrayList(aB));
+        super(eventBus);
+        List<Alien> aliens = Lists.newArrayList();
+        for (int i = 0; i < 5; i++) {
+            aliens.add(new AlienBuzz(new PVector(0, 0)));
+        }
+        alienTimeMap.put(1000L, aliens);
     }
 
 

@@ -226,7 +226,7 @@ public abstract class Sprite {
                 }
                 pixel = maskImage.getRGB(i, j);
                 if (!hasTransparency(pixel, threshold)) {
-                    mask.add((getX() + i) + "," + (getY() + j));
+                    mask.add(((int) getX() + i) + "," + (int) (getY() + j));
                 }
             }
         }

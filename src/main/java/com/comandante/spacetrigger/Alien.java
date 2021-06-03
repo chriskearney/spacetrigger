@@ -1,6 +1,8 @@
 package com.comandante.spacetrigger;
 
+import com.comandante.spacetrigger.events.PlayerShipLocationUpdateEvent;
 import com.google.common.collect.Lists;
+import com.google.common.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,7 @@ public abstract class Alien extends Sprite {
 
     protected int ticks = 0;
     protected List<Projectile> projectiles = Lists.newArrayList();
+    protected PVector shipLocation;
 
     protected List<Drop> drops = Lists.newArrayList();
 
@@ -30,5 +33,10 @@ public abstract class Alien extends Sprite {
 
     public void addDrop(Drop drop) {
         this.drops.add(drop);
+    }
+
+    @Subscribe
+    public void updateShipLocation(PlayerShipLocationUpdateEvent locationUpdateEvent) {
+        shipLocation = locationUpdateEvent.getShipLocation();
     }
 }

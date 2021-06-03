@@ -4,6 +4,8 @@ import com.comandante.spacetrigger.Alien;
 import com.comandante.spacetrigger.Assets;
 import com.comandante.spacetrigger.PVector;
 import com.comandante.spacetrigger.SpriteSheetAnimation;
+import com.comandante.spacetrigger.events.PlayerShipLocationUpdateEvent;
+import com.google.common.eventbus.Subscribe;
 
 import java.util.Optional;
 
@@ -14,8 +16,8 @@ public class AlienBuzz extends Alien {
 
     public AlienBuzz(PVector location) {
         super(location, 200, .03);
-        setVelocity(new PVector(0, 0));
-        setAcceleration(new PVector(.1, 0));
+        setVelocity(new PVector(.1, .2));
+        setAcceleration(new PVector(0, 0));
     }
 
     @Override
@@ -31,10 +33,18 @@ public class AlienBuzz extends Alien {
             return;
         }
         super.move();
-        setAcceleration(PVector.random2D());
+        if (shipLocation != null) {
+            PVector shipDirection = PVector.sub(shipLocation, location);
+            shipDirection.normalize();
+            shipDirection.mult(0.1);
+            setAcceleration(shipDirection);
+            PVector random = PVector.random2D();
+            random.mult(.4);
+            acceleration.add(random);
+        }
         velocity.add(acceleration);
         location.add(velocity);
-        velocity.limit(5);
+        velocity.limit(2);
         if ((location.x > BOARD_X) || (location.x < 0)) {
             velocity.x = velocity.x * -1;
         }
