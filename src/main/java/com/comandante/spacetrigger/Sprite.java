@@ -23,6 +23,8 @@ public abstract class Sprite {
 
     protected PVector location;
     protected PVector originalLocation;
+    protected PVector velocity;
+    protected PVector acceleration;
     protected int width;
     protected int height;
     protected int hitPoints = 0;
@@ -68,6 +70,14 @@ public abstract class Sprite {
         this.speed = speed;
     }
 
+    public void setVelocity(PVector velocity) {
+        this.velocity = velocity;
+    }
+
+    public void setAcceleration(PVector acceleration) {
+        this.acceleration = acceleration;
+    }
+
     protected void loadImage(BufferedImage image) {
         this.image = image;
         width = image.getWidth(null);
@@ -89,8 +99,6 @@ public abstract class Sprite {
         if (isExploding || warpAnimation.isPresent()) {
            return;
         }
-
-
 
 
 //        if (reverse) {

@@ -207,6 +207,9 @@ public class PVector implements Serializable {
         }
     }
 
+    static public PVector random2D() {
+        return fromAngle((Math.random()*Math.PI*2),null);
+    }
 
     /**
      * ( begin auto-generated from PVector_sub.xml )
