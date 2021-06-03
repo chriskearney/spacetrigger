@@ -82,7 +82,7 @@ public class Board extends JPanel implements ActionListener {
             eventBus.unregister(playerStatusBars);
         }
         this.playerShip = new PlayerShip(eventBus);
-        this.playerStatusBars = new PlayerStatusBars(0, 0);
+        this.playerStatusBars = new PlayerStatusBars(new PVector(0, 0));
         this.eventBus.register(playerStatusBars);
         this.eventBus.register(playerShip);
         initAliens();
@@ -132,12 +132,13 @@ public class Board extends JPanel implements ActionListener {
             if (currentFrame.isPresent()) {
                 // Ship x/y position on the board + its relative position on the sprite - the /2 of the width/height of damage animation - centers the damage animation on the x/y collision point
                 AffineTransform t = getAffineTransform((sprite.getX() + renderPoint.getX()) - currentFrame.get().getWidth() / 2, (sprite.getY() + renderPoint.getY()) - currentFrame.get().getHeight() / 2);// x/y set here, ball.x/y = double, ie: 10.33
-                g.drawImage(currentFrame.get(),  t, this);
+                g.drawImage(currentFrame.get(), t, this);
             } else {
                 sprite.getDamageAnimations().remove(i);
             }
         }
     }
+
     private static AffineTransform getAffineTransform(double x, double y) {
         AffineTransform t = new AffineTransform();
         t.translate(x, y); // x/y set here, ball.x/y = double, ie: 10.33
@@ -161,12 +162,14 @@ public class Board extends JPanel implements ActionListener {
             g.drawImage(spaceShipRender.getImage(), t, this);
             if (playerShip.getShield().isVisible() && !playerShip.isExploding()) {
                 Sprite shield = playerShip.getShield();
-                shield.setOriginalX(spaceShipRender.getX() + (playerShip.getWidth() / 2) - (playerShip.getShield().getWidth() / 2));
-                shield.setOriginalY(spaceShipRender.getY() + (playerShip.getHeight() / 2) - (playerShip.getShield().getHeight() / 2));
+                PVector v = new PVector((spaceShipRender.getX() + (playerShip.getWidth() / 2) - (playerShip.getShield().getWidth() / 2)),
+                        (spaceShipRender.getY() + (playerShip.getHeight() / 2) - (playerShip.getShield().getHeight() / 2)));
+                shield.setOriginalLocation(v);
                 Sprite.SpriteRender spriteRender = shield.getSpriteRender();
                 AffineTransform transform = getAffineTransform(spriteRender.getX(), spriteRender.getY());
                 g.drawImage(spriteRender.getImage(), transform, this);
-                drawDamageAnimations(g, playerShip.getShield());;
+                drawDamageAnimations(g, playerShip.getShield());
+                ;
             }
             drawDamageAnimations(g, playerShip);
             if (playerShip.isMovement() && !playerShip.isExploding()) {
@@ -338,8 +341,8 @@ public class Board extends JPanel implements ActionListener {
             Drop drop = alien.getDrops().get(i);
             int dropPercent = drop.getDropRate().getPercent();
             if (rnd < dropPercent) {
-                drop.setOriginalX(alien.getX() + (alien.getWidth() / 2) - (drop.getWidth() / 2));
-                drop.setOriginalY(alien.getY() + (alien.getHeight() / 2) - (drop.getHeight() / 2));
+                drop.setOriginalLocation(new PVector(alien.getX() + (alien.getWidth() / 2) - (drop.getWidth() / 2),
+                        alien.getY() + (alien.getHeight() / 2) - (drop.getHeight() / 2)));
                 drop.setVisible(true);
                 drops.add(drop);
                 return;

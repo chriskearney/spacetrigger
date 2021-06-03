@@ -36,10 +36,10 @@ public class PlayerShip extends Sprite {
     private int ticks;
 
     public PlayerShip(EventBus eventBus) {
-        super(0, 0, 500, 0);
+        super(new PVector(0, 0), 500, 0);
         initSpaceShip();
-        super.x = BOARD_X / 2;
-        super.y = BOARD_Y - getHeight() * 4;
+        super.location.x = BOARD_X / 2;
+        super.location.y = BOARD_Y - getHeight() * 4;
         this.eventBus = eventBus;
         this.visible = true;
     }
@@ -74,35 +74,35 @@ public class PlayerShip extends Sprite {
 
         if (dx != 0 || dy != 0) {
             if (dx != 0) {
-                if ((x + dx) <= 0) {
-                    x = 0;
+                if ((location.x + dx) <= 0) {
+                    location.x = 0;
                     dx = 0;
                     return;
                 }
 
-                if ((x + dx) >= (BOARD_X - width)) {
-                    x = (BOARD_X - width);
+                if ((location.x + dx) >= (BOARD_X - width)) {
+                    location.x = (BOARD_X - width);
                     dx = 0;
                     return;
                 }
             }
 
             if (dy != 0) {
-                if ((y + dy) <= 0) {
-                    y = 0;
+                if ((location.y + dy) <= 0) {
+                    location.y = 0;
                     dy = 0;
                     return;
                 }
 
-                if ((y + dy) >= (BOARD_Y - height * 2)) {
-                    y = (BOARD_Y - height * 2);
+                if ((location.y + dy) >= (BOARD_Y - height * 2)) {
+                    location.y = (BOARD_Y - height * 2);
                     dy = 0;
                     return;
                 }
             }
 
-            x += dx;
-            y += dy;
+            location.x += dx;
+            location.y += dy;
         }
         ticks++;
     }
@@ -119,13 +119,13 @@ public class PlayerShip extends Sprite {
         if (currentMissles == 0) {
             return;
         }
-        projectiles.add(new PlayerMissleLevel1Bullet((x + width / 2) - 8, (y + height / 2) - 20));
+        projectiles.add(new PlayerMissleLevel1Bullet((location.x + width / 2) - 8, (location.y + height / 2) - 20));
         currentMissles--;
     }
 
     public void fireGun() {
-        projectiles.add(new PlayerGunLevel2Bullet((x + width / 2) - 22, (y + height / 2) - 15, Direction.UP));
-        projectiles.add(new PlayerGunLevel2Bullet((x + width / 2) + 3, (y + height / 2) - 15, Direction.UP));
+        projectiles.add(new PlayerGunLevel2Bullet((location.x + width / 2) - 22, (location.y + height / 2) - 15, Direction.UP));
+        projectiles.add(new PlayerGunLevel2Bullet((location.x + width / 2) + 3, (location.y + height / 2) - 15, Direction.UP));
     }
 
     public void keyPressed(KeyEvent e) {

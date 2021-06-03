@@ -7,19 +7,19 @@ public abstract class Drop extends Sprite {
 
     private final DropRate dropRate;
 
-    public Drop(int x, int y, int speed, DropRate dropRate) {
-        super(x, y, speed);
+    public Drop(PVector location, int speed, DropRate dropRate) {
+        super(location, speed);
         this.dropRate = dropRate;
     }
 
     public void move() {
-        y += Math.round(speed);
+        location.y += Math.round(speed);
 
-        if (y > Main.BOARD_Y) {
+        if (location.y > Main.BOARD_Y) {
             setVisible(false);
         }
 
-        if (y < 0) {
+        if (location.y < 0) {
             setVisible(false);
         }
     }

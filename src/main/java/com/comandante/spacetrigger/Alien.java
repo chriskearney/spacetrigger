@@ -12,8 +12,8 @@ public abstract class Alien extends Sprite {
 
     protected List<Drop> drops = Lists.newArrayList();
 
-    public Alien(int x, int y, int hitPoints, double speed) {
-        super(x, y, hitPoints, speed);
+    public Alien(PVector location, int hitPoints, double speed) {
+        super(location, hitPoints, speed);
         initAlien();
         visible = true;
     }

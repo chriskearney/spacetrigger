@@ -1,6 +1,7 @@
 package com.comandante.spacetrigger.player;
 
 import com.comandante.spacetrigger.Assets;
+import com.comandante.spacetrigger.PVector;
 import com.comandante.spacetrigger.Sprite;
 import com.comandante.spacetrigger.SpriteSheetAnimation;
 
@@ -10,7 +11,7 @@ import java.util.Optional;
 public class Shield extends Sprite {
 
     public Shield() {
-        super(0, 0, 0);
+        super(new PVector(0, 0), 0);
         initShield();
     }
 

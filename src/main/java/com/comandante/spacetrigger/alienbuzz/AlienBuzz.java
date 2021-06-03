@@ -2,14 +2,15 @@ package com.comandante.spacetrigger.alienbuzz;
 
 import com.comandante.spacetrigger.Alien;
 import com.comandante.spacetrigger.Assets;
+import com.comandante.spacetrigger.PVector;
 import com.comandante.spacetrigger.SpriteSheetAnimation;
 
 import java.util.Optional;
 
 public class AlienBuzz extends Alien {
 
-    public AlienBuzz(int x, int y) {
-        super(x, y, 200, 1);
+    public AlienBuzz(PVector location) {
+        super(location, 200, .03);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.comandante.spacetrigger.aliennymph;
 
 import com.comandante.spacetrigger.Alien;
 import com.comandante.spacetrigger.Assets;
+import com.comandante.spacetrigger.PVector;
 import com.comandante.spacetrigger.SpriteSheetAnimation;
 
 public class AlienNymph extends Alien {
@@ -9,12 +10,12 @@ public class AlienNymph extends Alien {
     private int nymphTicks = 0;
 
     public AlienNymph(int x, int y) {
-        super(x, y, 400, 1);
+        super(new PVector(x, y), 400, 5);
         loadWarpAnimation(Assets.getAlienNymphWarpAnimation());
     }
 
     public void fire() {
-        projectiles.add(new AlienNymphBullet((x + width / 2) - 10, (y + height / 2)));
+        projectiles.add(new AlienNymphBullet((location.x + width / 2) - 10, (location.y + height / 2)));
     }
 
     @Override
