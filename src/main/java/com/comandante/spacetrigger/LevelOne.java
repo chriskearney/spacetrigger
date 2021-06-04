@@ -18,8 +18,8 @@ public class LevelOne extends Level {
     public LevelOne(EventBus eventBus) {
         super(eventBus);
         List<Alien> aliens = Lists.newArrayList();
-        for (int i = 0; i < 5; i++) {
-            aliens.add(new AlienBuzz(new PVector(0, 0)));
+        for (int i = 0; i < 14; i++) {
+            aliens.add(new AlienBuzz(new PVector(i * 40, 0)));
         }
         alienTimeMap.put(1000L, aliens);
     }

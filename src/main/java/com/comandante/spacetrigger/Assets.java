@@ -39,6 +39,7 @@ public class Assets {
 
 
     public static final BufferedImage ALIEN_BUZZ;
+    public static final BufferedImage ALIEN_BUZZ_BULLET;
 
     public static final BufferedImage PLAYER_HEALTH_BAR_FRAME;
     public static final BufferedImage PLAYER_HEALTH_BAR_EMPTY;
@@ -54,6 +55,8 @@ public class Assets {
         ALIEN_SCOUT_WARP = loadImage("alien-scout-warp.png");
 
         ALIEN_BUZZ = loadImage("alien-buzz.png");
+        ALIEN_BUZZ_BULLET = loadImage("alien-buzz-bullet.png");
+
 
         ALIEN_NYMPH = loadImage("alien-nymph.png");
         ALIEN_NYMPH_EXPLOSION = loadImage("alien-nymph-explosion.png");

@@ -9,6 +9,8 @@ import java.util.Optional;
 public class AlienNymphBullet extends Projectile {
     public AlienNymphBullet(double x, double y) {
         super(new PVector(x, y), Direction.DOWN, 12, 55);
+        setVelocity(new PVector(.1, .2));
+        setAcceleration(new PVector(0, 0));
     }
 
     @Override
@@ -18,5 +20,10 @@ public class AlienNymphBullet extends Projectile {
 
     public SpriteSheetAnimation getDamageAnimation(Point2D point) {
         return Assets.getAlienNymphBulletImpactExplosion(point);
+    }
+
+    @Override
+    public void move() {
+        super.move();
     }
 }

@@ -4,10 +4,12 @@ import com.comandante.spacetrigger.Alien;
 import com.comandante.spacetrigger.Assets;
 import com.comandante.spacetrigger.PVector;
 import com.comandante.spacetrigger.SpriteSheetAnimation;
+import com.comandante.spacetrigger.aliennymph.AlienNymphBullet;
 import com.comandante.spacetrigger.events.PlayerShipLocationUpdateEvent;
 import com.google.common.eventbus.Subscribe;
 
 import java.util.Optional;
+import java.util.Random;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
@@ -35,21 +37,52 @@ public class AlienBuzz extends Alien {
         super.move();
         if (shipLocation != null) {
             PVector shipDirection = PVector.sub(shipLocation, location);
-            shipDirection.normalize();
-            shipDirection.mult(0.1);
-            setAcceleration(shipDirection);
+            double mag = shipDirection.mag();
+            if (mag < 500) {
+              fire();
+            }
+
+            if (mag < 100) {
+                velocity.mult(-1);
+            } else {
+                //System.out.println("Magnitue of shipDirection: " + mag);
+                shipDirection.normalize();
+                shipDirection.mult(0.1);
+                applyForce(shipDirection);
+            }
             PVector random = PVector.random2D();
             random.mult(.4);
-            acceleration.add(random);
+            applyForce(random);
         }
+
         velocity.add(acceleration);
         location.add(velocity);
         velocity.limit(2);
+        acceleration.mult(0);
+
         if ((location.x > BOARD_X) || (location.x < 0)) {
             velocity.x = velocity.x * -1;
         }
         if ((location.y > BOARD_Y) || (location.y < 0)) {
             velocity.y = velocity.y * -1;
+        }
+    }
+
+
+    public void fire() {
+        if (projectiles.size() > 0) {
+            return;
+        }
+        PVector whereToFireFrom = new PVector((location.x + width / 2), (location.y + height / 2));
+        if (shipLocation != null) {
+            PVector shipDirection = PVector.sub(shipLocation, location);
+            shipDirection.normalize();
+            shipDirection.mult(0.1);
+            PVector randomNess = PVector.random2D();
+            randomNess.normalize();
+            randomNess.mult(.006);
+            shipDirection.add(randomNess);
+            projectiles.add(new AlienBuzzBullet(whereToFireFrom, shipDirection));
         }
     }
 }

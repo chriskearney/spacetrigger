@@ -90,6 +90,11 @@ public class PlayerStatusBars extends Sprite {
             if (healthBarLineStatus) {
                 graphics.drawImage(HEALTH_BAR_SINGLE, xPos, 2, null);
             }
+            xPos += BAR_SINGLE_WIDTH;
+        }
+
+        xPos = 2;
+        for (int i = 0; i < shieldBars.size(); i++) {
             Boolean shieldBarLineStatus = shieldBars.get(i);
             if (shieldBarLineStatus) {
                 graphics.drawImage(SHIELD_BAR_SINGLE, xPos, 16, null);

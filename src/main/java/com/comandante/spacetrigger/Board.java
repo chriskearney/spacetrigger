@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,11 +15,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.SplittableRandom;
+import java.util.function.Predicate;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
@@ -169,7 +170,6 @@ public class Board extends JPanel implements ActionListener {
                 AffineTransform transform = getAffineTransform(spriteRender.getX(), spriteRender.getY());
                 g.drawImage(spriteRender.getImage(), transform, this);
                 drawDamageAnimations(g, playerShip.getShield());
-                ;
             }
             drawDamageAnimations(g, playerShip);
             if (playerShip.isMovement() && !playerShip.isExploding()) {
@@ -200,9 +200,18 @@ public class Board extends JPanel implements ActionListener {
                 // Alien projectiles
                 for (int j = 0; j < alien.getMissiles().size(); j++) {
                     Sprite.SpriteRender alienMissleRender = alien.getMissiles().get(j).getSpriteRender();
-                    g.drawImage(alienMissleRender.getImage(), getAffineTransform(alienMissleRender.getX(), alienMissleRender.getY()), this);
+                    AffineTransform backup = g.getTransform();
+                    //rx is the x coordinate for rotation, ry is the y coordinate for rotation, and angle
+                    //is the angle to rotate the image. If you want to rotate around the center of an image,
+                    //use the image's center x and y coordinates for rx and ry.
+                    AffineTransform affineTransform = getAffineTransform(alienMissleRender.getX(), alienMissleRender.getY());
+                    //System.out.println("using heading: " + Math.toDegrees(alienMissleRender.getHeading()));
+                    affineTransform.rotate(alienMissleRender.getHeading());
+                    //Set our Graphics2D object to the transform
+                    g.transform(affineTransform);
+                    g.drawImage(alienMissleRender.getImage(), 0, 0, null );
+                    g.setTransform(backup);
                 }
-
                 if (alien.isExploding()) {
                     continue;
                 }
@@ -359,21 +368,27 @@ public class Board extends JPanel implements ActionListener {
             Projectile projectile = spaceShipProjectiles.get(i);
             if (projectile.isVisible()) {
                 projectile.move();
-            } else {
-                spaceShipProjectiles.remove(i);
             }
         }
 
+        spaceShipProjectiles.removeIf(s -> !s.isVisible());
+
         for (int i = 0; i < aliens.size(); i++) {
+            boolean remove = false;
             for (int j = 0; j < aliens.get(i).getMissiles().size(); j++) {
                 Projectile alienMissle = aliens.get(i).getMissiles().get(j);
                 if (alienMissle.isVisible()) {
                     alienMissle.move();
                 } else {
-                    aliens.get(i).getMissiles().remove(j);
+                    remove = true;
                 }
             }
+            if (remove) {
+                aliens.get(i).getMissiles().removeIf(missle -> !missle.isVisible());
+            }
         }
+
+
     }
 
     private void updateSpaceShip() {
@@ -391,24 +406,44 @@ public class Board extends JPanel implements ActionListener {
             return;
         }
 
+        boolean remove = false;
         for (int i = 0; i < aliens.size(); i++) {
             Alien a = aliens.get(i);
             if (a.isVisible()) {
                 a.move();
             } else {
-                eventBus.unregister(a);
-                aliens.remove(i);
+                remove = true;
+            }
+        }
+
+        if (remove) {
+            Iterator<Alien> iterator = aliens.iterator();
+            while (iterator.hasNext()) {
+                Alien next = iterator.next();
+                if (!next.isVisible()) {
+                    eventBus.unregister(next);
+                    iterator.remove();
+                }
             }
         }
     }
 
     private void updateDrops() {
+        boolean remove = false;
         for (int i = 0; i < drops.size(); i++) {
             Drop drop = drops.get(i);
             if (drop.isVisible()) {
                 drop.move();
             } else {
-                drops.remove(i);
+                remove = true;
+            }
+        }
+
+        if (remove) {
+            Iterator<Drop> iterator = drops.iterator();
+            while (iterator.hasNext()) {
+                Drop next = iterator.next();
+                iterator.remove();
             }
         }
     }

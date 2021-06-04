@@ -25,6 +25,7 @@ public abstract class Sprite {
     protected PVector originalLocation;
     protected PVector velocity;
     protected PVector acceleration;
+    protected double heading = 0;
     protected int width;
     protected int height;
     protected int hitPoints = 0;
@@ -39,6 +40,8 @@ public abstract class Sprite {
     protected int ticks = 0;
     protected double speed;
     protected boolean reverse = false;
+
+    protected double mass = 1.0;
 
     private long lastTickTime = 0;
 
@@ -97,7 +100,7 @@ public abstract class Sprite {
         }
 
         if (isExploding || warpAnimation.isPresent()) {
-           return;
+            return;
         }
 
 
@@ -138,7 +141,6 @@ public abstract class Sprite {
 
         if (warpAnimation.isPresent()) {
             Optional<BufferedImage> currentFrame = warpAnimation.get().updateAnimation();
-            ;
             if (currentFrame.isPresent()) {
                 double warpX = centerX - (currentFrame.get().getWidth() / 2);
                 double warpY = centerY - (currentFrame.get().getHeight() / 2);
@@ -169,10 +171,10 @@ public abstract class Sprite {
             if (!bufferedImage.isPresent()) {
                 throw new RuntimeException("Need a looping animation.");
             }
-            return new SpriteRender(location, bufferedImage.get());
+            return new SpriteRender(location, bufferedImage.get(), heading);
         }
 
-        return new SpriteRender(location, image);
+        return new SpriteRender(location, image, heading);
     }
 
     public double getX() {
@@ -268,6 +270,15 @@ public abstract class Sprite {
     public void setExploding(boolean exploding, boolean invisibleAfterExploding) {
         this.isExploding = exploding;
         this.invisibleAfterExploding = invisibleAfterExploding;
+    }
+
+    public void applyForce(PVector force) {
+        PVector div = PVector.div(force, mass);
+        if (acceleration == null) {
+            acceleration = div;
+        } else {
+            acceleration.add(div);
+        }
     }
 
     public static BufferedImage createTransparentBufferedImage(int width, int height) {
@@ -426,10 +437,18 @@ public abstract class Sprite {
     public static class SpriteRender {
         private final PVector location;
         private final BufferedImage image;
+        private final double heading;
+
+        public SpriteRender(PVector location, BufferedImage image, double heading) {
+            this.location = location;
+            this.image = image;
+            this.heading = heading;
+        }
 
         public SpriteRender(PVector location, BufferedImage image) {
             this.location = location;
             this.image = image;
+            this.heading = 0;
         }
 
         public double getX() {
@@ -440,8 +459,16 @@ public abstract class Sprite {
             return location.y;
         }
 
+        public PVector getLocation() {
+            return location;
+        }
+
         public BufferedImage getImage() {
             return image;
+        }
+
+        public double getHeading() {
+            return heading;
         }
     }
 }
