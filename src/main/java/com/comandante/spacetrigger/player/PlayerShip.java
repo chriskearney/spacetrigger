@@ -5,6 +5,7 @@ import com.comandante.spacetrigger.*;
 import com.comandante.spacetrigger.events.HealthPickUpEvent;
 import com.comandante.spacetrigger.events.MisslePickUpEvent;
 import com.comandante.spacetrigger.events.PlayerShipHealthUpdateEvent;
+import com.comandante.spacetrigger.events.PlayerShipLocationUpdateEvent;
 import com.comandante.spacetrigger.events.PlayerShipShieldUpdateEvent;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
@@ -18,9 +19,6 @@ import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
 
 public class PlayerShip extends Sprite {
-
-    private double dx;
-    private double dy;
 
     private int missleCapacity = 10;
     private int currentMissles = 3;
@@ -36,10 +34,10 @@ public class PlayerShip extends Sprite {
     private int ticks;
 
     public PlayerShip(EventBus eventBus) {
-        super(0, 0, 500, 0);
+        super(new PVector(0, 0), 500, 0);
         initSpaceShip();
-        super.x = BOARD_X / 2;
-        super.y = BOARD_Y - getHeight() * 4;
+        location = new PVector(BOARD_X / 2, BOARD_Y - getHeight() * 4);
+        velocity = new PVector(0, 0);
         this.eventBus = eventBus;
         this.visible = true;
     }
@@ -72,39 +70,39 @@ public class PlayerShip extends Sprite {
             }
         }
 
-        if (dx != 0 || dy != 0) {
-            if (dx != 0) {
-                if ((x + dx) <= 0) {
-                    x = 0;
-                    dx = 0;
+        if (velocity.x != 0 || velocity.y != 0) {
+            if (velocity.x != 0) {
+                if ((location.x + velocity.x) <= 0) {
+                    location.x = 0;
+                    setVelocity(new PVector(0, velocity.y));
                     return;
                 }
 
-                if ((x + dx) >= (BOARD_X - width)) {
-                    x = (BOARD_X - width);
-                    dx = 0;
-                    return;
-                }
-            }
-
-            if (dy != 0) {
-                if ((y + dy) <= 0) {
-                    y = 0;
-                    dy = 0;
-                    return;
-                }
-
-                if ((y + dy) >= (BOARD_Y - height * 2)) {
-                    y = (BOARD_Y - height * 2);
-                    dy = 0;
+                if ((location.x + velocity.x) >= (BOARD_X - width)) {
+                    location.x = (BOARD_X - width);
+                    setVelocity(new PVector(0, velocity.y));
                     return;
                 }
             }
 
-            x += dx;
-            y += dy;
+            if (velocity.y != 0) {
+                if ((location.y + velocity.y) <= 0) {
+                    location.y = 0;
+                    setVelocity(new PVector(velocity.x, 0));
+                    return;
+                }
+
+                if ((location.y + velocity.y) >= (BOARD_Y - height * 2)) {
+                    location.y = (BOARD_Y - height * 2);
+                    setVelocity(new PVector(velocity.x, 0));
+                    return;
+                }
+            }
+
+            location.add(velocity);
         }
         ticks++;
+        eventBus.post(new PlayerShipLocationUpdateEvent(location));
     }
 
     public void addMissles(int number) {
@@ -119,13 +117,13 @@ public class PlayerShip extends Sprite {
         if (currentMissles == 0) {
             return;
         }
-        projectiles.add(new PlayerMissleLevel1Bullet((x + width / 2) - 8, (y + height / 2) - 20));
+        projectiles.add(new PlayerMissleLevel1Bullet((location.x + width / 2) - 8, (location.y + height / 2) - 20));
         currentMissles--;
     }
 
     public void fireGun() {
-        projectiles.add(new PlayerGunLevel2Bullet((x + width / 2) - 22, (y + height / 2) - 15, Direction.UP));
-        projectiles.add(new PlayerGunLevel2Bullet((x + width / 2) + 3, (y + height / 2) - 15, Direction.UP));
+        projectiles.add(new PlayerGunLevel2Bullet((location.x + width / 2) - 22, (location.y + height / 2) - 15, Direction.UP));
+        projectiles.add(new PlayerGunLevel2Bullet((location.x + width / 2) + 3, (location.y + height / 2) - 15, Direction.UP));
     }
 
     public void keyPressed(KeyEvent e) {
@@ -145,19 +143,19 @@ public class PlayerShip extends Sprite {
         }
 
         if (key == KeyEvent.VK_A) {
-            dx = -4;
+            setVelocity(new PVector(-4, velocity.y));
         }
 
         if (key == KeyEvent.VK_D) {
-            dx = 4;
+            setVelocity(new PVector(4, velocity.y));
         }
 
         if (key == KeyEvent.VK_W) {
-            dy = -4;
+            setVelocity(new PVector(velocity.x, -4));
         }
 
         if (key == KeyEvent.VK_S) {
-            dy = 4;
+            setVelocity(new PVector(velocity.x, 4));
         }
 
         if (key == KeyEvent.VK_M) {
@@ -173,29 +171,29 @@ public class PlayerShip extends Sprite {
 
         if (key == KeyEvent.VK_A) {
             // If the current speed is headed left, clear it.  dont otherwise it interferes with another key press.
-            if (dx < 0) {
-                dx = 0;
+            if (velocity.x < 0) {
+                velocity.x = 0;
             }
         }
 
         if (key == KeyEvent.VK_D) {
             // If the current speed is headed right, clear it.  dont otherwise it interferes with another key press.
-            if (dx > 0) {
-                dx = 0;
+            if (velocity.x > 0) {
+                velocity.x = 0;
             }
         }
 
         if (key == KeyEvent.VK_W) {
             // If the current speed is headed up, clear it.  dont otherwise it interferes with another key press.
-            if (dy < 0) {
-                dy = 0;
+            if (velocity.y < 0) {
+                velocity.y = 0;
             }
         }
 
         if (key == KeyEvent.VK_S) {
             // If the current speed is headed down, clear it.  dont otherwise it interferes with another key press.
-            if (dy > 0) {
-                dy = 0;
+            if (velocity.y > 0) {
+                velocity.y = 0;
             }
         }
 
@@ -209,7 +207,7 @@ public class PlayerShip extends Sprite {
     }
 
     public boolean isMovement() {
-        return dy != 0 || dx != 0;
+        return velocity.y != 0 || velocity.x != 0;
     }
 
     public boolean isShield() {

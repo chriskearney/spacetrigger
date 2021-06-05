@@ -1,9 +1,6 @@
 package com.comandante.spacetrigger.player;
 
-import com.comandante.spacetrigger.Assets;
-import com.comandante.spacetrigger.Direction;
-import com.comandante.spacetrigger.Projectile;
-import com.comandante.spacetrigger.SpriteSheetAnimation;
+import com.comandante.spacetrigger.*;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -12,7 +9,7 @@ import java.util.Optional;
 public class PlayerMissleLevel1Bullet extends Projectile {
 
     public PlayerMissleLevel1Bullet(double x, double y) {
-        super(x, y, Direction.UP, 4, 1000);
+        super(new PVector(x, y), Direction.UP, 4, 1000);
     }
 
     public void init() {

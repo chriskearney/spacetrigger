@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.SplittableRandom;
+
 import com.google.common.collect.Lists;
 
 
@@ -20,8 +21,11 @@ import static java.lang.Math.sin;
 
 public abstract class Sprite {
 
-    protected double x;
-    protected double y;
+    protected PVector location;
+    protected PVector originalLocation;
+    protected PVector velocity;
+    protected PVector acceleration;
+    protected double heading = 0;
     protected int width;
     protected int height;
     protected int hitPoints = 0;
@@ -37,6 +41,10 @@ public abstract class Sprite {
     protected double speed;
     protected boolean reverse = false;
 
+    protected double mass = 1.0;
+
+    private long lastTickTime = 0;
+
     protected final SplittableRandom random = new SplittableRandom();
 
     protected List<SpriteSheetAnimation> damageAnimations = Lists.newArrayList();
@@ -44,38 +52,33 @@ public abstract class Sprite {
 
     private double centerX;
     private double centerY;
-
-    protected double originalX;
-    protected double originalY;
-
     protected ArrayList<Point2D> trajectory = Lists.newArrayList();
 
     private Point2D previousAddedPoint;
 
     private static final BufferedImage TRANSPARENT_ONE_PIXEL = createTransparentBufferedImage(1, 1);
 
-    public Sprite(double x, double y, int hitPoints, double speed) {
-        this.x = x;
-        this.y = y;
-        this.originalX = x;
-        this.originalY = y;
+    public Sprite(PVector location, int hitPoints, double speed) {
+        this.location = location;
+        this.originalLocation = new PVector(location.x, location.y);
+        ;
         this.hitPoints = hitPoints;
         this.maxHitpoints = hitPoints;
         this.speed = speed;
-        this.previousAddedPoint = new Point2D.Double(originalX, originalY);
-        this.trajectory.add(previousAddedPoint);
-        this.trajectory.add(previousAddedPoint);
     }
 
-    public Sprite(double x, double y, double speed) {
-        this.x = x;
-        this.y = y;
-        this.originalX = x;
-        this.originalY = y;
+    public Sprite(PVector location, double speed) {
+        this.location = location;
+        this.originalLocation = new PVector(location.x, location.y);
         this.speed = speed;
-        this.previousAddedPoint = new Point2D.Double(originalX, originalY);
-        this.trajectory.add(previousAddedPoint);
-        this.trajectory.add(previousAddedPoint);
+    }
+
+    public void setVelocity(PVector velocity) {
+        this.velocity = velocity;
+    }
+
+    public void setAcceleration(PVector acceleration) {
+        this.acceleration = acceleration;
     }
 
     protected void loadImage(BufferedImage image) {
@@ -91,24 +94,34 @@ public abstract class Sprite {
     }
 
     public void move() {
+        long currentTickTime = System.currentTimeMillis();
+        if (lastTickTime == 0) {
+            lastTickTime = currentTickTime;
+        }
+
         if (isExploding || warpAnimation.isPresent()) {
             return;
         }
-        for (int i = 0; i < speed; i++) {
-            Point2D point = trajectory.get(ticks);
-            x = point.getX();
-            y = point.getY() + (int) Math.round(speed);
-            if (reverse) {
-                ticks--;
-            } else {
-                ticks++;
-            }
-            if (ticks == trajectory.size() - 1) {
-                reverse = true;
-            } else if (ticks == 0) {
-                reverse = false;
-            }
-        }
+
+
+//        if (reverse) {
+//            ticks--;
+//        } else {
+//            ticks++;
+//        }
+//        if (ticks == trajectory.size() - 1) {
+//            reverse = true;
+//        } else if (ticks == 0) {
+//            reverse = false;
+//        }
+//        // }
+
+
+        lastTickTime = System.currentTimeMillis();
+    }
+
+    private Point2D getLastPointInTrajectory() {
+        return trajectory.get(trajectory.size() - 1);
     }
 
     protected void loadExplosion(SpriteSheetAnimation explosion) {
@@ -127,11 +140,11 @@ public abstract class Sprite {
         }
 
         if (warpAnimation.isPresent()) {
-            Optional<BufferedImage> currentFrame = warpAnimation.get().updateAnimation();;
+            Optional<BufferedImage> currentFrame = warpAnimation.get().updateAnimation();
             if (currentFrame.isPresent()) {
                 double warpX = centerX - (currentFrame.get().getWidth() / 2);
                 double warpY = centerY - (currentFrame.get().getHeight() / 2);
-                return new SpriteRender(warpX, warpY, currentFrame.get());
+                return new SpriteRender(new PVector(warpX, warpY), currentFrame.get());
             } else {
                 warpAnimation = Optional.empty();
             }
@@ -142,7 +155,7 @@ public abstract class Sprite {
             if (currentFrame.isPresent()) {
                 double explosionX = centerX - (currentFrame.get().getWidth() / 2);
                 double explosionY = centerY - (currentFrame.get().getHeight() / 2);
-                return new SpriteRender(explosionX, explosionY, currentFrame.get());
+                return new SpriteRender(new PVector(explosionX, explosionY), currentFrame.get());
             }
 
             if (invisibleAfterExploding) {
@@ -150,7 +163,7 @@ public abstract class Sprite {
                 isExploding = false;
             }
 
-            return new SpriteRender(x, y, TRANSPARENT_ONE_PIXEL);
+            return new SpriteRender(location, TRANSPARENT_ONE_PIXEL);
         }
 
         if (animatedImage.isPresent()) {
@@ -158,28 +171,23 @@ public abstract class Sprite {
             if (!bufferedImage.isPresent()) {
                 throw new RuntimeException("Need a looping animation.");
             }
-            return new SpriteRender(x, y, bufferedImage.get());
+            return new SpriteRender(location, bufferedImage.get(), heading);
         }
 
-        return new SpriteRender(x, y, image);
+        return new SpriteRender(location, image, heading);
     }
 
     public double getX() {
-        return x;
+        return location.x;
     }
 
     public double getY() {
-        return y;
+        return location.y;
     }
 
-    public void setOriginalX(double x) {
-        this.originalX = x;
-        this.x = x;
-    }
-
-    public void setOriginalY(double y) {
-        this.originalY = y;
-        this.y = y;
+    public void setOriginalLocation(PVector location) {
+        this.location = location;
+        this.originalLocation = location;
     }
 
     public int getWidth() {
@@ -199,13 +207,14 @@ public abstract class Sprite {
     }
 
     public Rectangle2D getBounds() {
-        return new Rectangle2D.Double(x, y, width, height);
+        return new Rectangle2D.Double(location.x, location.y, width, height);
     }
 
     public HashSet<String> getMask() {
         // can't have any transparency to make the msak in this case
         return getMask(254);
     }
+
     public HashSet<String> getMask(int threshold) {
         HashSet<String> mask = new HashSet<String>();
         int pixel;
@@ -220,7 +229,7 @@ public abstract class Sprite {
                 }
                 pixel = maskImage.getRGB(i, j);
                 if (!hasTransparency(pixel, threshold)) {
-                    mask.add((getX() + i) + "," + (getY() + j));
+                    mask.add(((int) getX() + i) + "," + (int) (getY() + j));
                 }
             }
         }
@@ -264,6 +273,15 @@ public abstract class Sprite {
         this.invisibleAfterExploding = invisibleAfterExploding;
     }
 
+    public void applyForce(PVector force) {
+        PVector div = PVector.div(force, mass);
+        if (acceleration == null) {
+            acceleration = div;
+        } else {
+            acceleration.add(div);
+        }
+    }
+
     public static BufferedImage createTransparentBufferedImage(int width, int height) {
         // BufferedImage is actually already transparent on my system, but that isn't
         // guaranteed across platforms.
@@ -305,8 +323,8 @@ public abstract class Sprite {
     }
 
     private Point2D removeBoardCoords(Point2D point) {
-        double relativeX = point.getX() - x;
-        double relativeY = point.getY() - y;
+        double relativeX = point.getX() - location.x;
+        double relativeY = point.getY() - location.y;
         return new Point2D.Double(relativeX, relativeY);
     }
 
@@ -418,26 +436,40 @@ public abstract class Sprite {
     }
 
     public static class SpriteRender {
-        private final double x;
-        private final double y;
+        private final PVector location;
         private final BufferedImage image;
+        private final double heading;
 
-        public SpriteRender(double x, double y, BufferedImage image) {
-            this.x = x;
-            this.y = y;
+        public SpriteRender(PVector location, BufferedImage image, double heading) {
+            this.location = location;
             this.image = image;
+            this.heading = heading;
+        }
+
+        public SpriteRender(PVector location, BufferedImage image) {
+            this.location = location;
+            this.image = image;
+            this.heading = 0;
         }
 
         public double getX() {
-            return x;
+            return location.x;
         }
 
         public double getY() {
-            return y;
+            return location.y;
+        }
+
+        public PVector getLocation() {
+            return location;
         }
 
         public BufferedImage getImage() {
             return image;
+        }
+
+        public double getHeading() {
+            return heading;
         }
     }
 }

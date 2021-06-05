@@ -1,9 +1,6 @@
 package com.comandante.spacetrigger.alienscout;
 
-import com.comandante.spacetrigger.Assets;
-import com.comandante.spacetrigger.Direction;
-import com.comandante.spacetrigger.Projectile;
-import com.comandante.spacetrigger.SpriteSheetAnimation;
+import com.comandante.spacetrigger.*;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -12,7 +9,7 @@ import java.util.Optional;
 public class AlienScoutMissle extends Projectile {
 
     public AlienScoutMissle(double x, double y) {
-        super(x, y, Direction.DOWN, 4, 250);
+        super(new PVector(x, y), Direction.DOWN, 4, 250);
     }
 
     @Override

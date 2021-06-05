@@ -8,8 +8,8 @@ public abstract class Projectile extends Sprite {
     private final Direction direction;
     private final int damage;
 
-    public Projectile(double x, double y, Direction direction, double speed, int damage) {
-        super(x, y, speed);
+    public Projectile(PVector location, Direction direction, double speed, int damage) {
+        super(location, speed);
         this.direction = direction;
         this.damage = damage;
         init();
@@ -20,16 +20,16 @@ public abstract class Projectile extends Sprite {
 
     public void move() {
         if (direction.equals(Direction.UP)) {
-            y -= speed;
+            location.y -= speed;
         } else {
-            y += speed;
+            location.y += speed;
         }
 
-        if (y > Main.BOARD_Y) {
+        if (location.y > Main.BOARD_Y) {
             visible = false;
         }
 
-        if (y < 0) {
+        if (location.y < 0) {
             visible = false;
         }
     }

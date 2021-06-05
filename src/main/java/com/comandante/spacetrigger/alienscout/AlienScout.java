@@ -2,6 +2,7 @@ package com.comandante.spacetrigger.alienscout;
 
 import com.comandante.spacetrigger.Alien;
 import com.comandante.spacetrigger.Assets;
+import com.comandante.spacetrigger.PVector;
 import com.comandante.spacetrigger.SpriteSheetAnimation;
 
 public class AlienScout extends Alien {
@@ -9,7 +10,7 @@ public class AlienScout extends Alien {
     private int scoutTicks;
 
     public AlienScout(int x, int y) {
-        super(x, y, 1000, 1);
+        super(new PVector(x, y), 1000, .0001);
     }
 
      protected void initAlien() {
@@ -19,7 +20,7 @@ public class AlienScout extends Alien {
     }
 
     public void fire() {
-        projectiles.add(new AlienScoutMissle((x + width / 2) - 7, (y + height / 2) + 40));
+        projectiles.add(new AlienScoutMissle((location.x + width / 2) - 7, (location.y + height / 2) + 40));
     }
 
     public void move() {

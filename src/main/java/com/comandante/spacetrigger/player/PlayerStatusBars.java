@@ -1,6 +1,7 @@
 package com.comandante.spacetrigger.player;
 
 import com.comandante.spacetrigger.Assets;
+import com.comandante.spacetrigger.PVector;
 import com.comandante.spacetrigger.Sprite;
 import com.comandante.spacetrigger.events.PlayerShipHealthUpdateEvent;
 import com.comandante.spacetrigger.events.PlayerShipShieldUpdateEvent;
@@ -32,8 +33,8 @@ public class PlayerStatusBars extends Sprite {
 
     int ticks = 0;
 
-    public PlayerStatusBars(int x, int y) {
-        super(x, y, 0);
+    public PlayerStatusBars(PVector location) {
+        super(location, 0);
         healthBars = calculateBars(healthPctFull);
         shieldBars = calculateBars(shieldPctFull);
     }
@@ -89,6 +90,11 @@ public class PlayerStatusBars extends Sprite {
             if (healthBarLineStatus) {
                 graphics.drawImage(HEALTH_BAR_SINGLE, xPos, 2, null);
             }
+            xPos += BAR_SINGLE_WIDTH;
+        }
+
+        xPos = 2;
+        for (int i = 0; i < shieldBars.size(); i++) {
             Boolean shieldBarLineStatus = shieldBars.get(i);
             if (shieldBarLineStatus) {
                 graphics.drawImage(SHIELD_BAR_SINGLE, xPos, 16, null);

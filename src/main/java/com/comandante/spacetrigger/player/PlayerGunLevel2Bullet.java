@@ -1,9 +1,6 @@
 package com.comandante.spacetrigger.player;
 
-import com.comandante.spacetrigger.Assets;
-import com.comandante.spacetrigger.Direction;
-import com.comandante.spacetrigger.Projectile;
-import com.comandante.spacetrigger.SpriteSheetAnimation;
+import com.comandante.spacetrigger.*;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
@@ -12,7 +9,7 @@ import java.util.Optional;
 public class PlayerGunLevel2Bullet extends Projectile {
 
     public PlayerGunLevel2Bullet(double x, double y, Direction direction) {
-        super(x, y, direction, 12, 55);
+        super(new PVector(x, y), direction, 12, 55);
     }
 
     @Override
