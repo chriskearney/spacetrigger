@@ -442,8 +442,10 @@ public class Board extends JPanel implements ActionListener {
         if (remove) {
             Iterator<Drop> iterator = drops.iterator();
             while (iterator.hasNext()) {
-                iterator.next();
-                iterator.remove();
+                Drop next = iterator.next();
+                if (!next.isVisible()) {
+                    iterator.remove();
+                }
             }
         }
     }
