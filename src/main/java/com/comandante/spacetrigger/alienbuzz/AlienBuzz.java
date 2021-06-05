@@ -50,24 +50,31 @@ public class AlienBuzz extends Alien {
         double mag = vectorToPlayerShip.mag();
 
         if (mag < 500) {
-            fire();
+            double randoPercent = random.nextDouble(100);
+            if (randoPercent < .3) {
+                fire();
+            }
         }
 
         if (mag < 100) {
-            velocity.mult(-1);
+            PVector pVector = vectorToPlayerShip.get();
+            pVector.normalize();
+            pVector.mult(-4);
+            applyForce(pVector );
         } else {
             vectorToPlayerShip.normalize();
             vectorToPlayerShip.mult(0.1);
             applyForce(vectorToPlayerShip);
+            PVector random = PVector.random2D();
+            random.mult(.4);
+            applyForce(random);
         }
-        PVector random = PVector.random2D();
-        random.mult(.4);
-        applyForce(random);
 
         velocity.add(acceleration);
         location.add(velocity);
         velocity.limit(2);
         acceleration.mult(0);
+
 
         if ((location.x > BOARD_X) || (location.x < 0)) {
             velocity.x = velocity.x * -1;
