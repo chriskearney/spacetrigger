@@ -20,9 +20,6 @@ import static com.comandante.spacetrigger.Main.BOARD_Y;
 
 public class PlayerShip extends Sprite {
 
-    private double dx;
-    private double dy;
-
     private int missleCapacity = 10;
     private int currentMissles = 3;
 
@@ -39,8 +36,8 @@ public class PlayerShip extends Sprite {
     public PlayerShip(EventBus eventBus) {
         super(new PVector(0, 0), 500, 0);
         initSpaceShip();
-        super.location.x = BOARD_X / 2;
-        super.location.y = BOARD_Y - getHeight() * 4;
+        location = new PVector(BOARD_X / 2, BOARD_Y - getHeight() * 4);
+        velocity = new PVector(0, 0);
         this.eventBus = eventBus;
         this.visible = true;
     }
@@ -73,37 +70,36 @@ public class PlayerShip extends Sprite {
             }
         }
 
-        if (dx != 0 || dy != 0) {
-            if (dx != 0) {
-                if ((location.x + dx) <= 0) {
+        if (velocity.x != 0 || velocity.y != 0) {
+            if (velocity.x != 0) {
+                if ((location.x + velocity.x) <= 0) {
                     location.x = 0;
-                    dx = 0;
+                    setVelocity(new PVector(0, velocity.y));
                     return;
                 }
 
-                if ((location.x + dx) >= (BOARD_X - width)) {
+                if ((location.x + velocity.x) >= (BOARD_X - width)) {
                     location.x = (BOARD_X - width);
-                    dx = 0;
+                    setVelocity(new PVector(0, velocity.y));
                     return;
                 }
             }
 
-            if (dy != 0) {
-                if ((location.y + dy) <= 0) {
+            if (velocity.y != 0) {
+                if ((location.y + velocity.y) <= 0) {
                     location.y = 0;
-                    dy = 0;
+                    setVelocity(new PVector(velocity.x, 0));
                     return;
                 }
 
-                if ((location.y + dy) >= (BOARD_Y - height * 2)) {
+                if ((location.y + velocity.y) >= (BOARD_Y - height * 2)) {
                     location.y = (BOARD_Y - height * 2);
-                    dy = 0;
+                    setVelocity(new PVector(velocity.x, 0));
                     return;
                 }
             }
 
-            location.x += dx;
-            location.y += dy;
+            location.add(velocity);
         }
         ticks++;
         eventBus.post(new PlayerShipLocationUpdateEvent(location));
@@ -147,19 +143,19 @@ public class PlayerShip extends Sprite {
         }
 
         if (key == KeyEvent.VK_A) {
-            dx = -4;
+            setVelocity(new PVector(-4, velocity.y));
         }
 
         if (key == KeyEvent.VK_D) {
-            dx = 4;
+            setVelocity(new PVector(4, velocity.y));
         }
 
         if (key == KeyEvent.VK_W) {
-            dy = -4;
+            setVelocity(new PVector(velocity.x, -4));
         }
 
         if (key == KeyEvent.VK_S) {
-            dy = 4;
+            setVelocity(new PVector(velocity.x, 4));
         }
 
         if (key == KeyEvent.VK_M) {
@@ -175,29 +171,29 @@ public class PlayerShip extends Sprite {
 
         if (key == KeyEvent.VK_A) {
             // If the current speed is headed left, clear it.  dont otherwise it interferes with another key press.
-            if (dx < 0) {
-                dx = 0;
+            if (velocity.x < 0) {
+                velocity.x = 0;
             }
         }
 
         if (key == KeyEvent.VK_D) {
             // If the current speed is headed right, clear it.  dont otherwise it interferes with another key press.
-            if (dx > 0) {
-                dx = 0;
+            if (velocity.x > 0) {
+                velocity.x = 0;
             }
         }
 
         if (key == KeyEvent.VK_W) {
             // If the current speed is headed up, clear it.  dont otherwise it interferes with another key press.
-            if (dy < 0) {
-                dy = 0;
+            if (velocity.y < 0) {
+                velocity.y = 0;
             }
         }
 
         if (key == KeyEvent.VK_S) {
             // If the current speed is headed down, clear it.  dont otherwise it interferes with another key press.
-            if (dy > 0) {
-                dy = 0;
+            if (velocity.y > 0) {
+                velocity.y = 0;
             }
         }
 
@@ -211,7 +207,7 @@ public class PlayerShip extends Sprite {
     }
 
     public boolean isMovement() {
-        return dy != 0 || dx != 0;
+        return velocity.y != 0 || velocity.x != 0;
     }
 
     public boolean isShield() {

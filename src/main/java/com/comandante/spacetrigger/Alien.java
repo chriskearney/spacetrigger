@@ -6,6 +6,7 @@ import com.google.common.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class Alien extends Sprite {
 
@@ -38,5 +39,21 @@ public abstract class Alien extends Sprite {
     @Subscribe
     public void updateShipLocation(PlayerShipLocationUpdateEvent locationUpdateEvent) {
         shipLocation = locationUpdateEvent.getShipLocation();
+    }
+
+    protected double getMagnitudeOfVectorLengthToPlayerShip() {
+        if (shipLocation != null) {
+            PVector shipDirection = PVector.sub(shipLocation, location);
+            return shipDirection.mag();
+        }
+
+        return 0;
+    }
+
+    protected Optional<PVector> getVectorToPlayerShip() {
+        if (location == null) {
+            return Optional.empty();
+        }
+        return Optional.of(PVector.sub(shipLocation, location));
     }
 }

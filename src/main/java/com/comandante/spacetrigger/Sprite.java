@@ -186,6 +186,7 @@ public abstract class Sprite {
     }
 
     public void setOriginalLocation(PVector location) {
+        this.location = location;
         this.originalLocation = location;
     }
 

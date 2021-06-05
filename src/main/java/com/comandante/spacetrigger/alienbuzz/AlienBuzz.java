@@ -29,31 +29,40 @@ public class AlienBuzz extends Alien {
         loadExplosion(Assets.getAlienBuzzExplosion());
     }
 
+    public AlienBuzz(PVector location, int hitPoints, double speed) {
+
+        super(location, hitPoints, speed);
+    }
+
     @Override
     public void move() {
         if (isExploding || warpAnimation.isPresent()) {
             return;
         }
         super.move();
-        if (shipLocation != null) {
-            PVector shipDirection = PVector.sub(shipLocation, location);
-            double mag = shipDirection.mag();
-            if (mag < 500) {
-              fire();
-            }
 
-            if (mag < 100) {
-                velocity.mult(-1);
-            } else {
-                //System.out.println("Magnitue of shipDirection: " + mag);
-                shipDirection.normalize();
-                shipDirection.mult(0.1);
-                applyForce(shipDirection);
-            }
-            PVector random = PVector.random2D();
-            random.mult(.4);
-            applyForce(random);
+        Optional<PVector> vectorToPlayerShipOptional = getVectorToPlayerShip();
+        if (!vectorToPlayerShipOptional.isPresent()) {
+            return;
         }
+
+        PVector vectorToPlayerShip = vectorToPlayerShipOptional.get();
+        double mag = vectorToPlayerShip.mag();
+
+        if (mag < 500) {
+            fire();
+        }
+
+        if (mag < 100) {
+            velocity.mult(-1);
+        } else {
+            vectorToPlayerShip.normalize();
+            vectorToPlayerShip.mult(0.1);
+            applyForce(vectorToPlayerShip);
+        }
+        PVector random = PVector.random2D();
+        random.mult(.4);
+        applyForce(random);
 
         velocity.add(acceleration);
         location.add(velocity);
