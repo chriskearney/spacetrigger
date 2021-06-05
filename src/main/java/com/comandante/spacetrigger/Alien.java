@@ -56,4 +56,12 @@ public abstract class Alien extends Sprite {
         }
         return Optional.of(PVector.sub(shipLocation, location));
     }
+
+    protected void applyFriction(double c) {
+        PVector friction = velocity.get();
+        friction.normalize();
+        friction.mult(-1);
+        friction.mult(c);
+        applyForce(friction);
+    }
 }
