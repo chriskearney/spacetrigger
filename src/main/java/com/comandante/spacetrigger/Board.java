@@ -162,11 +162,11 @@ public class Board extends JPanel implements ActionListener {
             Sprite.SpriteRender spaceShipRender = playerShip.getSpriteRender();
             AffineTransform t = getAffineTransform(spaceShipRender.getX(), spaceShipRender.getY());
             g.drawImage(spaceShipRender.getImage(), t, this);
+            Sprite shield = playerShip.getShield();
+            PVector v = new PVector((spaceShipRender.getX() + (playerShip.getWidth() / 2) - (playerShip.getShield().getWidth() / 2)),
+                    (spaceShipRender.getY() + (playerShip.getHeight() / 2) - (playerShip.getShield().getHeight() / 2)));
+            shield.setOriginalLocation(v);
             if (playerShip.getShield().isVisible() && !playerShip.isExploding()) {
-                Sprite shield = playerShip.getShield();
-                PVector v = new PVector((spaceShipRender.getX() + (playerShip.getWidth() / 2) - (playerShip.getShield().getWidth() / 2)),
-                        (spaceShipRender.getY() + (playerShip.getHeight() / 2) - (playerShip.getShield().getHeight() / 2)));
-                shield.setOriginalLocation(v);
                 Sprite.SpriteRender spriteRender = shield.getSpriteRender();
                 AffineTransform transform = getAffineTransform(spriteRender.getX(), spriteRender.getY());
                 g.drawImage(spriteRender.getImage(), transform, this);
@@ -293,7 +293,7 @@ public class Board extends JPanel implements ActionListener {
             List<Projectile> projectiles = aliens.get(i).getMissiles();
             for (int j = 0; j < projectiles.size(); j++) {
                 Projectile projectile = projectiles.get(j);
-                if (playerShip.isShield()) {
+                if (projectile.isCollison(playerShip.getShield(), 100, true).isPresent()) {
                     playerShip.getShield().setVisible(true);
                     Optional<Point2D> shieldCollision = projectile.isCollison(playerShip.getShield(), 100);
                     if (shieldCollision.isPresent()) {
@@ -382,7 +382,7 @@ public class Board extends JPanel implements ActionListener {
                     alienMissle.move();
                 } else {
                     remove = true;
-                    eventBus.unregister(alienMissle);
+                    eventBus.unregister(aliens.get(i));
                 }
             }
             if (remove) {

@@ -228,14 +228,18 @@ public abstract class Sprite {
     }
 
     public Optional<Point2D> isCollison(Sprite sprite) {
-        return isCollison(sprite, 254);
+        return isCollison(sprite, 254, false);
     }
 
     public Optional<Point2D> isCollison(Sprite sprite, int transparencyThreshold) {
-        if (!visible || isExploding || warpAnimation.isPresent()) {
+        return isCollison(sprite, transparencyThreshold, false);
+    }
+
+    public Optional<Point2D> isCollison(Sprite sprite, int transparencyThreshold, boolean overrideVisibility) {
+        if ((!visible && !overrideVisibility) || isExploding || warpAnimation.isPresent()) {
             return Optional.empty();
         }
-        if (!sprite.isVisible() || sprite.isExploding()) {
+        if ((!sprite.isVisible() && !overrideVisibility)  || sprite.isExploding()) {
             return Optional.empty();
         }
         Rectangle2D thisSpriteRectangle = getBounds();
