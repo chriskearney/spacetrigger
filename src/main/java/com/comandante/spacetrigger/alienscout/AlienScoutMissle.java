@@ -17,7 +17,7 @@ public class AlienScoutMissle extends Projectile {
     private PVector shipLocation;
 
     public AlienScoutMissle(double x, double y, PVector heading) {
-        super(new PVector(x, y), Direction.DOWN, heading, 250, Assets.ALIEN_SCOUT_MISSLE);
+        super(new PVector(x, y), heading, 250, Assets.ALIEN_SCOUT_MISSLE);
         this.shipLocation = heading;
         setAcceleration(new PVector(0, 0));
         setVelocity(new PVector(0, 0));

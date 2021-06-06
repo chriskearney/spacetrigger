@@ -6,12 +6,10 @@ import java.awt.image.BufferedImage;
 
 public abstract class Projectile extends Sprite {
 
-    private final Direction direction;
     private final int damage;
 
-    public Projectile(PVector location, Direction direction, PVector heading, int damage, BufferedImage spriteImage) {
+    public Projectile(PVector location, PVector heading, int damage, BufferedImage spriteImage) {
         super(location);
-        this.direction = direction;
         this.damage = damage;
         init(spriteImage, heading.heading());
         visible = true;
@@ -26,12 +24,6 @@ public abstract class Projectile extends Sprite {
     }
 
     public void move() {
-        if (direction.equals(Direction.UP)) {
-            location.y -= speed;
-        } else {
-            location.y += speed;
-        }
-
         if (location.y > Main.BOARD_Y) {
             visible = false;
         }

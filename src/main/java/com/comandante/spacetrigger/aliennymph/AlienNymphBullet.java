@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class AlienNymphBullet extends Projectile {
     public AlienNymphBullet(double x, double y) {
-        super(new PVector(x, y), Direction.DOWN, new PVector(0, 0), 55, Assets.ALIEN_BUZZ_BULLET);
+        super(new PVector(x, y), new PVector(0, 0), 55, Assets.ALIEN_BUZZ_BULLET);
         setVelocity(new PVector(.1, .2));
         setAcceleration(new PVector(0, 0));
     }

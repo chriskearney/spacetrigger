@@ -122,8 +122,8 @@ public class PlayerShip extends Sprite {
     }
 
     public void fireGun() {
-        projectiles.add(new PlayerGunLevel2Bullet((location.x + getWidth() / 2) - 22, (location.y + getHeight() / 2) - 15, Direction.UP));
-        projectiles.add(new PlayerGunLevel2Bullet((location.x + getWidth() / 2) + 3, (location.y + getHeight() / 2) - 15, Direction.UP));
+        projectiles.add(new PlayerGunLevel2Bullet((location.x + getWidth() / 2) - 22, (location.y + getHeight() / 2) - 15));
+        projectiles.add(new PlayerGunLevel2Bullet((location.x + getWidth() / 2) + 3, (location.y + getHeight() / 2) - 15));
     }
 
     public void keyPressed(KeyEvent e) {

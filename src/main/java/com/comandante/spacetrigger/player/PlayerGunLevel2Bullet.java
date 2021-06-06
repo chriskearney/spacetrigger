@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public class PlayerGunLevel2Bullet extends Projectile {
 
-    public PlayerGunLevel2Bullet(double x, double y, Direction direction) {
-        super(new PVector(x, y), direction, new PVector(0, 0), 55, Assets.PLAYER_GUN_LEVEL_2_BULLET);
+    public PlayerGunLevel2Bullet(double x, double y) {
+        super(new PVector(x, y), new PVector(0, 0), 55, Assets.PLAYER_GUN_LEVEL_2_BULLET);
         setVelocity(new PVector(0, -9));
     }
 
