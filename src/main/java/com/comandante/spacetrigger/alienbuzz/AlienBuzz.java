@@ -38,6 +38,10 @@ public class AlienBuzz extends Alien {
         return random.nextInt(max - min) + min;
     }
 
+    public double getRandomNumberUsingNextDouble(double min, double max) {
+        return random.nextDouble(max - min) + min;
+    }
+
     @Override
     public void move() {
         if (isExploding || warpAnimation.isPresent()) {
@@ -55,8 +59,8 @@ public class AlienBuzz extends Alien {
 
         if (mag < 500) {
             double randoPercent = random.nextDouble(100);
-            if (randoPercent < .3) {
-           //     fire();
+            if (randoPercent < .03) {
+                fire();
             }
         }
 
