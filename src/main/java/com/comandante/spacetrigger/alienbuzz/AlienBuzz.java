@@ -34,6 +34,10 @@ public class AlienBuzz extends Alien {
         super(location, hitPoints, speed);
     }
 
+    public int getRandomNumberUsingNextInt(int min, int max) {
+        return random.nextInt(max - min) + min;
+    }
+
     @Override
     public void move() {
         if (isExploding || warpAnimation.isPresent()) {
@@ -52,11 +56,11 @@ public class AlienBuzz extends Alien {
         if (mag < 500) {
             double randoPercent = random.nextDouble(100);
             if (randoPercent < .3) {
-                fire();
+           //     fire();
             }
         }
 
-        if (mag < 100) {
+        if (mag < getRandomNumberUsingNextInt(60, 70)) {
             PVector pVector = vectorToPlayerShip.get();
             pVector.normalize();
             pVector.mult(-4);
