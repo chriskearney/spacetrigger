@@ -246,8 +246,8 @@ public abstract class Sprite {
             thisMask.retainAll(incomingMask);// Check to see if any pixels in maskPlayer2 are the same as those in maskPlayer1
             if (!thisMask.isEmpty()) {
                 String next = thisMask.iterator().next();
-                double x = Double.parseDouble(next.split(",")[0]);
-                double y = Double.parseDouble(next.split(",")[1]);
+                int x = Integer.parseInt(next.split(",")[0]);
+                int y = Integer.parseInt(next.split(",")[1]);
                 return Optional.of(new Point2D.Double(x, y));
             }
         }
