@@ -26,13 +26,10 @@ public abstract class Sprite {
     protected PVector originalLocation;
     protected PVector velocity;
     protected PVector acceleration;
-    protected int width;
-    protected int height;
     protected int hitPoints = 0;
     protected int maxHitpoints;
     protected boolean visible;
     protected BufferedImage image;
-    protected Optional<BufferedImage> rotatedImage = Optional.empty();
     protected Optional<SpriteSheetAnimation> animatedImage = Optional.empty();
     protected SpriteSheetAnimation explosion;
     protected Optional<SpriteSheetAnimation> warpAnimation = Optional.empty();
@@ -59,25 +56,17 @@ public abstract class Sprite {
 
     private static final BufferedImage TRANSPARENT_ONE_PIXEL = createTransparentBufferedImage(1, 1);
 
-
-
-    public Sprite(PVector location, int hitPoints, double speed) {
+    public Sprite(PVector location, int hitPoints) {
         this.location = location;
         this.originalLocation = new PVector(location.x, location.y);
-        ;
         this.hitPoints = hitPoints;
         this.maxHitpoints = hitPoints;
         this.speed = speed;
     }
 
-    public Sprite(PVector location, double speed) {
+    public Sprite(PVector location) {
         this.location = location;
         this.originalLocation = new PVector(location.x, location.y);
-        this.speed = speed;
-    }
-
-    public Optional<BufferedImage> getRotatedImage() {
-        return rotatedImage;
     }
 
     public void setVelocity(PVector velocity) {
@@ -90,14 +79,10 @@ public abstract class Sprite {
 
     protected void loadImage(BufferedImage image) {
         this.image = image;
-        width = image.getWidth(null);
-        height = image.getHeight(null);
     }
 
     protected void loadSpriteSheetAnimation(SpriteSheetAnimation spriteSheetAnimation) {
         this.animatedImage = Optional.of(spriteSheetAnimation);
-        this.width = spriteSheetAnimation.getX_size();
-        this.height = spriteSheetAnimation.getX_size();
     }
 
     public void move() {
@@ -109,20 +94,6 @@ public abstract class Sprite {
         if (isExploding || warpAnimation.isPresent()) {
             return;
         }
-
-
-//        if (reverse) {
-//            ticks--;
-//        } else {
-//            ticks++;
-//        }
-//        if (ticks == trajectory.size() - 1) {
-//            reverse = true;
-//        } else if (ticks == 0) {
-//            reverse = false;
-//        }
-//        // }
-
 
         lastTickTime = System.currentTimeMillis();
     }
@@ -139,31 +110,11 @@ public abstract class Sprite {
         this.warpAnimation = Optional.of(animation);
     }
 
-    public static BufferedImage rotateImageByDegrees(BufferedImage img, double heading) {
-        double rads = heading;
-        double sin = Math.abs(Math.sin(rads)), cos = Math.abs(Math.cos(rads));
-        int w = img.getWidth();
-        int h = img.getHeight();
-        int newWidth = (int) Math.floor(w * cos + h * sin);
-        int newHeight = (int) Math.floor(h * cos + w * sin);
-        BufferedImage rotated = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = rotated.createGraphics();
-        AffineTransform at = new AffineTransform();
-        at.translate((newWidth - w) / 2, (newHeight - h) / 2);
-        int x = w / 2;
-        int y = h / 2;
-        at.rotate(rads, x, y);
-        g2d.setTransform(at);
-        g2d.drawImage(img, 0, 0, null);
-        g2d.dispose();
-        return rotated;
-    }
-
     public SpriteRender getSpriteRender() {
 
         if (!isExploding) {
-            centerX = getX() + width / 2;
-            centerY = getY() + height / 2;
+            centerX = getX() + getWidth() / 2;
+            centerY = getY() + getHeight() / 2;
         }
 
         if (warpAnimation.isPresent()) {
@@ -201,9 +152,6 @@ public abstract class Sprite {
             return new SpriteRender(location, bufferedImage.get());
         }
 
-        if (rotatedImage.isPresent()) {
-            return new SpriteRender(location, rotatedImage.get());
-        }
         return new SpriteRender(location, image);
     }
 
@@ -221,11 +169,19 @@ public abstract class Sprite {
     }
 
     public int getWidth() {
-        return width;
+        if (animatedImage.isPresent()) {
+            return animatedImage.get().getX_size();
+        } else {
+            return image.getWidth();
+        }
     }
 
     public int getHeight() {
-        return height;
+        if (animatedImage.isPresent()) {
+            return animatedImage.get().getY_size();
+        } else {
+            return image.getHeight();
+        }
     }
 
     public boolean isVisible() {
@@ -237,7 +193,7 @@ public abstract class Sprite {
     }
 
     public Rectangle2D getBounds() {
-        return new Rectangle2D.Double(location.x, location.y, width, height);
+        return new Rectangle2D.Double(location.x, location.y, getWidth(), getHeight());
     }
 
     public HashSet<String> getMask() {

@@ -382,6 +382,7 @@ public class Board extends JPanel implements ActionListener {
                     alienMissle.move();
                 } else {
                     remove = true;
+                    eventBus.unregister(alienMissle);
                 }
             }
             if (remove) {

@@ -2,21 +2,28 @@ package com.comandante.spacetrigger;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 
 public abstract class Projectile extends Sprite {
 
     private final Direction direction;
     private final int damage;
 
-    public Projectile(PVector location, Direction direction, double speed, int damage) {
-        super(location, speed);
+    public Projectile(PVector location, Direction direction, PVector heading, int damage, BufferedImage spriteImage) {
+        super(location);
         this.direction = direction;
         this.damage = damage;
-        init();
+        init(spriteImage, heading.heading());
         visible = true;
     }
 
-    public abstract void init();
+    public void init(BufferedImage spriteImage, double heading) {
+        if (heading != 0) {
+            loadImage(GfxUtil.rotateImageByDegrees(spriteImage, heading));
+        } else {
+            loadImage(spriteImage);
+        }
+    }
 
     public void move() {
         if (direction.equals(Direction.UP)) {

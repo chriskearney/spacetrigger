@@ -10,12 +10,12 @@ public class AlienNymph extends Alien {
     private int nymphTicks = 0;
 
     public AlienNymph(int x, int y) {
-        super(new PVector(x, y), 400, 5);
+        super(new PVector(x, y), 400);
         loadWarpAnimation(Assets.getAlienNymphWarpAnimation());
     }
 
     public void fire() {
-        projectiles.add(new AlienNymphBullet((location.x + width / 2) - 10, (location.y + height / 2)));
+        projectiles.add(new AlienNymphBullet((location.x + getWidth() / 2) - 10, (location.y + getHeight() / 2)));
     }
 
     @Override

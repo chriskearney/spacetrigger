@@ -17,7 +17,7 @@ import static com.comandante.spacetrigger.Main.BOARD_Y;
 public class AlienBuzz extends Alien {
 
     public AlienBuzz(PVector location) {
-        super(location, 200, .03);
+        super(location, 200);
         setVelocity(new PVector(.1, .2));
         setAcceleration(new PVector(0, 0));
     }
@@ -27,11 +27,6 @@ public class AlienBuzz extends Alien {
         loadWarpAnimation(Assets.getAlienBuzzWarpAnimation());
         loadSpriteSheetAnimation(Assets.getAlienBuzzAnimation());
         loadExplosion(Assets.getAlienBuzzExplosion());
-    }
-
-    public AlienBuzz(PVector location, int hitPoints, double speed) {
-
-        super(location, hitPoints, speed);
     }
 
     public int getRandomNumberUsingNextInt(int min, int max) {
@@ -100,7 +95,7 @@ public class AlienBuzz extends Alien {
         if (projectiles.size() > 0) {
             return;
         }
-        PVector whereToFireFrom = new PVector((location.x + width / 2), (location.y + height / 2));
+        PVector whereToFireFrom = new PVector((location.x + getWidth() / 2), (location.y + getHeight() / 2));
         if (shipLocation != null) {
             PVector shipDirection = PVector.sub(shipLocation, location);
             shipDirection.normalize();

@@ -4,15 +4,18 @@ import com.comandante.spacetrigger.Alien;
 import com.comandante.spacetrigger.Assets;
 import com.comandante.spacetrigger.PVector;
 import com.comandante.spacetrigger.SpriteSheetAnimation;
+import com.google.common.eventbus.EventBus;
 
 import java.util.Optional;
 
 public class AlienScout extends Alien {
 
     private int scoutTicks;
+    private final EventBus eventBus;
 
-    public AlienScout(PVector location) {
-        super(location, 1000, .0001);
+    public AlienScout(PVector location, EventBus eventBus) {
+        super(location, 1000);
+        this.eventBus = eventBus;
         setVelocity(new PVector(.1, 0));
         setAcceleration(new PVector(0, 0));
     }
@@ -24,7 +27,12 @@ public class AlienScout extends Alien {
     }
 
     public void fire() {
-        projectiles.add(new AlienScoutMissle((location.x + width / 2) - 7, (location.y + height / 2) + 40));
+        PVector sub = PVector.sub(shipLocation, location);
+        sub.normalize();
+        sub.mult(0.1);
+        AlienScoutMissle alienScoutMissle = new AlienScoutMissle((location.x + getWidth() / 2) - 7, (location.y + getHeight() / 2) + 40, sub);
+        eventBus.register(alienScoutMissle);
+        projectiles.add(alienScoutMissle);
     }
 
     public void move() {

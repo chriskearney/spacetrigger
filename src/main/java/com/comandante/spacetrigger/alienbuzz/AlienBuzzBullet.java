@@ -13,18 +13,10 @@ import static com.comandante.spacetrigger.PConstants.TWO_PI;
 public class AlienBuzzBullet extends Projectile {
 
     public AlienBuzzBullet(PVector location, PVector heading) {
-        super(location, Direction.DOWN, 12, 55);
-        rotatedImage = Optional.of(rotateImageByDegrees(image, heading.heading()));
-//        width = rotatedImage.get().getWidth(null);
-//        height = rotatedImage.get().getHeight(null);
+        super(location, Direction.DOWN, heading, 55, Assets.ALIEN_BUZZ_BULLET);
         setVelocity(heading);
-        setVisible(true);
         velocity.mult(40);
-    }
-
-    @Override
-    public void init() {
-        loadImage(Assets.ALIEN_BUZZ_BULLET);
+        setVisible(true);
     }
 
     public SpriteSheetAnimation getDamageAnimation(Point2D point) {

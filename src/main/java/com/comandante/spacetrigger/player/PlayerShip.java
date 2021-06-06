@@ -34,7 +34,7 @@ public class PlayerShip extends Sprite {
     private int ticks;
 
     public PlayerShip(EventBus eventBus) {
-        super(new PVector(0, 0), 500, 0);
+        super(new PVector(0, 0), 500);
         initSpaceShip();
         location = new PVector(BOARD_X / 2, BOARD_Y - getHeight() * 4);
         velocity = new PVector(0, 0);
@@ -78,8 +78,8 @@ public class PlayerShip extends Sprite {
                     return;
                 }
 
-                if ((location.x + velocity.x) >= (BOARD_X - width)) {
-                    location.x = (BOARD_X - width);
+                if ((location.x + velocity.x) >= (BOARD_X - getWidth())) {
+                    location.x = (BOARD_X - getWidth());
                     setVelocity(new PVector(0, velocity.y));
                     return;
                 }
@@ -92,8 +92,8 @@ public class PlayerShip extends Sprite {
                     return;
                 }
 
-                if ((location.y + velocity.y) >= (BOARD_Y - height * 2)) {
-                    location.y = (BOARD_Y - height * 2);
+                if ((location.y + velocity.y) >= (BOARD_Y - getHeight() * 2)) {
+                    location.y = (BOARD_Y - getHeight() * 2);
                     setVelocity(new PVector(velocity.x, 0));
                     return;
                 }
@@ -117,13 +117,13 @@ public class PlayerShip extends Sprite {
         if (currentMissles == 0) {
             return;
         }
-        projectiles.add(new PlayerMissleLevel1Bullet((location.x + width / 2) - 8, (location.y + height / 2) - 20));
+        projectiles.add(new PlayerMissleLevel1Bullet((location.x + getWidth() / 2) - 8, (location.y + getHeight() / 2) - 20));
         currentMissles--;
     }
 
     public void fireGun() {
-        projectiles.add(new PlayerGunLevel2Bullet((location.x + width / 2) - 22, (location.y + height / 2) - 15, Direction.UP));
-        projectiles.add(new PlayerGunLevel2Bullet((location.x + width / 2) + 3, (location.y + height / 2) - 15, Direction.UP));
+        projectiles.add(new PlayerGunLevel2Bullet((location.x + getWidth() / 2) - 22, (location.y + getHeight() / 2) - 15, Direction.UP));
+        projectiles.add(new PlayerGunLevel2Bullet((location.x + getWidth() / 2) + 3, (location.y + getHeight() / 2) - 15, Direction.UP));
     }
 
     public void keyPressed(KeyEvent e) {

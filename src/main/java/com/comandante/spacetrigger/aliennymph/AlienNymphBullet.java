@@ -8,14 +8,9 @@ import java.util.Optional;
 
 public class AlienNymphBullet extends Projectile {
     public AlienNymphBullet(double x, double y) {
-        super(new PVector(x, y), Direction.DOWN, 12, 55);
+        super(new PVector(x, y), Direction.DOWN, new PVector(0, 0), 55, Assets.ALIEN_BUZZ_BULLET);
         setVelocity(new PVector(.1, .2));
         setAcceleration(new PVector(0, 0));
-    }
-
-    @Override
-    public void init() {
-        loadImage(Assets.ALIEN_NYMPH_BULLET);
     }
 
     public SpriteSheetAnimation getDamageAnimation(Point2D point) {
