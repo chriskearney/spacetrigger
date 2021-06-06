@@ -3,6 +3,8 @@ package com.comandante.spacetrigger.alienbuzz;
 import com.comandante.spacetrigger.*;
 
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.util.Optional;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
@@ -10,10 +12,9 @@ import static com.comandante.spacetrigger.PConstants.TWO_PI;
 
 public class AlienBuzzBullet extends Projectile {
 
-
     public AlienBuzzBullet(PVector location, PVector heading) {
         super(location, Direction.DOWN, 12, 55);
-        this.heading = heading.heading();
+        rotatedImage = Optional.of(rotateImageByDegrees(image, heading.heading()));
         setVelocity(heading);
         setVisible(true);
         velocity.mult(40);

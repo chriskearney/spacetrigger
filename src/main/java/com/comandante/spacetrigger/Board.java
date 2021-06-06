@@ -15,6 +15,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.*;
@@ -200,17 +201,17 @@ public class Board extends JPanel implements ActionListener {
                 // Alien projectiles
                 for (int j = 0; j < alien.getMissiles().size(); j++) {
                     Sprite.SpriteRender alienMissleRender = alien.getMissiles().get(j).getSpriteRender();
-                    AffineTransform backup = g.getTransform();
-                    //rx is the x coordinate for rotation, ry is the y coordinate for rotation, and angle
-                    //is the angle to rotate the image. If you want to rotate around the center of an image,
-                    //use the image's center x and y coordinates for rx and ry.
-                    AffineTransform affineTransform = getAffineTransform(alienMissleRender.getX(), alienMissleRender.getY());
-                    //System.out.println("using heading: " + Math.toDegrees(alienMissleRender.getHeading()));
-                    affineTransform.rotate(alienMissleRender.getHeading());
-                    //Set our Graphics2D object to the transform
-                    g.transform(affineTransform);
-                    g.drawImage(alienMissleRender.getImage(), 0, 0, null );
-                    g.setTransform(backup);
+//                    AffineTransform backup = g.getTransform();
+//                    //rx is the x coordinate for rotation, ry is the y coordinate for rotation, and angle
+//                    //is the angle to rotate the image. If you want to rotate around the center of an image,
+//                    //use the image's center x and y coordinates for rx and ry.
+//                    AffineTransform affineTransform = getAffineTransform(alienMissleRender.getX(), alienMissleRender.getY());
+//                    //System.out.println("using heading: " + Math.toDegrees(alienMissleRender.getHeading()));
+//                    affineTransform.rotate(alienMissleRender.getHeading());
+//                    //Set our Graphics2D object to the transform
+//                    g.transform(affineTransform);
+                    g.drawImage(alienMissleRender.getImage(), getAffineTransform(alienMissleRender.getX(), alienMissleRender.getY()), null);
+//                    g.setTransform(backup);
                 }
                 if (alien.isExploding()) {
                     continue;

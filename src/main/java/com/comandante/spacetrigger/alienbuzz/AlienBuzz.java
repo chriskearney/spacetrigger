@@ -61,6 +61,9 @@ public class AlienBuzz extends Alien {
             pVector.normalize();
             pVector.mult(-4);
             applyForce(pVector );
+            PVector random = PVector.random2D();
+            random.mult(.4);
+            applyForce(random);
         } else {
             vectorToPlayerShip.normalize();
             vectorToPlayerShip.mult(0.1);

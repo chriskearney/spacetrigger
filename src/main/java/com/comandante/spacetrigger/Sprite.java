@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -25,13 +26,13 @@ public abstract class Sprite {
     protected PVector originalLocation;
     protected PVector velocity;
     protected PVector acceleration;
-    protected double heading = 0;
     protected int width;
     protected int height;
     protected int hitPoints = 0;
     protected int maxHitpoints;
     protected boolean visible;
     protected BufferedImage image;
+    protected Optional<BufferedImage> rotatedImage = Optional.empty();
     protected Optional<SpriteSheetAnimation> animatedImage = Optional.empty();
     protected SpriteSheetAnimation explosion;
     protected Optional<SpriteSheetAnimation> warpAnimation = Optional.empty();
@@ -58,6 +59,8 @@ public abstract class Sprite {
 
     private static final BufferedImage TRANSPARENT_ONE_PIXEL = createTransparentBufferedImage(1, 1);
 
+
+
     public Sprite(PVector location, int hitPoints, double speed) {
         this.location = location;
         this.originalLocation = new PVector(location.x, location.y);
@@ -71,6 +74,10 @@ public abstract class Sprite {
         this.location = location;
         this.originalLocation = new PVector(location.x, location.y);
         this.speed = speed;
+    }
+
+    public Optional<BufferedImage> getRotatedImage() {
+        return rotatedImage;
     }
 
     public void setVelocity(PVector velocity) {
@@ -132,6 +139,26 @@ public abstract class Sprite {
         this.warpAnimation = Optional.of(animation);
     }
 
+    public static BufferedImage rotateImageByDegrees(BufferedImage img, double heading) {
+        double rads = heading;
+        double sin = Math.abs(Math.sin(rads)), cos = Math.abs(Math.cos(rads));
+        int w = img.getWidth();
+        int h = img.getHeight();
+        int newWidth = (int) Math.floor(w * cos + h * sin);
+        int newHeight = (int) Math.floor(h * cos + w * sin);
+        BufferedImage rotated = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = rotated.createGraphics();
+        AffineTransform at = new AffineTransform();
+        at.translate((newWidth - w) / 2, (newHeight - h) / 2);
+        int x = w / 2;
+        int y = h / 2;
+        at.rotate(rads, x, y);
+        g2d.setTransform(at);
+        g2d.drawImage(img, 0, 0, null);
+        g2d.dispose();
+        return rotated;
+    }
+
     public SpriteRender getSpriteRender() {
 
         if (!isExploding) {
@@ -171,10 +198,13 @@ public abstract class Sprite {
             if (!bufferedImage.isPresent()) {
                 throw new RuntimeException("Need a looping animation.");
             }
-            return new SpriteRender(location, bufferedImage.get(), heading);
+            return new SpriteRender(location, bufferedImage.get());
         }
 
-        return new SpriteRender(location, image, heading);
+        if (rotatedImage.isPresent()) {
+            return new SpriteRender(location, rotatedImage.get());
+        }
+        return new SpriteRender(location, image);
     }
 
     public double getX() {
@@ -438,18 +468,10 @@ public abstract class Sprite {
     public static class SpriteRender {
         private final PVector location;
         private final BufferedImage image;
-        private final double heading;
-
-        public SpriteRender(PVector location, BufferedImage image, double heading) {
-            this.location = location;
-            this.image = image;
-            this.heading = heading;
-        }
 
         public SpriteRender(PVector location, BufferedImage image) {
             this.location = location;
             this.image = image;
-            this.heading = 0;
         }
 
         public double getX() {
@@ -466,10 +488,6 @@ public abstract class Sprite {
 
         public BufferedImage getImage() {
             return image;
-        }
-
-        public double getHeading() {
-            return heading;
         }
     }
 }
