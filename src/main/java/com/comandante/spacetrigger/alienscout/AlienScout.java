@@ -5,12 +5,16 @@ import com.comandante.spacetrigger.Assets;
 import com.comandante.spacetrigger.PVector;
 import com.comandante.spacetrigger.SpriteSheetAnimation;
 
+import java.util.Optional;
+
 public class AlienScout extends Alien {
 
     private int scoutTicks;
 
-    public AlienScout(int x, int y) {
-        super(new PVector(x, y), 1000, .0001);
+    public AlienScout(PVector location) {
+        super(location, 1000, .0001);
+        setVelocity(new PVector(.1, 0));
+        setAcceleration(new PVector(0, 0));
     }
 
      protected void initAlien() {
@@ -24,7 +28,6 @@ public class AlienScout extends Alien {
     }
 
     public void move() {
-        super.move();
         if (isExploding || warpAnimation.isPresent()) {
             return;
         }
@@ -35,6 +38,15 @@ public class AlienScout extends Alien {
                 fire();
             }
         }
+
+        Optional<PVector> vectorToPlayerShip = getVectorToPlayerShip();
+        if (!vectorToPlayerShip.isPresent()) {
+            return;
+        }
+        vectorToPlayerShip.get().normalize();
+        vectorToPlayerShip.get().mult(.1);
+        location.add(vectorToPlayerShip.get());
+
         scoutTicks++;
     }
 }

@@ -15,6 +15,8 @@ public class AlienBuzzBullet extends Projectile {
     public AlienBuzzBullet(PVector location, PVector heading) {
         super(location, Direction.DOWN, 12, 55);
         rotatedImage = Optional.of(rotateImageByDegrees(image, heading.heading()));
+//        width = rotatedImage.get().getWidth(null);
+//        height = rotatedImage.get().getHeight(null);
         setVelocity(heading);
         setVisible(true);
         velocity.mult(40);
