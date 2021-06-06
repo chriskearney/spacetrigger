@@ -18,8 +18,7 @@ public class AlienBuzz extends Alien {
 
     public AlienBuzz(PVector location) {
         super(location, 200);
-        setVelocity(new PVector(.1, .2));
-        setAcceleration(new PVector(0, 0));
+        velocity.add(new PVector(.1, .2));
     }
 
     @Override

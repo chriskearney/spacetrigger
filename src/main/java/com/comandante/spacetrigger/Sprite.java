@@ -24,8 +24,8 @@ public abstract class Sprite {
 
     protected PVector location;
     protected PVector originalLocation;
-    protected PVector velocity;
-    protected PVector acceleration;
+    protected PVector velocity = new PVector(0, 0);
+    protected PVector acceleration = new PVector(0, 0);
     protected int hitPoints = 0;
     protected int maxHitpoints;
     protected boolean visible;
@@ -313,101 +313,6 @@ public abstract class Sprite {
         double relativeY = point.getY() - location.y;
         return new Point2D.Double(relativeX, relativeY);
     }
-
-    public static ArrayList<Point2D> getLine(Point2D start, Point2D target) {
-        ArrayList<Point2D> ret = new ArrayList<>();
-
-        double x0 = start.getX();
-        double y0 = start.getY();
-
-        double x1 = target.getX();
-        double y1 = target.getY();
-
-        int sx = 0;
-        int sy = 0;
-
-        double dx = Math.abs(x1 - x0);
-        sx = x0 < x1 ? 1 : -1;
-        double dy = -1 * Math.abs(y1 - y0);
-        sy = y0 < y1 ? 1 : -1;
-        double err = dx + dy, e2; /* error value e_xy */
-
-        for (; ; ) {  /* loop */
-            ret.add(new Point2D.Double(x0, y0));
-            if (x0 == x1 && y0 == y1) break;
-            e2 = 2 * err;
-            if (e2 >= dy) {
-                err += dy;
-                x0 += sx;
-            } /* e_xy+e_x > 0 */
-            if (e2 <= dx) {
-                err += dx;
-                y0 += sy;
-            } /* e_xy+e_y < 0 */
-        }
-
-        return ret;
-    }
-
-    enum DownAnglePathDirection {
-        LEFT_TO_RIGHT,
-        RIGHT_TO_LEFT
-    }
-
-    public void addDownAnglePath(int xFactor, double speed, int amount, DownAnglePathDirection direction) {
-        ArrayList<Point2D> points = Lists.newArrayList();
-        if (direction.equals(DownAnglePathDirection.RIGHT_TO_LEFT)) {
-            xFactor = -xFactor;
-        }
-        for (int i = 0; i < amount; i++) {
-            double proposedX = (int) (BOARD_X / 3 * sin(i * .5 * Math.PI / (BOARD_X * xFactor))) + previousAddedPoint.getX();
-            speed = speed + .3;
-            int proposedY = (int) Math.round(speed);
-            double x = proposedX;
-            double y = proposedY + previousAddedPoint.getY();
-            points.add(new Point2D.Double(x, y));
-        }
-        trajectory.addAll(points);
-        previousAddedPoint = points.get(points.size() - 1);
-    }
-
-    public void addCircle(double speed, int amount) {
-        ArrayList<Point> points = Lists.newArrayList();
-        for (int i = 1; i < amount; i++) {
-            double orbitalPeriod = 1600;
-            double portion = (i % orbitalPeriod) / orbitalPeriod; // [0, 1)
-            double angle = portion * 2 * Math.PI;                    // [0, 2 * PI)
-
-            double radius = 80;
-
-            double planetX = previousAddedPoint.getX() + radius * Math.cos(angle);
-            double planetY = previousAddedPoint.getY() + radius * Math.sin(angle);
-
-            int newX = (int) Math.round(planetX);
-            speed += .1;
-            int newY = (int) Math.round(planetY + speed);
-            points.add(new Point(newX, newY));
-        }
-        trajectory.addAll(points);
-        previousAddedPoint = points.get(points.size() - 1);
-    }
-
-    public void addPoint(int destX, int destY) {
-        Point destPoint = new Point(destX, destY);
-        trajectory.addAll(getLine(previousAddedPoint, destPoint));
-        previousAddedPoint = destPoint;
-    }
-
-    public void pause(int amount) {
-        for (int i = 0; i < amount * 180; i++) {
-            trajectory.add(previousAddedPoint);
-        }
-    }
-
-    public Point2D getPreviousAddedPoint() {
-        return previousAddedPoint;
-    }
-
 
     public List<SpriteSheetAnimation> getDamageAnimations() {
         return damageAnimations;

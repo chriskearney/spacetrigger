@@ -7,8 +7,8 @@ public abstract class Drop extends Sprite {
 
     private final DropRate dropRate;
 
-    public Drop(PVector location, int speed, DropRate dropRate) {
-        super(location, speed);
+    public Drop(PVector location, DropRate dropRate) {
+        super(location);
         this.dropRate = dropRate;
     }
 

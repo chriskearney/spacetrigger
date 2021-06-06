@@ -14,7 +14,7 @@ public class AlienBuzzBullet extends Projectile {
 
     public AlienBuzzBullet(PVector location, PVector heading) {
         super(location, heading, 55, Assets.ALIEN_BUZZ_BULLET);
-        setVelocity(heading);
+        velocity.add(heading);
         velocity.mult(40);
         setVisible(true);
     }

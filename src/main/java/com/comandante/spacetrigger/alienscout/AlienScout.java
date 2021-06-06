@@ -16,8 +16,7 @@ public class AlienScout extends Alien {
     public AlienScout(PVector location, EventBus eventBus) {
         super(location, 1000);
         this.eventBus = eventBus;
-        setVelocity(new PVector(.1, 0));
-        setAcceleration(new PVector(0, 0));
+        velocity.add(new PVector(.1, 0));
     }
 
      protected void initAlien() {

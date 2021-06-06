@@ -10,7 +10,7 @@ public class PlayerMissleLevel1Bullet extends Projectile {
 
     public PlayerMissleLevel1Bullet(double x, double y) {
         super(new PVector(x, y), new PVector(0, 0), 1000, Assets.PLAYER_MISSLE_LEVEL_1_BULLET);
-        setVelocity(new PVector(0, -3));
+        velocity.add(new PVector(0, -3));
     }
 
     public SpriteSheetAnimation getDamageAnimation(Point2D point) {
