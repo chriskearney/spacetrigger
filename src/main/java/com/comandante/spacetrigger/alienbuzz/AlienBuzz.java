@@ -64,12 +64,19 @@ public class AlienBuzz extends Alien {
             random.mult(.4);
             applyForce(random);
         } else {
-            vectorToPlayerShip.normalize();
-            vectorToPlayerShip.mult(0.1);
-            applyForce(vectorToPlayerShip);
-//            PVector random = PVector.random2D();
-//            random.mult(.4);
-//            applyForce(random);
+            if (getRandomNumberUsingNextInt(0, 100) < 10) {
+                PVector random = PVector.random2D();
+                random.normalize();
+                random.mult(.1);
+                vectorToPlayerShip.normalize();
+                vectorToPlayerShip.mult(0.1);
+                applyForce(vectorToPlayerShip);
+                applyForce(random);
+            } else if (getRandomNumberUsingNextInt(0, 100) < 60)  {
+                vectorToPlayerShip.normalize();
+                vectorToPlayerShip.mult(0.1);
+                applyForce(vectorToPlayerShip);
+            }
         }
 
         velocity.add(acceleration);
