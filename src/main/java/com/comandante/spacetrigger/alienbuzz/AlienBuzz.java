@@ -50,8 +50,8 @@ public class AlienBuzz extends Alien {
 
         if (mag < 500) {
             double randoPercent = random.nextDouble(100);
-            if (randoPercent < .03) {
-                //fire();
+            if (randoPercent < .3) {
+                fire();
             }
         }
 

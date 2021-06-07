@@ -364,7 +364,7 @@ public class Board extends JPanel implements ActionListener {
                 } else {
                     remove = true;
                     try {
-                        eventBus.unregister(aliens.get(i));
+                        eventBus.unregister(alienMissle);
                     } catch (Exception e) {
 
                     }
