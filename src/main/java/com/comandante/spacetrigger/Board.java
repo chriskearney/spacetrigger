@@ -15,48 +15,39 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
-import java.util.function.Predicate;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
 
 public class Board extends JPanel implements ActionListener {
 
-    private final int DELAY = 10;
-    private Timer timer;
-    private PlayerShip playerShip;
-    private boolean ingame;
-
-    private long startTime;
-    private Level currentLevel;
-
-    private ArrayList<Alien> aliens;
-    private ArrayList<Drop> drops;
-
-    private BufferedImage background_3;
-    private BufferedImage background_2;
-    private BufferedImage background_1;
-
-    private double yOffset_3 = 0;
-    private double yDelta_3 = .9;
-    private final SplittableRandom random = new SplittableRandom();
+    private static final int TIMER_DELAY_MS = 10;
 
     private final EventBus eventBus;
+    private final SplittableRandom random = new SplittableRandom();
 
-    private int ticks;
-
-    private double yOffset_2 = 0;
-    private double yDelta_2 = 1;
-
-    private double yOffset_1 = 0;
-    private double yDelta_1 = 1.4;
-
+    private PlayerShip playerShip;
+    private Level currentLevel;
     private PlayerStatusBars playerStatusBars;
+    private ArrayList<Alien> aliens;
+    private ArrayList<Drop> drops;
+    private boolean inGame;
+    private long startTime;
+
+    private double parallaxBackgroundYOffset_1 = 0;
+    private double parallaxBackgroundYDelta_1 = 1.4;
+    private BufferedImage background_1;
+
+    private double parallaxBackgroundYOffset_2 = 0;
+    private double parallaxBackgroundYDelta_2 = 1;
+    private BufferedImage background_2;
+
+    private double parallaxBackgroundYOffset_3 = 0;
+    private double parallaxBackgroundYDelta_3 = .9;
+    private BufferedImage background_3;
 
     public Board() {
         this.eventBus = new EventBus();
@@ -68,15 +59,15 @@ public class Board extends JPanel implements ActionListener {
         this.setBackground(Color.BLACK);
         this.setFocusable(true);
         this.resetBoard();
-        this.timer = new Timer(DELAY, this);
-        this.timer.start();
+        Timer timer = new Timer(TIMER_DELAY_MS, this);
+        timer.start();
         this.background_1 = Assets.BOARD_BACKGROUND_1;
         this.background_2 = Assets.BOARD_BACKGROUND_2;
         this.background_3 = Assets.BOARD_BACKGROUND_3;
     }
 
     private void resetBoard() {
-        this.ingame = true;
+        this.inGame = true;
         if (playerShip != null) {
             eventBus.unregister(playerShip);
         }
@@ -105,7 +96,7 @@ public class Board extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         drawBackgrounds(g);
-        if (ingame) {
+        if (inGame) {
             drawStatusBars((Graphics2D) g);
             drawAliens((Graphics2D) g);
             drawPlayerShip((Graphics2D) g);
@@ -201,17 +192,7 @@ public class Board extends JPanel implements ActionListener {
                 // Alien projectiles
                 for (int j = 0; j < alien.getMissiles().size(); j++) {
                     Sprite.SpriteRender alienMissleRender = alien.getMissiles().get(j).getSpriteRender();
-//                    AffineTransform backup = g.getTransform();
-//                    //rx is the x coordinate for rotation, ry is the y coordinate for rotation, and angle
-//                    //is the angle to rotate the image. If you want to rotate around the center of an image,
-//                    //use the image's center x and y coordinates for rx and ry.
-//                    AffineTransform affineTransform = getAffineTransform(alienMissleRender.getX(), alienMissleRender.getY());
-//                    //System.out.println("using heading: " + Math.toDegrees(alienMissleRender.getHeading()));
-//                    affineTransform.rotate(alienMissleRender.getHeading());
-//                    //Set our Graphics2D object to the transform
-//                    g.transform(affineTransform);
                     g.drawImage(alienMissleRender.getImage(), getAffineTransform(alienMissleRender.getX(), alienMissleRender.getY()), null);
-//                    g.setTransform(backup);
                 }
                 if (alien.isExploding()) {
                     continue;
@@ -263,13 +244,13 @@ public class Board extends JPanel implements ActionListener {
     private void drawBackgrounds(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
 
-        yOffset_3 = incrementOffset(yOffset_3, yDelta_3, background_3.getHeight());
-        yOffset_2 = incrementOffset(yOffset_2, yDelta_2, background_2.getHeight());
-        yOffset_1 = incrementOffset(yOffset_1, yDelta_1, background_1.getHeight());
+        parallaxBackgroundYOffset_3 = incrementOffset(parallaxBackgroundYOffset_3, parallaxBackgroundYDelta_3, background_3.getHeight());
+        parallaxBackgroundYOffset_2 = incrementOffset(parallaxBackgroundYOffset_2, parallaxBackgroundYDelta_2, background_2.getHeight());
+        parallaxBackgroundYOffset_1 = incrementOffset(parallaxBackgroundYOffset_1, parallaxBackgroundYDelta_1, background_1.getHeight());
 
-        positionBackground(g2d, background_3, yOffset_3);
-        positionBackground(g2d, background_2, yOffset_2);
-        positionBackground(g2d, background_1, yOffset_1);
+        positionBackground(g2d, background_3, parallaxBackgroundYOffset_3);
+        positionBackground(g2d, background_2, parallaxBackgroundYOffset_2);
+        positionBackground(g2d, background_1, parallaxBackgroundYOffset_1);
         g2d.dispose();
     }
 
@@ -382,7 +363,11 @@ public class Board extends JPanel implements ActionListener {
                     alienMissle.move();
                 } else {
                     remove = true;
-                    eventBus.unregister(aliens.get(i));
+                    try {
+                        eventBus.unregister(aliens.get(i));
+                    } catch (Exception e) {
+
+                    }
                 }
             }
             if (remove) {
@@ -395,7 +380,7 @@ public class Board extends JPanel implements ActionListener {
 
     private void updateSpaceShip() {
         if (!playerShip.isVisible() && !playerShip.isExploding()) {
-            ingame = false;
+            inGame = false;
         }
         playerShip.move();
     }
@@ -404,7 +389,7 @@ public class Board extends JPanel implements ActionListener {
         aliens.addAll(currentLevel.getAlien(System.currentTimeMillis() - startTime));
 
         if (currentLevel.isEmpty() && aliens.isEmpty()) {
-            ingame = false;
+            inGame = false;
             return;
         }
 
@@ -462,7 +447,7 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            if (!ingame && e.getKeyCode() == KeyEvent.VK_R) {
+            if (!inGame && e.getKeyCode() == KeyEvent.VK_R) {
                 resetBoard();
             } else {
                 playerShip.keyPressed(e);

@@ -5,8 +5,7 @@ import com.comandante.spacetrigger.SpriteSheetAnimation;
 import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -20,13 +19,13 @@ public class RotateSpriteSheet {
     // Rotate the frames of a spritesheet.
     public static void main(String[] args) throws IOException {
 
-        int imageWidth = 512;
-        int imageHeight = 512;
-        int columns = 8;
-        int rows = 8;
+        int imageWidth = 32;
+        int imageHeight = 32;
+        int columns = 6;
+        int rows = 1;
 
-        BufferedImage bufferedImage = Assets.loadImage("unused/thenew.png");
-        SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(imageWidth, imageHeight, columns, rows, bufferedImage, 0, 0);
+        BufferedImage bufferedImage = Assets.loadImage("alien-buzz.png");
+        SpriteSheetAnimation spriteSheetAnimation = Assets.getAlienBuzzAnimation();
         List<BufferedImage> spriteFrames = spriteSheetAnimation.getSpriteFrames();
 
         List<BufferedImage> rotatedImages = Lists.newArrayList();
@@ -35,7 +34,7 @@ public class RotateSpriteSheet {
         graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
 
         for (BufferedImage spriteFrame : spriteFrames) {
-            rotatedImages.add(rotateNinetyDegrees(spriteFrame));
+            rotatedImages.add(rotateDegrees(-90, spriteFrame));
         }
 
         int currentImage = 0;
@@ -51,8 +50,8 @@ public class RotateSpriteSheet {
         ImageIO.write(bufferedImage, "png", outputfile);
     }
 
-    public static BufferedImage rotateNinetyDegrees(BufferedImage image) {
-        final double rads = Math.toRadians(90);
+    public static BufferedImage rotateDegrees(int degrees, BufferedImage image) {
+        final double rads = Math.toRadians(degrees);
         final double sin = Math.abs(Math.sin(rads));
         final double cos = Math.abs(Math.cos(rads));
         final int w = (int) Math.floor(image.getWidth() * cos + image.getHeight() * sin);

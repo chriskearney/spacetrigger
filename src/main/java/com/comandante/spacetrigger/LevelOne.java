@@ -18,7 +18,7 @@ public class LevelOne extends Level {
     public LevelOne(EventBus eventBus) {
         super(eventBus);
         List<Alien> aliens = Lists.newArrayList();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 20; i++) {
             PVector.random2D();
             AlienBuzz alienBuzz = new AlienBuzz(PVector.random2D());
             alienBuzz.addDrop(new HealthDrop(Drop.DropRate.UNUSUAL));
@@ -33,11 +33,11 @@ public class LevelOne extends Level {
 //            alienBuzz.addDrop(new HealthDrop(Drop.DropRate.COMMON));
 //            aliens2.add(alienBuzz);
 //        }
-
-        aliens2.add(new AlienScout(new PVector(400, 200), eventBus));
-        aliens2.add(new AlienScout(new PVector(200, 100), eventBus));
-        aliens2.add(new AlienScout(new PVector(300, 200), eventBus));
-        aliens2.add(new AlienScout(new PVector(40, 120), eventBus));
+//
+//        aliens2.add(new AlienScout(new PVector(400, 200), eventBus));
+//        aliens2.add(new AlienScout(new PVector(200, 100), eventBus));
+//        aliens2.add(new AlienScout(new PVector(300, 200), eventBus));
+//        aliens2.add(new AlienScout(new PVector(40, 120), eventBus));
 
 
         alienTimeMap.put(1400L, aliens2);

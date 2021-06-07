@@ -1,9 +1,6 @@
 package com.comandante.spacetrigger.alienbuzz;
 
-import com.comandante.spacetrigger.Alien;
-import com.comandante.spacetrigger.Assets;
-import com.comandante.spacetrigger.PVector;
-import com.comandante.spacetrigger.SpriteSheetAnimation;
+import com.comandante.spacetrigger.*;
 import com.comandante.spacetrigger.aliennymph.AlienNymphBullet;
 import com.comandante.spacetrigger.events.PlayerShipLocationUpdateEvent;
 import com.google.common.eventbus.Subscribe;
@@ -54,7 +51,7 @@ public class AlienBuzz extends Alien {
         if (mag < 500) {
             double randoPercent = random.nextDouble(100);
             if (randoPercent < .03) {
-                fire();
+                //fire();
             }
         }
 
@@ -62,7 +59,7 @@ public class AlienBuzz extends Alien {
             PVector pVector = vectorToPlayerShip.get();
             pVector.normalize();
             pVector.mult(-4);
-            applyForce(pVector );
+            applyForce(pVector);
             PVector random = PVector.random2D();
             random.mult(.4);
             applyForce(random);
@@ -70,9 +67,9 @@ public class AlienBuzz extends Alien {
             vectorToPlayerShip.normalize();
             vectorToPlayerShip.mult(0.1);
             applyForce(vectorToPlayerShip);
-            PVector random = PVector.random2D();
-            random.mult(.4);
-            applyForce(random);
+//            PVector random = PVector.random2D();
+//            random.mult(.4);
+//            applyForce(random);
         }
 
         velocity.add(acceleration);
@@ -105,5 +102,15 @@ public class AlienBuzz extends Alien {
             shipDirection.add(randomNess);
             projectiles.add(new AlienBuzzBullet(whereToFireFrom, shipDirection));
         }
+    }
+
+    @Override
+    public SpriteRender getSpriteRender() {
+        SpriteRender spriteRender = super.getSpriteRender();
+        PVector v = velocity.get();
+        v.normalize();
+        v.mult(.1);
+        image = GfxUtil.rotateImageByDegrees(spriteRender.getImage(), v.heading());
+        return new SpriteRender(spriteRender.getLocation(), image);
     }
 }
