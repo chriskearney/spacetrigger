@@ -28,162 +28,42 @@ import java.util.Arrays;
 import java.util.Objects;
 
 
-/**
- * ( begin auto-generated from PVector.xml )
- *
- * A class to describe a two or three dimensional vector. This datatype
- * stores two or three variables that are commonly used as a position,
- * velocity, and/or acceleration. Technically, <em>position</em> is a point
- * and <em>velocity</em> and <em>acceleration</em> are vectors, but this is
- * often simplified to consider all three as vectors. For example, if you
- * consider a rectangle moving across the screen, at any given instant it
- * has a position (the object's location, expressed as a point.), a
- * velocity (the rate at which the object's position changes per time unit,
- * expressed as a vector), and acceleration (the rate at which the object's
- * velocity changes per time unit, expressed as a vector). Since vectors
- * represent groupings of values, we cannot simply use traditional
- * addition/multiplication/etc. Instead, we'll need to do some "vector"
- * math, which is made easy by the methods inside the <b>PVector</b>
- * class.<br />
- * <br />
- * The methods for this class are extensive. For a complete list, visit the
- * <a
- * href="http://processing.googlecode.com/svn/trunk/processing/build/javadoc/core/">developer's reference.</a>
- *
- * ( end auto-generated )
- *
- * A class to describe a two or three dimensional vector.
- * <p>
- * The result of all functions are applied to the vector itself, with the
- * exception of cross(), which returns a new PVector (or writes to a specified
- * 'target' PVector). That is, add() will add the contents of one vector to
- * this one. Using add() with additional parameters allows you to put the
- * result into a new PVector. Functions that act on multiple vectors also
- * include static versions. Because creating new objects can be computationally
- * expensive, most functions include an optional 'target' PVector, so that a
- * new PVector object is not created with each operation.
- * <p>
- * Initially based on the Vector3D class by <a href="http://www.shiffman.net">Dan Shiffman</a>.
- *
- * @webref math
- */
 public class PVector implements Serializable {
 
-    /**
-     * Generated 2010-09-14 by jdf
-     */
     private static final long serialVersionUID = -6717872085945400694L;
 
-    /**
-     * ( begin auto-generated from PVector_x.xml )
-     *
-     * The x component of the vector. This field (variable) can be used to both
-     * get and set the value (see above example.)
-     *
-     * ( end auto-generated )
-     *
-     * @webref pvector:field
-     * @usage web_application
-     * @brief The x component of the vector
-     */
     public double x;
-
-    /**
-     * ( begin auto-generated from PVector_y.xml )
-     *
-     * The y component of the vector. This field (variable) can be used to both
-     * get and set the value (see above example.)
-     *
-     * ( end auto-generated )
-     *
-     * @webref pvector:field
-     * @usage web_application
-     * @brief The y component of the vector
-     */
     public double y;
-
-    /**
-     * ( begin auto-generated from PVector_z.xml )
-     *
-     * The z component of the vector. This field (variable) can be used to both
-     * get and set the value (see above example.)
-     *
-     * ( end auto-generated )
-     *
-     * @webref pvector:field
-     * @usage web_application
-     * @brief The z component of the vector
-     */
     public double z;
 
-    /** Array so that this can be temporarily used in an array context */
     transient protected double[] array;
 
-    /**
-     * Constructor for an empty vector: x, y, and z are set to 0.
-     */
     public PVector() {
     }
 
-
-    /**
-     * Constructor for a 3D vector.
-     *
-     * @param  x the x coordinate.
-     * @param  y the y coordinate.
-     * @param  z the z coordinate.
-     */
     public PVector(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-
-    /**
-     * Constructor for a 2D vector: z coordinate is set to 0.
-     */
     public PVector(double x, double y) {
         this.x = x;
         this.y = y;
         this.z = 0;
     }
 
-    /**
-     * ( begin auto-generated from PVector_set.xml )
-     *
-     * Sets the x, y, and z component of the vector using two or three separate
-     * variables, the data from a PVector, or the values from a double array.
-     *
-     * ( end auto-generated )
-     *
-     * @webref pvector:method
-     * @param x the x component of the vector
-     * @param y the y component of the vector
-     * @param z the z component of the vector
-     * @brief Set the x, y, and z component of the vector
-     */
     public void set(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    /**
-     *
-     * @webref pvector:method
-     * @param x the x component of the vector
-     * @param y the y component of the vector
-     * @brief Set the x, y components of the vector
-     */
     public void set(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    /**
-     * @param v any variable of type PVector
-     */
     public void set(PVector v) {
         x = v.x;
         y = v.y;
