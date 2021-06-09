@@ -20,9 +20,9 @@ public class HealthDrop extends Drop {
 
     @Override
     public void move() {
-        acceleration.add(new PVector(0, 2));
+        acceleration.add(new PVector(0, .3));
         velocity.add(acceleration);
-        velocity.limit(2);
+        velocity.limit(.4);
         location.add(velocity);
         acceleration.mult(0);
     }

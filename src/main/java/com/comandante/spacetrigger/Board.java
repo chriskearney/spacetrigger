@@ -272,15 +272,12 @@ public class Board extends JPanel implements ActionListener {
             }
 
             List<Projectile> projectiles = aliens.get(i).getMissiles();
-            for (int j = 0; j < projectiles.size(); j++) {
-                Projectile projectile = projectiles.get(j);
-                if (projectile.isCollison(playerShip.getShield(), 100, true).isPresent()) {
+            for (Projectile projectile : projectiles) {
+                Optional<Point2D> shieldCollision = projectile.isCollison(playerShip.getShield(), 100, true);
+                if (shieldCollision.isPresent() && playerShip.getCurrentShield() > 20) {
                     playerShip.getShield().setVisible(true);
-                    Optional<Point2D> shieldCollision = projectile.isCollison(playerShip.getShield(), 100);
-                    if (shieldCollision.isPresent()) {
-                        projectile.setVisible(false);
-                        playerShip.getShield().addDamageAnimation(projectile, shieldCollision.get());
-                    }
+                    projectile.setVisible(false);
+                    playerShip.getShield().addDamageAnimation(projectile, shieldCollision.get());
                 } else {
                     Optional<Point2D> collison = projectile.isCollison(playerShip);
                     if (collison.isPresent()) {
@@ -292,6 +289,10 @@ public class Board extends JPanel implements ActionListener {
                         eventBus.post(new PlayerShipHealthUpdateEvent(newHitPointsPct));
                     }
                 }
+            }
+
+            if (playerShip.getShield().getDamageAnimations().size() == 0) {
+                playerShip.getShield().setVisible(false);
             }
         }
 

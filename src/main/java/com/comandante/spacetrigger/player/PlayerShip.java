@@ -222,6 +222,10 @@ public class PlayerShip extends Sprite {
         return currentMissles;
     }
 
+    public int getCurrentShield() {
+        return currentShield;
+    }
+
     @Subscribe
     public void processMisslePickUp(MisslePickUpEvent misslePickUpEvent) {
         this.currentMissles += misslePickUpEvent.getAmount();
