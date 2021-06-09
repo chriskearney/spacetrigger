@@ -27,8 +27,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static com.comandante.spacetrigger.PConstants.DEG_TO_RAD;
-import static com.comandante.spacetrigger.PConstants.RAD_TO_DEG;
 
 /**
  * ( begin auto-generated from PVector.xml )
@@ -779,6 +777,10 @@ public class PVector implements Serializable {
         return (double)Math.atan2(a, b);
     }
 
+    static final double PI = Math.PI;
+
+    static final double DEG_TO_RAD = PI/180.0f;
+    static final double RAD_TO_DEG = 180.0f/PI;
 
     static public final double degrees(double radians) {
         return radians * RAD_TO_DEG;
@@ -929,7 +931,7 @@ public class PVector implements Serializable {
         // Otherwise if outside the range, acos() will return NaN
         // http://www.cppreference.com/wiki/c/math/acos
         if (amt <= -1) {
-            return PConstants.PI;
+            return PI;
         } else if (amt >= 1) {
             // http://code.google.com/p/processing/issues/detail?id=435
             return 0;
