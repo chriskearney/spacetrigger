@@ -14,8 +14,8 @@ import java.util.List;
 
 public class PlayerStatusBars extends Sprite {
 
-    private static int healthPctFull = 100;
-    private static int shieldPctFull = 100;
+    private int healthPctFull = 100;
+    private int shieldPctFull = 100;
 
     private final static BufferedImage STATUS_BAR_FRAME = Assets.PLAYER_HEALTH_BAR_FRAME;
     private final static BufferedImage HEALTH_BAR_SINGLE = Assets.PLAYER_HEALTH_BAR_FULL;
@@ -159,5 +159,4 @@ public class PlayerStatusBars extends Sprite {
             addShieldMutation(difference);
         }
     }
-
 }

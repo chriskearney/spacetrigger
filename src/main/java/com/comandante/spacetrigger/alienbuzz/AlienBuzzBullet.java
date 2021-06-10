@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
-import static com.comandante.spacetrigger.PConstants.TWO_PI;
 
 public class AlienBuzzBullet extends Projectile {
 
