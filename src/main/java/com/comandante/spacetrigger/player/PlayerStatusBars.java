@@ -60,16 +60,16 @@ public class PlayerStatusBars extends Sprite {
 
     private BufferedImage drawStatusBars() {
 
-        if (ticks % 3 == 0) {
-            if (!healthMutations.isEmpty()) {
-                Boolean aBoolean = healthMutations.remove(0);
-                if (aBoolean) {
-                    healthPctFull++;
-                } else {
-                    healthPctFull--;
-                }
+
+        if (!healthMutations.isEmpty()) {
+            Boolean aBoolean = healthMutations.remove(0);
+            if (aBoolean) {
+                healthPctFull++;
+            } else {
+                healthPctFull--;
             }
         }
+
         if (!shieldMutations.isEmpty()) {
             Boolean aBoolean = shieldMutations.remove(0);
             if (aBoolean) {

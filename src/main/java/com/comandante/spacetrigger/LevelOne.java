@@ -22,6 +22,7 @@ public class LevelOne extends Level {
             PVector.random2D();
             AlienBuzz alienBuzz = new AlienBuzz(PVector.random2D());
             alienBuzz.addDrop(new HealthDrop(Drop.DropRate.UNUSUAL));
+            alienBuzz.addDrop(new MissleDrop(Drop.DropRate.UNUSUAL));
             aliens.add(alienBuzz);
 
         }
