@@ -13,7 +13,7 @@ public abstract class Drop extends Sprite {
     }
 
     public void move() {
-        location.y += Math.round(speed);
+        location.y += Math.round(1);
 
         if (location.y > Main.BOARD_Y) {
             setVisible(false);

@@ -36,7 +36,8 @@ public class AlienScoutMissle extends Projectile {
         velocity.add(acceleration);
         velocity.limit(4);
         location.add(velocity);
-        loadImage(GfxUtil.rotateImageByDegrees(Assets.ALIEN_SCOUT_MISSLE, velocity.heading()));
+        image = cachedRotate(Assets.ALIEN_SCOUT_MISSLE, GfxUtil.round(velocity.heading(), 1));
+//        loadImage(GfxUtil.rotateImageByDegrees(Assets.ALIEN_SCOUT_MISSLE, velocity.heading()));
         acceleration.mult(0);
 
         if ((location.x > BOARD_X) || (location.x < 0)) {

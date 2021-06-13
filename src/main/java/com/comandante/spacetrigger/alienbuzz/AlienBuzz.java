@@ -117,16 +117,7 @@ public class AlienBuzz extends Alien {
         PVector v = velocity.get();
         v.normalize();
         v.mult(.1);
-        image = GfxUtil.rotateImageByDegrees(spriteRender.getImage(), v.heading());
+        image = cachedRotate(spriteRender.getImage(), GfxUtil.round(v.heading(), 2));
         return new SpriteRender(spriteRender.getLocation(), image);
-    }
-
-    public static double round(double value, int places) {
-        if (places < 0) throw new IllegalArgumentException();
-
-        long factor = (long) Math.pow(10, places);
-        value = value * factor;
-        long tmp = Math.round(value);
-        return (double) tmp / factor;
     }
 }

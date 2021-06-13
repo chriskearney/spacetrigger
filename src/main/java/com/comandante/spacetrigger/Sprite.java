@@ -9,7 +9,11 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -32,11 +36,16 @@ public abstract class Sprite {
     protected Optional<SpriteSheetAnimation> warpAnimation = Optional.empty();
     protected boolean isExploding;
     private boolean invisibleAfterExploding;
-    protected int ticks = 0;
-    protected double speed;
-    protected boolean reverse = false;
 
-    private Map<Integer, BufferedImage> rotatedSpritesByDegree = Maps.newHashMap();
+
+    CacheLoader<ImageDegreePair, BufferedImage> loader = new CacheLoader<ImageDegreePair, BufferedImage>() {
+        @Override
+        public BufferedImage load(ImageDegreePair imageDegreePair) {
+            return GfxUtil.rotateImageByDegrees(imageDegreePair.getBufferedImage(), imageDegreePair.getRadian());
+        }
+    };
+
+    LoadingCache<ImageDegreePair, BufferedImage> rotatedImageCache = CacheBuilder.newBuilder().build(loader);
 
     protected double mass = 1.0;
 
@@ -60,7 +69,6 @@ public abstract class Sprite {
         this.originalLocation = new PVector(location.x, location.y);
         this.hitPoints = hitPoints;
         this.maxHitpoints = hitPoints;
-        this.speed = speed;
     }
 
     public Sprite(PVector location) {
@@ -238,7 +246,7 @@ public abstract class Sprite {
         if ((!visible && !overrideVisibility) || isExploding || warpAnimation.isPresent()) {
             return Optional.empty();
         }
-        if ((!sprite.isVisible() && !overrideVisibility)  || sprite.isExploding()) {
+        if ((!sprite.isVisible() && !overrideVisibility) || sprite.isExploding()) {
             return Optional.empty();
         }
         Rectangle2D thisSpriteRectangle = getBounds();
@@ -297,9 +305,11 @@ public abstract class Sprite {
         return (int) Math.round(percent);
     }
 
-    public void createRotatedImages() {
-        for (int i = 0; i < 360; i++) {
-
+    public BufferedImage cachedRotate(BufferedImage img, double radians) {
+        try {
+            return rotatedImageCache.get(new ImageDegreePair(img, radians));
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -358,6 +368,38 @@ public abstract class Sprite {
 
         public BufferedImage getImage() {
             return image;
+        }
+    }
+
+    public static class ImageDegreePair {
+
+        private final BufferedImage bufferedImage;
+        private final double radian;
+
+        public ImageDegreePair(BufferedImage bufferedImage, double radian) {
+            this.bufferedImage = bufferedImage;
+            this.radian = radian;
+        }
+
+        public BufferedImage getBufferedImage() {
+            return bufferedImage;
+        }
+
+        public double getRadian() {
+            return radian;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ImageDegreePair that = (ImageDegreePair) o;
+            return Double.compare(that.radian, radian) == 0 && Objects.equals(bufferedImage, that.bufferedImage);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(bufferedImage, radian);
         }
     }
 }
