@@ -19,7 +19,7 @@ public class AlienScout extends Alien {
         velocity.add(new PVector(.1, 0));
     }
 
-     protected void initAlien() {
+    protected void initAlien() {
         loadImage(Assets.ALIEN_SCOUT);
         loadExplosion(Assets.getAlienScoutExplosionAnimation());
         loadWarpAnimation(Assets.getAlientScoutWarpAnimation());
@@ -50,9 +50,22 @@ public class AlienScout extends Alien {
         if (!vectorToPlayerShip.isPresent()) {
             return;
         }
-        vectorToPlayerShip.get().normalize();
-        vectorToPlayerShip.get().mult(.1);
-        location.add(vectorToPlayerShip.get());
+
+        double lengthOfVectorToShip = vectorToPlayerShip.get().mag();
+        PVector pVector = vectorToPlayerShip.get().get();
+        pVector.normalize();
+        pVector.mult(.1);
+        if (lengthOfVectorToShip <= 170) {
+            pVector.mult(.1);
+            pVector.mult(-1);
+        }
+
+        applyForce(pVector);
+
+        velocity.add(acceleration);
+        location.add(velocity);
+        velocity.limit(.2);
+        acceleration.mult(0);
 
         scoutTicks++;
     }

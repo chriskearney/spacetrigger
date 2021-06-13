@@ -9,8 +9,8 @@ public class AlienNymph extends Alien {
 
     private int nymphTicks = 0;
 
-    public AlienNymph(int x, int y) {
-        super(new PVector(x, y), 400);
+    public AlienNymph(PVector location) {
+        super(location, 400);
         loadWarpAnimation(Assets.getAlienNymphWarpAnimation());
     }
 
@@ -26,10 +26,17 @@ public class AlienNymph extends Alien {
 
     @Override
     public void move() {
-        super.move();
         if (isExploding || warpAnimation.isPresent()) {
             return;
         }
+
+        applyForce(PVector.random2D());
+
+        velocity.add(acceleration);
+        location.add(velocity);
+        velocity.limit(2);
+        acceleration.mult(0);
+
         int stepSize = 100;
         if (nymphTicks % stepSize == 0) {
             int randoPercent = random.nextInt(100);

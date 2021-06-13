@@ -40,6 +40,8 @@ public class LevelOne extends Level {
         aliens2.add(new AlienScout(new PVector(300, 200), eventBus));
         aliens2.add(new AlienScout(new PVector(40, 120), eventBus));
 
+        aliens2.add(new AlienNymph(new PVector(20, 100)));
+
 
         alienTimeMap.put(1400L, aliens2);
     }
