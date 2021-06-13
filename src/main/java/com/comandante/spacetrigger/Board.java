@@ -1,5 +1,6 @@
 package com.comandante.spacetrigger;
 
+import com.codahale.metrics.MetricRegistry;
 import com.comandante.spacetrigger.events.PlayerShipHealthUpdateEvent;
 import com.comandante.spacetrigger.player.PlayerStatusBars;
 import com.comandante.spacetrigger.player.PlayerShip;
@@ -28,6 +29,7 @@ public class Board extends JPanel implements ActionListener {
 
     private final EventBus eventBus;
     private final SplittableRandom random = new SplittableRandom();
+    private final MetricRegistry metricRegistry;
 
     private PlayerShip playerShip;
     private Level currentLevel;
@@ -49,7 +51,8 @@ public class Board extends JPanel implements ActionListener {
     private double parallaxBackgroundYDelta_3 = .9;
     private BufferedImage background_3;
 
-    public Board() {
+    public Board(MetricRegistry metricRegistry) {
+        this.metricRegistry = metricRegistry;
         this.eventBus = new EventBus();
         this.initBoard();
     }
@@ -97,10 +100,22 @@ public class Board extends JPanel implements ActionListener {
         super.paintComponent(g);
         drawBackgrounds(g);
         if (inGame) {
+            com.codahale.metrics.Timer.Context time = metricRegistry.timer("statusbar-draw").time();
             drawStatusBars((Graphics2D) g);
+            time.stop();
+
+            time = metricRegistry.timer("alien-draw").time();
             drawAliens((Graphics2D) g);
+            time.stop();
+
+            time = metricRegistry.timer("playership-draw").time();
             drawPlayerShip((Graphics2D) g);
+            time.stop();
+
+            time = metricRegistry.timer("drops-draw").time();
             drawDrops((Graphics2D) g);
+            time.stop();
+
         } else {
             drawGameOver(g);
         }

@@ -120,4 +120,13 @@ public class AlienBuzz extends Alien {
         image = GfxUtil.rotateImageByDegrees(spriteRender.getImage(), v.heading());
         return new SpriteRender(spriteRender.getLocation(), image);
     }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
+    }
 }

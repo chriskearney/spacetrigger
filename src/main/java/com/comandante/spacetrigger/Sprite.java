@@ -8,13 +8,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.SplittableRandom;
+import java.util.*;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
@@ -38,6 +35,8 @@ public abstract class Sprite {
     protected int ticks = 0;
     protected double speed;
     protected boolean reverse = false;
+
+    private Map<Integer, BufferedImage> rotatedSpritesByDegree = Maps.newHashMap();
 
     protected double mass = 1.0;
 
@@ -296,6 +295,12 @@ public abstract class Sprite {
         hitPoints += amt;
         float percent = (hitPoints * 100.0f) / maxHitpoints;
         return (int) Math.round(percent);
+    }
+
+    public void createRotatedImages() {
+        for (int i = 0; i < 360; i++) {
+
+        }
     }
 
     public int calculateHitPointsPercentAfterDamageApplied(Projectile projectile, Point2D point) {
