@@ -1,12 +1,8 @@
 package com.comandante.spacetrigger.alienbuzz;
 
 import com.comandante.spacetrigger.*;
-import com.comandante.spacetrigger.aliennymph.AlienNymphBullet;
-import com.comandante.spacetrigger.events.PlayerShipLocationUpdateEvent;
-import com.google.common.eventbus.Subscribe;
 
 import java.util.Optional;
-import java.util.Random;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
@@ -14,15 +10,14 @@ import static com.comandante.spacetrigger.Main.BOARD_Y;
 public class AlienBuzz extends Alien {
 
     public AlienBuzz(PVector location) {
-        super(location, 200);
-        velocity.add(new PVector(.1, .2));
-    }
+        super(location,
+                200,
+                Optional.empty(),
+                Optional.of(Assets.getAlienBuzzAnimation()),
+                Optional.of(Assets.getAlienBuzzExplosion()),
+                Optional.of(Assets.getAlienBuzzWarpAnimation()));
 
-    @Override
-    protected void initAlien() {
-        loadWarpAnimation(Assets.getAlienBuzzWarpAnimation());
-        loadSpriteSheetAnimation(Assets.getAlienBuzzAnimation());
-        loadExplosion(Assets.getAlienBuzzExplosion());
+        velocity.add(new PVector(.1, .2));
     }
 
     public int getRandomNumberUsingNextInt(int min, int max) {
@@ -34,62 +29,65 @@ public class AlienBuzz extends Alien {
     }
 
     @Override
-    public void move() {
-        if (isExploding || warpAnimation.isPresent()) {
-            return;
-        }
-        super.move();
-
-        Optional<PVector> vectorToPlayerShipOptional = getVectorToPlayerShip();
-        if (!vectorToPlayerShipOptional.isPresent()) {
-            return;
-        }
-
-        PVector vectorToPlayerShip = vectorToPlayerShipOptional.get();
-        double mag = vectorToPlayerShip.mag();
-
-        if (mag < 500) {
-            double randoPercent = random.nextDouble(100);
-            if (randoPercent < .3) {
-                fire();
+    public void update() {
+        try {
+            if (isExploding || warpAnimation.isPresent()) {
+                return;
             }
-        }
 
-        if (mag < getRandomNumberUsingNextInt(60, 70)) {
-            PVector pVector = vectorToPlayerShip.get();
-            pVector.normalize();
-            pVector.mult(-4);
-            applyForce(pVector);
-            PVector random = PVector.random2D();
-            random.mult(.4);
-            applyForce(random);
-        } else {
-            if (getRandomNumberUsingNextInt(0, 100) < 10) {
+            Optional<PVector> vectorToPlayerShipOptional = getVectorToPlayerShip();
+            if (!vectorToPlayerShipOptional.isPresent()) {
+                return;
+            }
+
+            PVector vectorToPlayerShip = vectorToPlayerShipOptional.get();
+            double mag = vectorToPlayerShip.mag();
+
+            if (mag < 500) {
+                double randoPercent = random.nextDouble(100);
+                if (randoPercent < .3) {
+                    fire();
+                }
+            }
+
+            if (mag < getRandomNumberUsingNextInt(60, 70)) {
+                PVector pVector = vectorToPlayerShip.get();
+                pVector.normalize();
+                pVector.mult(-4);
+                applyForce(pVector);
                 PVector random = PVector.random2D();
-                random.normalize();
-                random.mult(.1);
-                vectorToPlayerShip.normalize();
-                vectorToPlayerShip.mult(0.1);
-                applyForce(vectorToPlayerShip);
+                random.mult(.4);
                 applyForce(random);
-            } else if (getRandomNumberUsingNextInt(0, 100) < 60)  {
-                vectorToPlayerShip.normalize();
-                vectorToPlayerShip.mult(0.1);
-                applyForce(vectorToPlayerShip);
+            } else {
+                if (getRandomNumberUsingNextInt(0, 100) < 10) {
+                    PVector random = PVector.random2D();
+                    random.normalize();
+                    random.mult(.1);
+                    vectorToPlayerShip.normalize();
+                    vectorToPlayerShip.mult(0.1);
+                    applyForce(vectorToPlayerShip);
+                    applyForce(random);
+                } else if (getRandomNumberUsingNextInt(0, 100) < 60) {
+                    vectorToPlayerShip.normalize();
+                    vectorToPlayerShip.mult(0.1);
+                    applyForce(vectorToPlayerShip);
+                }
             }
-        }
 
-        velocity.add(acceleration);
-        location.add(velocity);
-        velocity.limit(2);
-        acceleration.mult(0);
+            velocity.add(acceleration);
+            location.add(velocity);
+            velocity.limit(2);
+            acceleration.mult(0);
 
 
-        if ((location.x > BOARD_X) || (location.x < 0)) {
-            velocity.x = velocity.x * -1;
-        }
-        if ((location.y > BOARD_Y) || (location.y < 0)) {
-            velocity.y = velocity.y * -1;
+            if ((location.x > BOARD_X) || (location.x < 0)) {
+                velocity.x = velocity.x * -1;
+            }
+            if ((location.y > BOARD_Y) || (location.y < 0)) {
+                velocity.y = velocity.y * -1;
+            }
+        } finally {
+            super.update();
         }
     }
 

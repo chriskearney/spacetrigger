@@ -34,4 +34,20 @@ public class GfxUtil {
         long tmp = Math.round(value);
         return (double) tmp / factor;
     }
+
+    public static BufferedImage createTransparentBufferedImage(int width, int height) {
+        // BufferedImage is actually already transparent on my system, but that isn't
+        // guaranteed across platforms.
+        BufferedImage bufferedImage = new BufferedImage(width, height,
+                BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics = bufferedImage.createGraphics();
+
+        // To be sure, we use clearRect, which will (unlike fillRect) totally replace
+        // the current pixels with the desired color, even if it's fully transparent.
+        graphics.setBackground(new Color(0, true));
+        graphics.clearRect(0, 0, width, height);
+        graphics.dispose();
+
+        return bufferedImage;
+    }
 }

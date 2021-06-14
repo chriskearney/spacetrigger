@@ -16,8 +16,10 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.checkerframework.checker.nullness.Opt;
 
 
+import static com.comandante.spacetrigger.Assets.TRANSPARENT_ONE_PIXEL;
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static java.lang.Math.sin;
 
@@ -36,6 +38,8 @@ public abstract class Sprite {
     protected Optional<SpriteSheetAnimation> warpAnimation = Optional.empty();
     protected boolean isExploding;
     private boolean invisibleAfterExploding;
+
+    private SpriteRender spriteRender;
 
 
     CacheLoader<ImageDegreePair, BufferedImage> loader = new CacheLoader<ImageDegreePair, BufferedImage>() {
@@ -62,18 +66,25 @@ public abstract class Sprite {
 
     private Point2D previousAddedPoint;
 
-    private static final BufferedImage TRANSPARENT_ONE_PIXEL = createTransparentBufferedImage(1, 1);
-
-    public Sprite(PVector location, int hitPoints) {
+    public Sprite(PVector location,
+                  int hitPoints,
+                  Optional<BufferedImage> image,
+                  Optional<SpriteSheetAnimation> imageAnimation,
+                  Optional<SpriteSheetAnimation> explosionAnimation,
+                  Optional<SpriteSheetAnimation> warpAnimation) {
         this.location = location;
         this.originalLocation = new PVector(location.x, location.y);
         this.hitPoints = hitPoints;
         this.maxHitpoints = hitPoints;
-    }
 
-    public Sprite(PVector location) {
-        this.location = location;
-        this.originalLocation = new PVector(location.x, location.y);
+        image.ifPresent(bufferedImage -> this.image = bufferedImage);
+        imageAnimation.ifPresent(bufferedImage -> this.animatedImage = imageAnimation);
+        explosionAnimation.ifPresent(spriteSheetAnimation -> this.explosion = spriteSheetAnimation);
+        if (warpAnimation.isPresent()) {
+            this.warpAnimation = warpAnimation;
+        }
+
+        calculateSpriteRender();
     }
 
     public void setVelocity(PVector velocity) {
@@ -88,21 +99,8 @@ public abstract class Sprite {
         this.image = image;
     }
 
-    protected void loadSpriteSheetAnimation(SpriteSheetAnimation spriteSheetAnimation) {
-        this.animatedImage = Optional.of(spriteSheetAnimation);
-    }
-
-    public void move() {
-        long currentTickTime = System.currentTimeMillis();
-        if (lastTickTime == 0) {
-            lastTickTime = currentTickTime;
-        }
-
-        if (isExploding || warpAnimation.isPresent()) {
-            return;
-        }
-
-        lastTickTime = System.currentTimeMillis();
+    public void update() {
+        calculateSpriteRender();
     }
 
     private Point2D getLastPointInTrajectory() {
@@ -118,10 +116,19 @@ public abstract class Sprite {
     }
 
     public SpriteRender getSpriteRender() {
+        return spriteRender;
+    }
+
+    public void calculateSpriteRender() {
 
         if (!isExploding) {
-            centerX = getX() + getWidth() / 2;
-            centerY = getY() + getHeight() / 2;
+            if (animatedImage.isPresent()) {
+                centerX = getX() + animatedImage.get().getX_size() / 2;
+                centerY = getY() + animatedImage.get().getY_size() / 2;
+            } {
+                centerX = getX() + getWidth() / 2;
+                centerY = getY() + getHeight() / 2;
+            }
         }
 
         if (warpAnimation.isPresent()) {
@@ -129,18 +136,21 @@ public abstract class Sprite {
             if (currentFrame.isPresent()) {
                 double warpX = centerX - (currentFrame.get().getWidth() / 2);
                 double warpY = centerY - (currentFrame.get().getHeight() / 2);
-                return new SpriteRender(new PVector(warpX, warpY), currentFrame.get());
+                this.spriteRender = new SpriteRender(new PVector(warpX, warpY), currentFrame.get());
+                return;
             } else {
                 warpAnimation = Optional.empty();
             }
         }
+
 
         if (isExploding) {
             Optional<BufferedImage> currentFrame = explosion.updateAnimation();
             if (currentFrame.isPresent()) {
                 double explosionX = centerX - (currentFrame.get().getWidth() / 2);
                 double explosionY = centerY - (currentFrame.get().getHeight() / 2);
-                return new SpriteRender(new PVector(explosionX, explosionY), currentFrame.get());
+                this.spriteRender = new SpriteRender(new PVector(explosionX, explosionY), currentFrame.get());
+                return;
             }
 
             if (invisibleAfterExploding) {
@@ -148,7 +158,8 @@ public abstract class Sprite {
                 isExploding = false;
             }
 
-            return new SpriteRender(location, TRANSPARENT_ONE_PIXEL);
+            this.spriteRender = new SpriteRender(location, TRANSPARENT_ONE_PIXEL);
+            return;
         }
 
         if (animatedImage.isPresent()) {
@@ -156,10 +167,12 @@ public abstract class Sprite {
             if (!bufferedImage.isPresent()) {
                 throw new RuntimeException("Need a looping animation.");
             }
-            return new SpriteRender(location, bufferedImage.get());
+            this.image = bufferedImage.get();
+            this.spriteRender = new SpriteRender(location, bufferedImage.get());
+            return;
         }
 
-        return new SpriteRender(location, image);
+        this.spriteRender = new SpriteRender(location, image);
     }
 
     public double getX() {
@@ -277,22 +290,6 @@ public abstract class Sprite {
         } else {
             acceleration.add(div);
         }
-    }
-
-    public static BufferedImage createTransparentBufferedImage(int width, int height) {
-        // BufferedImage is actually already transparent on my system, but that isn't
-        // guaranteed across platforms.
-        BufferedImage bufferedImage = new BufferedImage(width, height,
-                BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics = bufferedImage.createGraphics();
-
-        // To be sure, we use clearRect, which will (unlike fillRect) totally replace
-        // the current pixels with the desired color, even if it's fully transparent.
-        graphics.setBackground(new Color(0, true));
-        graphics.clearRect(0, 0, width, height);
-        graphics.dispose();
-
-        return bufferedImage;
     }
 
     public int calculateHitPointsPercentAfterHealthApplied(int amt) {

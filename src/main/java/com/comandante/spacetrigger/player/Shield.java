@@ -11,13 +11,11 @@ import java.util.Optional;
 public class Shield extends Sprite {
 
     public Shield() {
-        super(new PVector(0, 0), 0);
-        initShield();
+        super(new PVector(0, 0),
+                0,
+                Optional.of(Assets.PLAYER_SHIP_SHIELD),
+                Optional.of(Assets.getShieldAnimation()),
+                Optional.empty(),
+                Optional.empty());
     }
-
-    private void initShield() {
-        loadImage(Assets.PLAYER_SHIP_SHIELD);
-        loadSpriteSheetAnimation(new SpriteSheetAnimation(64, 64, 11, 1, Assets.PLAYER_SHIP_ANIMATED_SHIELD, 0, 3, true, Optional.empty()));
-    }
-
 }

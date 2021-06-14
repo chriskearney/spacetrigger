@@ -34,75 +34,79 @@ public class PlayerShip extends Sprite {
     private int ticks;
 
     public PlayerShip(EventBus eventBus) {
-        super(new PVector(0, 0), 500);
-        initSpaceShip();
-        location = new PVector(BOARD_X / 2, BOARD_Y - getHeight() * 4);
-        velocity = new PVector(0, 0);
+        super(new PVector(0, 0),
+                500,
+                Optional.ofNullable(Assets.PLAYER_SHIP),
+                Optional.empty(),
+                Optional.of(Assets.getPlayerShipExplosionAnimation()),
+                Optional.empty());
+
+        this.location = new PVector(BOARD_X / 2, BOARD_Y - getHeight() * 4);
+        this.velocity = new PVector(0, 0);
         this.eventBus = eventBus;
         this.visible = true;
     }
 
-    private void initSpaceShip() {
-        loadImage(Assets.PLAYER_SHIP);
-        loadExplosion(Assets.getPlayerShipExplosionAnimation());
-    }
-
-    public void move() {
-        if (isExploding) {
-            return;
-        }
-
-        if (currentShield <= 0) {
-            shield.setVisible(false);
-        }
-
-        if (isShield()) {
-            if (ticks % 2 == 0) {
-                currentShield--;
-                eventBus.post(new PlayerShipShieldUpdateEvent(Math.round(currentShield * 100.f) / maxShield));
+    public void update() {
+        try {
+            if (isExploding) {
+                return;
             }
-        } else {
-            if (currentShield < maxShield) {
-                if (ticks % 10 == 0) {
-                    currentShield++;
+
+            if (currentShield <= 0) {
+                shield.setVisible(false);
+            }
+
+            if (isShield()) {
+                if (ticks % 2 == 0) {
+                    currentShield--;
                     eventBus.post(new PlayerShipShieldUpdateEvent(Math.round(currentShield * 100.f) / maxShield));
                 }
+            } else {
+                if (currentShield < maxShield) {
+                    if (ticks % 10 == 0) {
+                        currentShield++;
+                        eventBus.post(new PlayerShipShieldUpdateEvent(Math.round(currentShield * 100.f) / maxShield));
+                    }
+                }
             }
+
+            if (velocity.x != 0 || velocity.y != 0) {
+                if (velocity.x != 0) {
+                    if ((location.x + velocity.x) <= 0) {
+                        location.x = 0;
+                        setVelocity(new PVector(0, velocity.y));
+                        return;
+                    }
+
+                    if ((location.x + velocity.x) >= (BOARD_X - getWidth())) {
+                        location.x = (BOARD_X - getWidth());
+                        setVelocity(new PVector(0, velocity.y));
+                        return;
+                    }
+                }
+
+                if (velocity.y != 0) {
+                    if ((location.y + velocity.y) <= 0) {
+                        location.y = 0;
+                        setVelocity(new PVector(velocity.x, 0));
+                        return;
+                    }
+
+                    if ((location.y + velocity.y) >= (BOARD_Y - getHeight() * 2)) {
+                        location.y = (BOARD_Y - getHeight() * 2);
+                        setVelocity(new PVector(velocity.x, 0));
+                        return;
+                    }
+                }
+
+                location.add(velocity);
+            }
+            ticks++;
+            eventBus.post(new PlayerShipLocationUpdateEvent(location));
+        } finally {
+            super.update();
         }
-
-        if (velocity.x != 0 || velocity.y != 0) {
-            if (velocity.x != 0) {
-                if ((location.x + velocity.x) <= 0) {
-                    location.x = 0;
-                    setVelocity(new PVector(0, velocity.y));
-                    return;
-                }
-
-                if ((location.x + velocity.x) >= (BOARD_X - getWidth())) {
-                    location.x = (BOARD_X - getWidth());
-                    setVelocity(new PVector(0, velocity.y));
-                    return;
-                }
-            }
-
-            if (velocity.y != 0) {
-                if ((location.y + velocity.y) <= 0) {
-                    location.y = 0;
-                    setVelocity(new PVector(velocity.x, 0));
-                    return;
-                }
-
-                if ((location.y + velocity.y) >= (BOARD_Y - getHeight() * 2)) {
-                    location.y = (BOARD_Y - getHeight() * 2);
-                    setVelocity(new PVector(velocity.x, 0));
-                    return;
-                }
-            }
-
-            location.add(velocity);
-        }
-        ticks++;
-        eventBus.post(new PlayerShipLocationUpdateEvent(location));
     }
 
     public void addMissles(int number) {

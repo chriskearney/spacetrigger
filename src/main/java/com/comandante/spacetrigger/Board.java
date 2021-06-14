@@ -172,6 +172,7 @@ public class Board extends JPanel implements ActionListener {
             PVector v = new PVector((spaceShipRender.getX() + (playerShip.getWidth() / 2) - (playerShip.getShield().getWidth() / 2)),
                     (spaceShipRender.getY() + (playerShip.getHeight() / 2) - (playerShip.getShield().getHeight() / 2)));
             shield.setOriginalLocation(v);
+            shield.calculateSpriteRender();
             if (playerShip.getShield().isVisible() && !playerShip.isExploding()) {
                 Sprite.SpriteRender spriteRender = shield.getSpriteRender();
                 AffineTransform transform = getAffineTransform(spriteRender.getX(), spriteRender.getY());
@@ -271,6 +272,7 @@ public class Board extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        playerStatusBars.update();
         updateMissiles();
         updateSpaceShip();
         updateAliens();
@@ -365,7 +367,7 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < spaceShipProjectiles.size(); i++) {
             Projectile projectile = spaceShipProjectiles.get(i);
             if (projectile.isVisible()) {
-                projectile.move();
+                projectile.update();
             }
         }
 
@@ -376,7 +378,7 @@ public class Board extends JPanel implements ActionListener {
             for (int j = 0; j < aliens.get(i).getMissiles().size(); j++) {
                 Projectile alienMissle = aliens.get(i).getMissiles().get(j);
                 if (alienMissle.isVisible()) {
-                    alienMissle.move();
+                    alienMissle.update();
                 } else {
                     remove = true;
                     try {
@@ -398,7 +400,8 @@ public class Board extends JPanel implements ActionListener {
         if (!playerShip.isVisible() && !playerShip.isExploding()) {
             inGame = false;
         }
-        playerShip.move();
+
+        playerShip.update();
     }
 
     private void updateAliens() {
@@ -413,7 +416,7 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < aliens.size(); i++) {
             Alien a = aliens.get(i);
             if (a.isVisible()) {
-                a.move();
+                a.update();
             } else {
                 remove = true;
             }
@@ -436,7 +439,7 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < drops.size(); i++) {
             Drop drop = drops.get(i);
             if (drop.isVisible()) {
-                drop.move();
+                drop.update();
             } else {
                 remove = true;
             }

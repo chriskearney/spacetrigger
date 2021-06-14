@@ -19,7 +19,7 @@ public class PlayerGunLevel2Bullet extends Projectile {
     }
 
     @Override
-    public void move() {
+    public void update() {
         location.add(velocity);
     }
 }

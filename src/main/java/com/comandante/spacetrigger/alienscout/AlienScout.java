@@ -3,7 +3,6 @@ package com.comandante.spacetrigger.alienscout;
 import com.comandante.spacetrigger.Alien;
 import com.comandante.spacetrigger.Assets;
 import com.comandante.spacetrigger.PVector;
-import com.comandante.spacetrigger.SpriteSheetAnimation;
 import com.google.common.eventbus.EventBus;
 
 import java.util.Optional;
@@ -14,15 +13,14 @@ public class AlienScout extends Alien {
     private final EventBus eventBus;
 
     public AlienScout(PVector location, EventBus eventBus) {
-        super(location, 1000);
+        super(location,
+                1000,
+                Optional.of(Assets.ALIEN_SCOUT),
+                Optional.empty(),
+                Optional.of(Assets.getAlienScoutExplosionAnimation()),
+                Optional.of(Assets.getAlientScoutWarpAnimation()));
         this.eventBus = eventBus;
         velocity.add(new PVector(.1, 0));
-    }
-
-    protected void initAlien() {
-        loadImage(Assets.ALIEN_SCOUT);
-        loadExplosion(Assets.getAlienScoutExplosionAnimation());
-        loadWarpAnimation(Assets.getAlientScoutWarpAnimation());
     }
 
     public void fire() {
@@ -34,39 +32,43 @@ public class AlienScout extends Alien {
         projectiles.add(alienScoutMissle);
     }
 
-    public void move() {
-        if (isExploding || warpAnimation.isPresent()) {
-            return;
-        }
-        int stepSize = 100;
-        if (scoutTicks % stepSize == 0) {
-            int randoPercent = random.nextInt(100);
-            if (randoPercent < 16) {
-                fire();
+    public void update() {
+        try {
+            if (isExploding || warpAnimation.isPresent()) {
+                return;
             }
-        }
+            int stepSize = 100;
+            if (scoutTicks % stepSize == 0) {
+                int randoPercent = random.nextInt(100);
+                if (randoPercent < 16) {
+                    fire();
+                }
+            }
 
-        Optional<PVector> vectorToPlayerShip = getVectorToPlayerShip();
-        if (!vectorToPlayerShip.isPresent()) {
-            return;
-        }
+            Optional<PVector> vectorToPlayerShip = getVectorToPlayerShip();
+            if (!vectorToPlayerShip.isPresent()) {
+                return;
+            }
 
-        double lengthOfVectorToShip = vectorToPlayerShip.get().mag();
-        PVector pVector = vectorToPlayerShip.get().get();
-        pVector.normalize();
-        pVector.mult(.1);
-        if (lengthOfVectorToShip <= 170) {
+            double lengthOfVectorToShip = vectorToPlayerShip.get().mag();
+            PVector pVector = vectorToPlayerShip.get().get();
+            pVector.normalize();
             pVector.mult(.1);
-            pVector.mult(-1);
+            if (lengthOfVectorToShip <= 170) {
+                pVector.mult(.1);
+                pVector.mult(-1);
+            }
+
+            applyForce(pVector);
+
+            velocity.add(acceleration);
+            location.add(velocity);
+            velocity.limit(.2);
+            acceleration.mult(0);
+
+            scoutTicks++;
+        } finally {
+            super.update();
         }
-
-        applyForce(pVector);
-
-        velocity.add(acceleration);
-        location.add(velocity);
-        velocity.limit(.2);
-        acceleration.mult(0);
-
-        scoutTicks++;
     }
 }

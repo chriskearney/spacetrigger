@@ -11,6 +11,7 @@ import com.google.common.eventbus.Subscribe;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Optional;
 
 public class PlayerStatusBars extends Sprite {
 
@@ -34,9 +35,17 @@ public class PlayerStatusBars extends Sprite {
     int ticks = 0;
 
     public PlayerStatusBars(PVector location) {
-        super(location, 0);
+        super(location, 0, Optional.of(Assets.TRANSPARENT_ONE_PIXEL), Optional.empty(), Optional.empty(), Optional.empty());
         healthBars = calculateBars(healthPctFull);
         shieldBars = calculateBars(shieldPctFull);
+        this.image = drawStatusBars();
+        calculateSpriteRender();
+    }
+
+    @Override
+    public void update() {
+        image = drawStatusBars();
+        calculateSpriteRender();
     }
 
     private List<Boolean> calculateBars(int pctFull) {
@@ -52,14 +61,7 @@ public class PlayerStatusBars extends Sprite {
         return bars;
     }
 
-    @Override
-    public SpriteRender getSpriteRender() {
-        this.image = drawStatusBars();
-        return super.getSpriteRender();
-    }
-
     private BufferedImage drawStatusBars() {
-
 
         if (!healthMutations.isEmpty()) {
             Boolean aBoolean = healthMutations.remove(0);

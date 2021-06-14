@@ -2,9 +2,7 @@ package com.comandante.spacetrigger.aliennymph;
 
 import com.comandante.spacetrigger.*;
 
-import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.Optional;
 
 public class AlienNymphBullet extends Projectile {
     public AlienNymphBullet(double x, double y) {
@@ -18,7 +16,7 @@ public class AlienNymphBullet extends Projectile {
     }
 
     @Override
-    public void move() {
-        super.move();
+    public void update() {
+        super.update();
     }
 }

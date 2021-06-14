@@ -3,14 +3,11 @@ package com.comandante.spacetrigger;
 import com.comandante.spacetrigger.events.HealthPickUpEvent;
 import com.comandante.spacetrigger.events.STEvent;
 
+import java.util.Optional;
+
 public class HealthDrop extends Drop {
     public HealthDrop(DropRate dropRate) {
-        super(new PVector(0, 0), dropRate);
-        init();
-    }
-
-    public void init() {
-        loadImage(Assets.HEALTH_DROP);
+        super(new PVector(0, 0), dropRate, Optional.of(Assets.HEALTH_DROP), Optional.empty(), Optional.empty(), Optional.empty());
     }
 
     @Override
@@ -19,7 +16,7 @@ public class HealthDrop extends Drop {
     }
 
     @Override
-    public void move() {
+    public void update() {
         acceleration.add(new PVector(0, .3));
         velocity.add(acceleration);
         velocity.limit(.4);

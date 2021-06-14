@@ -1,6 +1,7 @@
 package com.comandante.spacetrigger;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -46,7 +47,11 @@ public class Assets {
     public static final BufferedImage PLAYER_HEALTH_BAR_FULL;
     public static final BufferedImage PLAYER_SHIELD_BAR_FULL;
 
+    public static final BufferedImage TRANSPARENT_ONE_PIXEL;
+
     static {
+
+        TRANSPARENT_ONE_PIXEL = GfxUtil.createTransparentBufferedImage(1, 1);
 
         ALIEN_SCOUT = loadImage("alien-scout.png");
         ALIEN_SCOUT_EXPLOSION = loadImage("alien-scout-explosion.png");
@@ -141,5 +146,9 @@ public class Assets {
 
     public static SpriteSheetAnimation getAlienBuzzExplosion() {
        return new SpriteSheetAnimation(128, 128, 8, 8, Assets.ALIEN_NYMPH_EXPLOSION, 2, 3);
+    }
+
+    public static SpriteSheetAnimation getShieldAnimation() {
+        return new SpriteSheetAnimation(64, 64, 11, 1, Assets.PLAYER_SHIP_ANIMATED_SHIELD, 0, 3, true, Optional.empty());
     }
 }

@@ -4,9 +4,7 @@ import com.comandante.spacetrigger.*;
 import com.comandante.spacetrigger.events.PlayerShipLocationUpdateEvent;
 import com.google.common.eventbus.Subscribe;
 
-import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.Optional;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
@@ -27,7 +25,7 @@ public class AlienScoutMissle extends Projectile {
     }
 
     @Override
-    public void move() {
+    public void update() {
         PVector sub = PVector.sub(shipLocation, location);
         sub.normalize();
         sub.mult(0.1);
@@ -46,6 +44,7 @@ public class AlienScoutMissle extends Projectile {
         if ((location.y > BOARD_Y) || (location.y < 0)) {
             setVisible(false);
         }
+        super.update();
     }
 
     @Subscribe

@@ -4,6 +4,7 @@ import com.comandante.spacetrigger.events.PlayerShipLocationUpdateEvent;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.Subscribe;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,13 +17,15 @@ public abstract class Alien extends Sprite {
 
     protected List<Drop> drops = Lists.newArrayList();
 
-    public Alien(PVector location, int hitPoints) {
-        super(location, hitPoints);
-        initAlien();
+    public Alien(PVector location,
+                 int hitPoints,
+                 Optional<BufferedImage> image,
+                 Optional<SpriteSheetAnimation> imageAnimated,
+                 Optional<SpriteSheetAnimation> explosionAnimation,
+                 Optional<SpriteSheetAnimation> warpAnimation) {
+        super(location, hitPoints, image, imageAnimated, explosionAnimation, warpAnimation);
         visible = true;
     }
-
-    protected abstract void initAlien();
 
     public List<Projectile> getMissiles() {
         return projectiles;

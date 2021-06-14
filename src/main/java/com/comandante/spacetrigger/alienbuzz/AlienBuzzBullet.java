@@ -3,8 +3,6 @@ package com.comandante.spacetrigger.alienbuzz;
 import com.comandante.spacetrigger.*;
 
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.util.Optional;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
@@ -23,13 +21,17 @@ public class AlienBuzzBullet extends Projectile {
     }
 
     @Override
-    public void move() {
-        location.add(velocity);
-        if ((location.x > BOARD_X) || (location.x < 0)) {
-            setVisible(false);
-        }
-        if ((location.y > BOARD_Y) || (location.y < 0)) {
-            setVisible(false);
+    public void update() {
+        try {
+            location.add(velocity);
+            if ((location.x > BOARD_X) || (location.x < 0)) {
+                setVisible(false);
+            }
+            if ((location.y > BOARD_Y) || (location.y < 0)) {
+                setVisible(false);
+            }
+        } finally {
+            super.update();
         }
     }
 }
