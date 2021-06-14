@@ -185,6 +185,11 @@ public abstract class Sprite {
             return;
         }
 
+        if (rotateRadians.isPresent()) {
+            BufferedImage rotatedImage = cachedRotate(image, rotateRadians.get());
+            this.image = rotatedImage;
+        }
+
         this.spriteRender = new SpriteRender(location, image);
     }
 
