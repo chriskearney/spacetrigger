@@ -42,14 +42,14 @@ public abstract class Sprite {
     private SpriteRender spriteRender;
 
 
-    CacheLoader<ImageDegreePair, BufferedImage> loader = new CacheLoader<ImageDegreePair, BufferedImage>() {
+    static CacheLoader<ImageDegreePair, BufferedImage> loader = new CacheLoader<ImageDegreePair, BufferedImage>() {
         @Override
         public BufferedImage load(ImageDegreePair imageDegreePair) {
             return GfxUtil.rotateImageByDegrees(imageDegreePair.getBufferedImage(), imageDegreePair.getRadian());
         }
     };
 
-    LoadingCache<ImageDegreePair, BufferedImage> rotatedImageCache = CacheBuilder.newBuilder().build(loader);
+    static LoadingCache<ImageDegreePair, BufferedImage> rotatedImageCache = CacheBuilder.newBuilder().build(loader);
 
     protected double mass = 1.0;
 
@@ -84,7 +84,7 @@ public abstract class Sprite {
             this.warpAnimation = warpAnimation;
         }
 
-        calculateSpriteRender();
+        calculateSpriteRender(Optional.empty());
     }
 
     public void setVelocity(PVector velocity) {
@@ -99,8 +99,12 @@ public abstract class Sprite {
         this.image = image;
     }
 
+    public void update(Optional<Double> rotateRadians) {
+        calculateSpriteRender(rotateRadians);
+    }
+
     public void update() {
-        calculateSpriteRender();
+        update(Optional.empty());
     }
 
     private Point2D getLastPointInTrajectory() {
@@ -120,12 +124,17 @@ public abstract class Sprite {
     }
 
     public void calculateSpriteRender() {
+        calculateSpriteRender(Optional.empty());
+    }
+
+    public void calculateSpriteRender(Optional<Double> rotateRadians) {
 
         if (!isExploding) {
             if (animatedImage.isPresent()) {
                 centerX = getX() + animatedImage.get().getX_size() / 2;
                 centerY = getY() + animatedImage.get().getY_size() / 2;
-            } {
+            }
+            {
                 centerX = getX() + getWidth() / 2;
                 centerY = getY() + getHeight() / 2;
             }
@@ -163,12 +172,16 @@ public abstract class Sprite {
         }
 
         if (animatedImage.isPresent()) {
-            Optional<BufferedImage> bufferedImage = animatedImage.get().updateAnimation();
-            if (!bufferedImage.isPresent()) {
+            Optional<BufferedImage> bufferedImageOptional = animatedImage.get().updateAnimation();
+            if (!bufferedImageOptional.isPresent()) {
                 throw new RuntimeException("Need a looping animation.");
             }
-            this.image = bufferedImage.get();
-            this.spriteRender = new SpriteRender(location, bufferedImage.get());
+            BufferedImage bufferedImage = bufferedImageOptional.get();
+            if (rotateRadians.isPresent()) {
+                bufferedImage = cachedRotate(bufferedImage, rotateRadians.get());
+            }
+            this.image = bufferedImageOptional.get();
+            this.spriteRender = new SpriteRender(location, bufferedImage);
             return;
         }
 

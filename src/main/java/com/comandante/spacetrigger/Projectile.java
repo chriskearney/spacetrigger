@@ -12,7 +12,7 @@ public abstract class Projectile extends Sprite {
         super(location, 0, Optional.ofNullable(spriteImage), Optional.empty(), Optional.empty(), Optional.empty());
         this.damage = damage;
         if (heading != null && heading.heading() != 0) {
-            image = GfxUtil.rotateImageByDegrees(spriteImage, heading.heading());
+            image = cachedRotate(spriteImage, heading.heading());
             calculateSpriteRender();
         }
         visible = true;

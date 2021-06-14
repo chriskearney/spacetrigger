@@ -79,15 +79,18 @@ public class AlienBuzz extends Alien {
             velocity.limit(2);
             acceleration.mult(0);
 
-
             if ((location.x > BOARD_X) || (location.x < 0)) {
                 velocity.x = velocity.x * -1;
             }
             if ((location.y > BOARD_Y) || (location.y < 0)) {
                 velocity.y = velocity.y * -1;
             }
+
         } finally {
-            super.update();
+            PVector v = velocity.get();
+            v.normalize();
+            v.mult(.1);
+            super.update(Optional.of(GfxUtil.round(v.heading(), 2)));
         }
     }
 
@@ -109,13 +112,4 @@ public class AlienBuzz extends Alien {
         }
     }
 
-    @Override
-    public SpriteRender getSpriteRender() {
-        SpriteRender spriteRender = super.getSpriteRender();
-        PVector v = velocity.get();
-        v.normalize();
-        v.mult(.1);
-        image = cachedRotate(spriteRender.getImage(), GfxUtil.round(v.heading(), 2));
-        return new SpriteRender(spriteRender.getLocation(), image);
-    }
 }
