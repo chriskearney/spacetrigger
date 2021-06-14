@@ -12,7 +12,7 @@ public class AlienBuzz extends Alien {
 
     public AlienBuzz(PVector location) {
         super(location,
-                200,
+                125,
                 Optional.empty(),
                 Optional.of(Assets.getAlienBuzzAnimation()),
                 Optional.of(Assets.getAlienBuzzExplosion()),

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.comandante.spacetrigger.Main.BOARD_Y;
+
 public abstract class Alien extends Sprite {
 
     protected int ticks = 0;
@@ -61,7 +63,19 @@ public abstract class Alien extends Sprite {
     }
 
     protected boolean isShipInViewAngle(double coneDir, double coneAngle) {
+        if (shipLocation == null) {
+            return false;
+        }
         return pointInViewAngle(shipLocation.x, shipLocation.y, coneDir, coneAngle);
+    }
+
+    @Override
+    public void update(Optional<Double> rotateRadians) {
+//        if ((location.y > BOARD_Y)) {
+//            setVisible(false);
+//            return;
+//        }
+        super.update(rotateRadians);
     }
 
     protected void applyFriction(double c) {

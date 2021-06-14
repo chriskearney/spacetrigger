@@ -41,7 +41,7 @@ public class AlienScout extends Alien {
             if (scoutTicks % stepSize == 0) {
                 int randoPercent = random.nextInt(100);
                 if (randoPercent < 90) {
-                    if (isShipInViewAngle(PVector.radians(90), PVector.radians(10))) {
+                    if (isShipInViewAngle(velocity.heading(), PVector.radians(60))) {
                         fire();
                     }
                 }
@@ -62,6 +62,7 @@ public class AlienScout extends Alien {
             }
 
             applyForce(pVector);
+            applyForce(new PVector(0, 1));
 
             velocity.add(acceleration);
             location.add(velocity);

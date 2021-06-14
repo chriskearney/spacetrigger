@@ -22,8 +22,7 @@ public class AlienNymph extends Alien {
                 Optional.empty(),
                 Optional.of(Assets.getAlienNymphExplosion()),
                 Optional.of(Assets.getAlienNymphWarpAnimation()));
-        applyForce(new PVector(3, 0));
-
+                applyForce(new PVector(1, 1));
     }
 
     public void fire() {
@@ -37,13 +36,23 @@ public class AlienNymph extends Alien {
                 return;
             }
 
+            PVector v = velocity.get();
+            v.normalize();
+            v.mult(.009);
+            applyForce(v);
+
+            Optional<PVector> vectorToPlayerShip = getVectorToPlayerShip();
+            if (vectorToPlayerShip.isPresent()) {
+                PVector vd = vectorToPlayerShip.get();
+                vd.normalize();
+                vd.mult(.03);
+                applyForce(vd);
+            }
+
             velocity.add(acceleration);
 
             if ((location.x > BOARD_X) || (location.x < 0)) {
                 velocity.x = velocity.x * -1;
-            }
-            if ((location.y > BOARD_Y) || (location.y < 0)) {
-                velocity.y = velocity.y * -1;
             }
 
             location.add(velocity);
