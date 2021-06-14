@@ -352,6 +352,7 @@ public class Board extends JPanel implements ActionListener {
             if (rnd < dropPercent) {
                 drop.setOriginalLocation(new PVector(alien.getX() + (alien.getWidth() / 2) - (drop.getWidth() / 2),
                         alien.getY() + (alien.getHeight() / 2) - (drop.getHeight() / 2)));
+                drop.calculateSpriteRender();
                 drop.setVisible(true);
                 drops.add(drop);
                 return;

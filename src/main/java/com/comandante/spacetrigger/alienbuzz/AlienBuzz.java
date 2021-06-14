@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
+import static com.comandante.spacetrigger.PVector.radians;
 
 public class AlienBuzz extends Alien {
 
@@ -43,9 +44,8 @@ public class AlienBuzz extends Alien {
             PVector vectorToPlayerShip = vectorToPlayerShipOptional.get();
             double mag = vectorToPlayerShip.mag();
 
-            if (mag < 500) {
-                double randoPercent = random.nextDouble(100);
-                if (randoPercent < .3) {
+            if (mag < 300) {
+                if (isShipInViewAngle(velocity.heading(), radians(10))) {
                     fire();
                 }
             }
@@ -90,7 +90,7 @@ public class AlienBuzz extends Alien {
             PVector v = velocity.get();
             v.normalize();
             v.mult(.1);
-            super.update(Optional.of(GfxUtil.round(v.heading(), 2)));
+            super.update(Optional.of(GfxUtil.round(v.heading(), 5)));
         }
     }
 

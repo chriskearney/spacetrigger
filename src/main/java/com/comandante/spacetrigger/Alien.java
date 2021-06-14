@@ -60,6 +60,10 @@ public abstract class Alien extends Sprite {
         return Optional.of(PVector.sub(shipLocation, location));
     }
 
+    protected boolean isShipInViewAngle(double coneDir, double coneAngle) {
+        return pointInViewAngle(shipLocation.x, shipLocation.y, coneDir, coneAngle);
+    }
+
     protected void applyFriction(double c) {
         PVector friction = velocity.get();
         friction.normalize();

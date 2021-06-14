@@ -21,6 +21,7 @@ import org.checkerframework.checker.nullness.Opt;
 
 import static com.comandante.spacetrigger.Assets.TRANSPARENT_ONE_PIXEL;
 import static com.comandante.spacetrigger.Main.BOARD_X;
+import static com.comandante.spacetrigger.PVector.cos;
 import static java.lang.Math.sin;
 
 public abstract class Sprite {
@@ -314,6 +315,23 @@ public abstract class Sprite {
         float percent = (hitPoints * 100.0f) / maxHitpoints;
         return (int) Math.round(percent);
     }
+
+    protected boolean pointInViewAngle(double objX, double objY, double coneDir, double coneAngle) {
+        double coneX = location.x;
+        double coneY = location.y;
+        // Vector of direction enemy is facing
+        PVector coneVec = new PVector(cos(coneDir), PVector.sin(coneDir));
+        // Vector of directiorn from enemy to target
+        PVector toTarget = new PVector(objX - coneX, objY - coneY);
+        // Need to normalize the vector
+        toTarget.normalize();
+        // Calculate the cisine of the angle between coneVec
+        // and toTarget vector
+        double deltaAngle = coneVec.dot(toTarget);
+        // Compare this with the cosine of half FOV
+        return (deltaAngle >= cos(coneAngle / 2));
+    }
+
 
     public BufferedImage cachedRotate(BufferedImage img, double radians) {
         try {

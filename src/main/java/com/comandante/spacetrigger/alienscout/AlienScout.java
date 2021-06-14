@@ -20,7 +20,7 @@ public class AlienScout extends Alien {
                 Optional.of(Assets.getAlienScoutExplosionAnimation()),
                 Optional.of(Assets.getAlientScoutWarpAnimation()));
         this.eventBus = eventBus;
-        velocity.add(new PVector(.1, 0));
+       // velocity.add(new PVector(4, 0));
     }
 
     public void fire() {
@@ -40,8 +40,10 @@ public class AlienScout extends Alien {
             int stepSize = 100;
             if (scoutTicks % stepSize == 0) {
                 int randoPercent = random.nextInt(100);
-                if (randoPercent < 16) {
-                    fire();
+                if (randoPercent < 90) {
+                    if (isShipInViewAngle(PVector.radians(90), PVector.radians(10))) {
+                        fire();
+                    }
                 }
             }
 
@@ -53,7 +55,7 @@ public class AlienScout extends Alien {
             double lengthOfVectorToShip = vectorToPlayerShip.get().mag();
             PVector pVector = vectorToPlayerShip.get().get();
             pVector.normalize();
-            pVector.mult(.1);
+            pVector.mult(.03);
             if (lengthOfVectorToShip <= 170) {
                 pVector.mult(.1);
                 pVector.mult(-1);
@@ -63,7 +65,7 @@ public class AlienScout extends Alien {
 
             velocity.add(acceleration);
             location.add(velocity);
-            velocity.limit(.2);
+            velocity.limit(.02);
             acceleration.mult(0);
 
             scoutTicks++;
