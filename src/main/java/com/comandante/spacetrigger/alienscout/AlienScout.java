@@ -14,7 +14,7 @@ public class AlienScout extends Alien {
 
     public AlienScout(PVector location, EventBus eventBus) {
         super(location,
-                1000,
+                150,
                 Optional.of(Assets.ALIEN_SCOUT),
                 Optional.empty(),
                 Optional.of(Assets.getAlienScoutExplosionAnimation()),

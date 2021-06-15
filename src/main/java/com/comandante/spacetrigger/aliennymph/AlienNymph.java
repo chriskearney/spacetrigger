@@ -2,6 +2,7 @@ package com.comandante.spacetrigger.aliennymph;
 
 import com.comandante.spacetrigger.Alien;
 import com.comandante.spacetrigger.Assets;
+import com.comandante.spacetrigger.GfxUtil;
 import com.comandante.spacetrigger.PVector;
 
 import java.util.Optional;
@@ -17,7 +18,7 @@ public class AlienNymph extends Alien {
 
     public AlienNymph(PVector location) {
         super(location,
-                400,
+                80,
                 Optional.of(Assets.ALIEN_NYMPH),
                 Optional.empty(),
                 Optional.of(Assets.getAlienNymphExplosion()),
@@ -41,14 +42,20 @@ public class AlienNymph extends Alien {
             v.mult(.009);
             applyForce(v);
 
-            Optional<PVector> vectorToPlayerShip = getVectorToPlayerShip();
-            if (vectorToPlayerShip.isPresent()) {
-                PVector vd = vectorToPlayerShip.get();
-                vd.normalize();
-                vd.mult(.03);
-                applyForce(vd);
-            }
+            PVector scaledVector = velocity.get();
+            scaledVector.mult(PVector.sin(System.currentTimeMillis()));
+            applyForce(scaledVector);
 
+
+//            Optional<PVector> vectorToPlayerShip = getVectorToPlayerShip();
+//            if (vectorToPlayerShip.isPresent()) {
+//                PVector vd = vectorToPlayerShip.get();
+//                vd.normalize();
+//                vd.mult(.03);
+//                applyForce(vd);
+//            }
+
+            image = cachedRotate(Assets.ALIEN_NYMPH, GfxUtil.round(velocity.heading(), 2));
             velocity.add(acceleration);
 
             if ((location.x > BOARD_X) || (location.x < 0)) {
@@ -61,7 +68,7 @@ public class AlienNymph extends Alien {
 
             int stepSize = 50;
             if (nymphTicks % stepSize == 0) {
-                if (isShipInViewAngle(radians(90), radians(10))) {
+                if (isShipInViewAngle(v.heading(), radians(10))) {
                     fire();
                 }
             }

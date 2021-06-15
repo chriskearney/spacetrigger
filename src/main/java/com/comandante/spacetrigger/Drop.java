@@ -42,9 +42,9 @@ public abstract class Drop extends Sprite {
     }
 
     public enum DropRate {
-        RARE(10),
-        UNUSUAL(25),
-        COMMON(40);
+        RARE(2),
+        UNUSUAL(6),
+        COMMON(14);
 
         private final int percent;
 

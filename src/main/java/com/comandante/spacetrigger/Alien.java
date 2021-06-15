@@ -56,7 +56,7 @@ public abstract class Alien extends Sprite {
     }
 
     protected Optional<PVector> getVectorToPlayerShip() {
-        if (location == null) {
+        if (location == null || shipLocation == null) {
             return Optional.empty();
         }
         return Optional.of(PVector.sub(shipLocation, location));

@@ -10,7 +10,7 @@ import static com.comandante.spacetrigger.Main.BOARD_Y;
 public class AlienBuzzBullet extends Projectile {
 
     public AlienBuzzBullet(PVector location, PVector heading) {
-        super(location, heading, 3, Assets.ALIEN_BUZZ_BULLET);
+        super(location, heading, 6, Assets.ALIEN_BUZZ_BULLET);
         velocity.add(heading);
         velocity.mult(40);
         setVisible(true);
