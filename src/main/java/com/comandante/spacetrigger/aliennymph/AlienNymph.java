@@ -41,10 +41,10 @@ public class AlienNymph extends Alien {
             v.normalize();
             v.mult(.009);
             applyForce(v);
-
-            PVector scaledVector = velocity.get();
-            scaledVector.mult(PVector.sin(System.currentTimeMillis()));
-            applyForce(scaledVector);
+//
+//            PVector scaledVector = velocity.get();
+//            scaledVector.mult(PVector.sin(System.currentTimeMillis()));
+//            applyForce(scaledVector);
 
 
 //            Optional<PVector> vectorToPlayerShip = getVectorToPlayerShip();
@@ -55,7 +55,7 @@ public class AlienNymph extends Alien {
 //                applyForce(vd);
 //            }
 
-            image = cachedRotate(Assets.ALIEN_NYMPH, GfxUtil.round(velocity.heading(), 2));
+            image = cachedRotate(Assets.ALIEN_NYMPH, GfxUtil.round(velocity.heading(), 10));
             velocity.add(acceleration);
 
             if ((location.x > BOARD_X) || (location.x < 0)) {
