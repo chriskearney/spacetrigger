@@ -65,7 +65,7 @@ public class AlienScout extends Alien {
             applyForce(new PVector(0, 1));
 
             velocity.add(acceleration);
-            velocity.limit(.2);
+            velocity.limit(.02);
             location.add(velocity);
             acceleration.mult(0);
 

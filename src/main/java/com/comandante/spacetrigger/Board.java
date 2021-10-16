@@ -4,6 +4,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.comandante.spacetrigger.events.PlayerShipHealthUpdateEvent;
 import com.comandante.spacetrigger.player.PlayerStatusBars;
 import com.comandante.spacetrigger.player.PlayerShip;
+import com.comandante.spacetrigger.sound.SoundEffectService;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
 
@@ -19,6 +20,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
@@ -51,9 +53,12 @@ public class Board extends JPanel implements ActionListener {
     private double parallaxBackgroundYDelta_3 = .9;
     private BufferedImage background_3;
 
+    private final SoundEffectService soundEffectService = new SoundEffectService();
+
     public Board(MetricRegistry metricRegistry) {
         this.metricRegistry = metricRegistry;
         this.eventBus = new EventBus();
+        eventBus.register(soundEffectService);
         this.initBoard();
     }
 
@@ -282,14 +287,17 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void checkCollisions() {
+        boolean newExplosion = false;
         for (int i = 0; i < aliens.size(); i++) {
             if (aliens.get(i).isCollison(playerShip).isPresent()) {
                 playerShip.setExploding(true, true);
                 aliens.get(i).setExploding(true, true);
             }
 
+
             List<Projectile> projectiles = aliens.get(i).getMissiles();
             for (Projectile projectile : projectiles) {
+                // Check if alient projectiles hit playerShip
                 Optional<Point2D> shieldCollision = projectile.isCollison(playerShip.getShield(), 100, true);
                 if (shieldCollision.isPresent() && playerShip.getCurrentShield() > 20) {
                     playerShip.getShield().setVisible(true);
@@ -306,6 +314,23 @@ public class Board extends JPanel implements ActionListener {
                         eventBus.post(new PlayerShipHealthUpdateEvent(newHitPointsPct));
                     }
                 }
+                // Check if alien projectile hit other alien
+                for (int j = 0; j < aliens.size(); j++) {
+                    // this is a kind of sloppy way to prevent alien friendly fire
+                    if (!projectile.isOlderThan(2, TimeUnit.SECONDS)) {
+                        continue;
+                    }
+                    Optional<Point2D> collisonPoint = aliens.get(j).isCollison(projectile);
+                    if (collisonPoint.isPresent()) {
+                        int newHitPointsPercentage = aliens.get(j).calculateHitPointsPercentAfterDamageApplied(projectile, collisonPoint.get());
+                        projectile.setVisible(false);
+                        if (newHitPointsPercentage <= 0) {
+                            processDrops(aliens.get(j));
+                            aliens.get(j).setExploding(true, true);
+                            newExplosion = true;
+                        }
+                    }
+                }
             }
 
             if (playerShip.getShield().getDamageAnimations().size() == 0) {
@@ -314,7 +339,6 @@ public class Board extends JPanel implements ActionListener {
         }
 
         List<Projectile> spaceShipMissles = playerShip.getMissiles();
-        boolean newExplosion = false;
         for (int i = 0; i < spaceShipMissles.size(); i++) {
             for (int j = 0; j < aliens.size(); j++) {
                 Optional<Point2D> collisonPoint = aliens.get(j).isCollison(spaceShipMissles.get(i));

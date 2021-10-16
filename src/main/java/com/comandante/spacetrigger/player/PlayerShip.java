@@ -7,6 +7,7 @@ import com.comandante.spacetrigger.events.MisslePickUpEvent;
 import com.comandante.spacetrigger.events.PlayerShipHealthUpdateEvent;
 import com.comandante.spacetrigger.events.PlayerShipLocationUpdateEvent;
 import com.comandante.spacetrigger.events.PlayerShipShieldUpdateEvent;
+import com.comandante.spacetrigger.sound.SoundEvent;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -126,8 +127,13 @@ public class PlayerShip extends Sprite {
     }
 
     public void fireGun() {
-        projectiles.add(new PlayerGunLevel2Bullet((location.x + getWidth() / 2) - 22, (location.y + getHeight() / 2) - 15));
-        projectiles.add(new PlayerGunLevel2Bullet((location.x + getWidth() / 2) + 3, (location.y + getHeight() / 2) - 15));
+        PlayerGunLevel2Bullet playerGunLevel2BulletLeft = new PlayerGunLevel2Bullet((location.x + getWidth() / 2) - 22, (location.y + getHeight() / 2) - 15);
+        PlayerGunLevel2Bullet playerGunLevel2BulletRight = new PlayerGunLevel2Bullet((location.x + getWidth() / 2) + 3, (location.y + getHeight() / 2) - 15);
+        projectiles.add(playerGunLevel2BulletLeft);
+        projectiles.add(playerGunLevel2BulletRight);
+        if (playerGunLevel2BulletLeft.getFireSound().isPresent()) {
+            eventBus.post(new SoundEvent(playerGunLevel2BulletLeft.getFireSound().get()));
+        }
     }
 
     public void keyPressed(KeyEvent e) {

@@ -41,20 +41,6 @@ public class AlienNymph extends Alien {
             v.normalize();
             v.mult(.009);
             applyForce(v);
-//
-//            PVector scaledVector = velocity.get();
-//            scaledVector.mult(PVector.sin(System.currentTimeMillis()));
-//            applyForce(scaledVector);
-
-
-//            Optional<PVector> vectorToPlayerShip = getVectorToPlayerShip();
-//            if (vectorToPlayerShip.isPresent()) {
-//                PVector vd = vectorToPlayerShip.get();
-//                vd.normalize();
-//                vd.mult(.03);
-//                applyForce(vd);
-//            }
-
             image = cachedRotate(Assets.ALIEN_NYMPH, GfxUtil.round(velocity.heading(), 10));
             velocity.add(acceleration);
 

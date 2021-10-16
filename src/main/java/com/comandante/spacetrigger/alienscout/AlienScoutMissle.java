@@ -5,6 +5,8 @@ import com.comandante.spacetrigger.events.PlayerShipLocationUpdateEvent;
 import com.google.common.eventbus.Subscribe;
 
 import java.awt.geom.Point2D;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static com.comandante.spacetrigger.Main.BOARD_X;
 import static com.comandante.spacetrigger.Main.BOARD_Y;
@@ -26,16 +28,20 @@ public class AlienScoutMissle extends Projectile {
 
     @Override
     public void update() {
+        if (isOlderThan(5, TimeUnit.SECONDS) && !isExploding()) {
+            SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(32, 32, 8, 8, Assets.PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION, 2, 3, Optional.of(new Point2D.Double(location.x, location.y)));
+
+            explosion = spriteSheetAnimation;
+            setExploding(true, true);
+        }
         PVector sub = PVector.sub(shipLocation, location);
         sub.normalize();
         sub.mult(0.1);
         acceleration.add(sub);
-//        acceleration.add(new PVector(0, .3));
         velocity.add(acceleration);
-        velocity.limit(4);
+        velocity.limit(2);
         location.add(velocity);
-         image = cachedRotate(Assets.ALIEN_SCOUT_MISSLE, GfxUtil.round(velocity.heading(), 1));
-//        loadImage(GfxUtil.rotateImageByDegrees(Assets.ALIEN_SCOUT_MISSLE, velocity.heading()));
+        image = cachedRotate(Assets.ALIEN_SCOUT_MISSLE, GfxUtil.round(velocity.heading(), 1));
         acceleration.mult(0);
 
         if ((location.x > BOARD_X) || (location.x < 0)) {

@@ -10,6 +10,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -39,6 +40,8 @@ public abstract class Sprite {
     protected Optional<SpriteSheetAnimation> warpAnimation = Optional.empty();
     protected boolean isExploding;
     private boolean invisibleAfterExploding;
+
+    private long createStamp;
 
     private SpriteRender spriteRender;
 
@@ -86,6 +89,8 @@ public abstract class Sprite {
         }
 
         calculateSpriteRender(Optional.empty());
+
+        this.createStamp = System.currentTimeMillis();
     }
 
     public void setVelocity(PVector velocity) {
@@ -376,6 +381,15 @@ public abstract class Sprite {
 
     public int getHitPoints() {
         return hitPoints;
+    }
+
+    public boolean isOlderThan(int time, TimeUnit timeUnit) {
+        long timeWindow = TimeUnit.MILLISECONDS.convert(time, timeUnit);
+        return getAge() > timeWindow;
+    }
+
+    public long getAge() {
+        return System.currentTimeMillis() - createStamp;
     }
 
     public static class SpriteRender {

@@ -9,7 +9,7 @@ import java.util.Optional;
 public class PlayerGunLevel2Bullet extends Projectile {
 
     public PlayerGunLevel2Bullet(double x, double y) {
-        super(new PVector(x, y), new PVector(0, 0), 10, Assets.PLAYER_GUN_LEVEL_2_BULLET);
+        super(new PVector(x, y), new PVector(0, 0), 10, Assets.PLAYER_GUN_LEVEL_2_BULLET, Assets.PLAYER_MISSLE_LEVEL_1_BULLET_FIRE_SOUND);
         velocity.add(new PVector(0, -9));
     }
 

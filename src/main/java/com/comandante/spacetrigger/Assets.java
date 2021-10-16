@@ -1,5 +1,8 @@
 package com.comandante.spacetrigger;
 
+import com.comandante.spacetrigger.sound.SoundEffectService;
+import com.google.common.io.ByteStreams;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -27,6 +30,8 @@ public class Assets {
     public static final BufferedImage PLAYER_SHIP_ANIMATED_SHIELD;
     public static final BufferedImage PLAYER_SHIP_EXHAUST;
     public static final BufferedImage PLAYER_MISSLE_LEVEL_1_BULLET;
+    public static final SoundEffectService.PlaySound PLAYER_MISSLE_LEVEL_1_BULLET_FIRE_SOUND;
+
     public static final BufferedImage PLAYER_MISSLE_LEVEL_1_IMPACT_EXPLOSION;
     public static final BufferedImage PLAYER_GUN_LEVEL_2_BULLET;
     public static final BufferedImage PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION;
@@ -78,7 +83,9 @@ public class Assets {
         PLAYER_GUN_LEVEL_2_BULLET = loadImage("player-gun-level-2-bullet.png");
         PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION = loadImage("player-gun-level-2-bullet-impact-explosion.png");
         PLAYER_MISSLE_LEVEL_1_BULLET = loadImage("player-missle-level-1-bullet.png");
-        PLAYER_MISSLE_LEVEL_1_IMPACT_EXPLOSION = loadImage("player-missle-level-1-impact-explosion.png");
+        PLAYER_MISSLE_LEVEL_1_BULLET_FIRE_SOUND = loadSound("player-missle-level-1-bullet.wav");
+
+                PLAYER_MISSLE_LEVEL_1_IMPACT_EXPLOSION = loadImage("player-missle-level-1-impact-explosion.png");
 
         BOARD_BACKGROUND_1 = loadImage("board-background-1.png");
         BOARD_BACKGROUND_2 = loadImage("board-background-2.png");
@@ -101,6 +108,19 @@ public class Assets {
             return ImageIO.read(imageStream);
         } catch (Exception e) {
             throw new RuntimeException(imageFilename + e);
+        }
+    }
+
+    public static SoundEffectService.PlaySound loadSound(String soundFileName) {
+        return loadSound(soundFileName, 0);
+    }
+
+    public static SoundEffectService.PlaySound loadSound(String soundFileName, int numLoops) {
+        try {
+            InputStream soundStream = Assets.class.getClassLoader().getResourceAsStream(soundFileName);
+            return new SoundEffectService.PlaySound(ByteStreams.toByteArray(soundStream), numLoops);
+        } catch (Exception e) {
+            throw new RuntimeException(soundFileName + e);
         }
     }
 
@@ -145,7 +165,7 @@ public class Assets {
     }
 
     public static SpriteSheetAnimation getAlienBuzzExplosion() {
-       return new SpriteSheetAnimation(128, 128, 8, 8, Assets.ALIEN_NYMPH_EXPLOSION, 2, 3);
+        return new SpriteSheetAnimation(128, 128, 8, 8, Assets.ALIEN_NYMPH_EXPLOSION, 2, 3);
     }
 
     public static SpriteSheetAnimation getShieldAnimation() {
