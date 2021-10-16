@@ -1,6 +1,7 @@
 package com.comandante.spacetrigger.player;
 
 import com.comandante.spacetrigger.*;
+import com.google.common.eventbus.EventBus;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -8,8 +9,8 @@ import java.util.Optional;
 
 public class PlayerMissleLevel1Bullet extends Projectile {
 
-    public PlayerMissleLevel1Bullet(double x, double y) {
-        super(new PVector(x, y), new PVector(0, 0), 1000, Assets.PLAYER_MISSLE_LEVEL_1_BULLET);
+    public PlayerMissleLevel1Bullet(EventBus eventBus, double x, double y) {
+        super(eventBus, new PVector(x, y), new PVector(0, 0), 1000, Assets.PLAYER_MISSLE_LEVEL_1_BULLET);
         velocity.add(new PVector(0, -3));
     }
 

@@ -2,6 +2,7 @@ package com.comandante.spacetrigger;
 
 import com.comandante.spacetrigger.events.PlayerShipLocationUpdateEvent;
 import com.google.common.collect.Lists;
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 import java.awt.image.BufferedImage;
@@ -19,13 +20,14 @@ public abstract class Alien extends Sprite {
 
     protected List<Drop> drops = Lists.newArrayList();
 
-    public Alien(PVector location,
+    public Alien(EventBus eventBus,
+                 PVector location,
                  int hitPoints,
                  Optional<BufferedImage> image,
                  Optional<SpriteSheetAnimation> imageAnimated,
                  Optional<SpriteSheetAnimation> explosionAnimation,
                  Optional<SpriteSheetAnimation> warpAnimation) {
-        super(location, hitPoints, image, imageAnimated, explosionAnimation, warpAnimation);
+        super(eventBus, location, hitPoints, image, imageAnimated, explosionAnimation, warpAnimation);
         visible = true;
     }
 

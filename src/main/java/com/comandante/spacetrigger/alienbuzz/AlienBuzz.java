@@ -1,6 +1,7 @@
 package com.comandante.spacetrigger.alienbuzz;
 
 import com.comandante.spacetrigger.*;
+import com.google.common.eventbus.EventBus;
 
 import java.util.Optional;
 
@@ -10,8 +11,8 @@ import static com.comandante.spacetrigger.PVector.radians;
 
 public class AlienBuzz extends Alien {
 
-    public AlienBuzz(PVector location) {
-        super(location,
+    public AlienBuzz(EventBus eventBus, PVector location) {
+        super(eventBus, location,
                 20,
                 Optional.empty(),
                 Optional.of(Assets.getAlienBuzzAnimation()),
@@ -108,7 +109,7 @@ public class AlienBuzz extends Alien {
             randomNess.normalize();
             randomNess.mult(.006);
             shipDirection.add(randomNess);
-            projectiles.add(new AlienBuzzBullet(whereToFireFrom, shipDirection));
+            projectiles.add(new AlienBuzzBullet(eventBus, whereToFireFrom, shipDirection));
         }
     }
 

@@ -2,6 +2,7 @@ package com.comandante.spacetrigger;
 
 
 import com.comandante.spacetrigger.events.STEvent;
+import com.google.common.eventbus.EventBus;
 
 import java.awt.image.BufferedImage;
 import java.util.Optional;
@@ -10,12 +11,14 @@ public abstract class Drop extends Sprite {
 
     private final DropRate dropRate;
 
-    public Drop(PVector location, DropRate dropRate,
+    public Drop(EventBus eventBus,
+                PVector location,
+                DropRate dropRate,
                 Optional<BufferedImage> image,
                 Optional<SpriteSheetAnimation> imageAnimation,
                 Optional<SpriteSheetAnimation> explosionAnimation,
                 Optional<SpriteSheetAnimation> warpAnimation) {
-        super(location, 0,
+        super(eventBus, location, 0,
                 image,
                 imageAnimation,
                 explosionAnimation,

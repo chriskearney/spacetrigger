@@ -6,6 +6,7 @@ import com.comandante.spacetrigger.Sprite;
 import com.comandante.spacetrigger.events.PlayerShipHealthUpdateEvent;
 import com.comandante.spacetrigger.events.PlayerShipShieldUpdateEvent;
 import com.google.common.collect.Lists;
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 import java.awt.Graphics;
@@ -34,8 +35,8 @@ public class PlayerStatusBars extends Sprite {
 
     int ticks = 0;
 
-    public PlayerStatusBars(PVector location) {
-        super(location, 0, Optional.of(Assets.TRANSPARENT_ONE_PIXEL), Optional.empty(), Optional.empty(), Optional.empty());
+    public PlayerStatusBars(EventBus eventBus, PVector location) {
+        super(eventBus, location, 0, Optional.of(Assets.TRANSPARENT_ONE_PIXEL), Optional.empty(), Optional.empty(), Optional.empty());
         healthBars = calculateBars(healthPctFull);
         shieldBars = calculateBars(shieldPctFull);
         this.image = drawStatusBars();

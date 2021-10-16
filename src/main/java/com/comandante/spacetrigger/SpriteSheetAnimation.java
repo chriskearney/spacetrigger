@@ -1,5 +1,6 @@
 package com.comandante.spacetrigger;
 
+import com.comandante.spacetrigger.sound.SoundEffectService;
 import com.google.common.collect.Lists;
 
 import java.awt.Point;
@@ -25,6 +26,8 @@ public class SpriteSheetAnimation {
     private final int y_size;
 
     private Optional<BufferedImage> currentFrame;
+
+    private Optional<SoundEffectService.PlaySound> playSound = Optional.empty();
 
     public SpriteSheetAnimation(int x_size,
                                 int y_size,
@@ -86,6 +89,10 @@ public class SpriteSheetAnimation {
         return currentFrame;
     }
 
+    public void setPlaySound(SoundEffectService.PlaySound playSound) {
+        this.playSound = Optional.ofNullable(playSound);
+    }
+
     public int getTotalFrames() {
         return spriteFrames.size();
     }
@@ -108,5 +115,9 @@ public class SpriteSheetAnimation {
 
     public int getY_size() {
         return y_size;
+    }
+
+    public Optional<SoundEffectService.PlaySound> getPlaySound() {
+        return playSound;
     }
 }

@@ -2,6 +2,7 @@ package com.comandante.spacetrigger.alienscout;
 
 import com.comandante.spacetrigger.*;
 import com.comandante.spacetrigger.events.PlayerShipLocationUpdateEvent;
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
 import java.awt.geom.Point2D;
@@ -16,8 +17,8 @@ public class AlienScoutMissle extends Projectile {
 
     private PVector shipLocation;
 
-    public AlienScoutMissle(double x, double y, PVector heading) {
-        super(new PVector(x, y), heading, 250, Assets.ALIEN_SCOUT_MISSLE);
+    public AlienScoutMissle(EventBus eventBus, double x, double y, PVector heading) {
+        super(eventBus, new PVector(x, y), heading, 250, Assets.ALIEN_SCOUT_MISSLE);
         this.shipLocation = heading;
     }
 

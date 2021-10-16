@@ -4,7 +4,6 @@ import com.comandante.spacetrigger.sound.SoundEffectService;
 import com.google.common.io.ByteStreams;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -14,6 +13,7 @@ public class Assets {
 
     public static final BufferedImage ALIEN_SCOUT;
     public static final BufferedImage ALIEN_SCOUT_EXPLOSION;
+    public static final SoundEffectService.PlaySound ALIEN_SCOUT_EXPLOSION_SOUND;
     public static final BufferedImage ALIEN_SCOUT_MISSLE;
     public static final BufferedImage ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION;
     public static final BufferedImage ALIEN_SCOUT_WARP;
@@ -30,11 +30,13 @@ public class Assets {
     public static final BufferedImage PLAYER_SHIP_ANIMATED_SHIELD;
     public static final BufferedImage PLAYER_SHIP_EXHAUST;
     public static final BufferedImage PLAYER_MISSLE_LEVEL_1_BULLET;
-    public static final SoundEffectService.PlaySound PLAYER_MISSLE_LEVEL_1_BULLET_FIRE_SOUND;
 
     public static final BufferedImage PLAYER_MISSLE_LEVEL_1_IMPACT_EXPLOSION;
     public static final BufferedImage PLAYER_GUN_LEVEL_2_BULLET;
+    public static final SoundEffectService.PlaySound PLAYER_GUN_LEVEL_2_BULLET_SOUND;
+
     public static final BufferedImage PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION;
+    public static final SoundEffectService.PlaySound PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION_SOUND;
 
     public static final BufferedImage BOARD_BACKGROUND_3;
     public static final BufferedImage BOARD_BACKGROUND_2;
@@ -60,6 +62,7 @@ public class Assets {
 
         ALIEN_SCOUT = loadImage("alien-scout.png");
         ALIEN_SCOUT_EXPLOSION = loadImage("alien-scout-explosion.png");
+        ALIEN_SCOUT_EXPLOSION_SOUND = loadSound("alien-scout-explosion.wav");
         ALIEN_SCOUT_MISSLE = loadImage("alien-scout-missle.png");
         ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION = loadImage("alien-scout-missle-impact-explosion.png");
         ALIEN_SCOUT_WARP = loadImage("alien-scout-warp.png");
@@ -81,11 +84,13 @@ public class Assets {
 
         PLAYER_SHIP_EXHAUST = loadImage("player-ship-exhaust.png");
         PLAYER_GUN_LEVEL_2_BULLET = loadImage("player-gun-level-2-bullet.png");
-        PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION = loadImage("player-gun-level-2-bullet-impact-explosion.png");
-        PLAYER_MISSLE_LEVEL_1_BULLET = loadImage("player-missle-level-1-bullet.png");
-        PLAYER_MISSLE_LEVEL_1_BULLET_FIRE_SOUND = loadSound("player-missle-level-1-bullet.wav");
+        PLAYER_GUN_LEVEL_2_BULLET_SOUND = loadSound("player-missle-level-1-bullet.wav");
 
-                PLAYER_MISSLE_LEVEL_1_IMPACT_EXPLOSION = loadImage("player-missle-level-1-impact-explosion.png");
+        PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION = loadImage("player-gun-level-2-bullet-impact-explosion.png");
+        PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION_SOUND = loadSound("player-gun-level-2-bullet-impact-explosion.wav");
+
+        PLAYER_MISSLE_LEVEL_1_BULLET = loadImage("player-missle-level-1-bullet.png");
+        PLAYER_MISSLE_LEVEL_1_IMPACT_EXPLOSION = loadImage("player-missle-level-1-impact-explosion.png");
 
         BOARD_BACKGROUND_1 = loadImage("board-background-1.png");
         BOARD_BACKGROUND_2 = loadImage("board-background-2.png");
@@ -133,7 +138,9 @@ public class Assets {
     }
 
     public static SpriteSheetAnimation getAlienScoutExplosionAnimation() {
-        return new SpriteSheetAnimation(188, 188, 8, 8, Assets.ALIEN_SCOUT_EXPLOSION, 2, 3);
+        SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(188, 188, 8, 8, Assets.ALIEN_SCOUT_EXPLOSION, 2, 3);
+        spriteSheetAnimation.setPlaySound(ALIEN_SCOUT_EXPLOSION_SOUND);
+        return spriteSheetAnimation;
     }
 
     public static SpriteSheetAnimation getAlientScoutWarpAnimation() {

@@ -4,6 +4,7 @@ import com.comandante.spacetrigger.Alien;
 import com.comandante.spacetrigger.Assets;
 import com.comandante.spacetrigger.GfxUtil;
 import com.comandante.spacetrigger.PVector;
+import com.google.common.eventbus.EventBus;
 
 import java.util.Optional;
 
@@ -16,8 +17,8 @@ public class AlienNymph extends Alien {
 
     private int nymphTicks = 0;
 
-    public AlienNymph(PVector location) {
-        super(location,
+    public AlienNymph(EventBus eventBus, PVector location) {
+        super(eventBus, location,
                 80,
                 Optional.of(Assets.ALIEN_NYMPH),
                 Optional.empty(),
@@ -27,7 +28,7 @@ public class AlienNymph extends Alien {
     }
 
     public void fire() {
-        projectiles.add(new AlienNymphBullet((location.x + getWidth() / 2) - 10, (location.y + getHeight() / 2)));
+        projectiles.add(new AlienNymphBullet(eventBus,(location.x + getWidth() / 2) - 10, (location.y + getHeight() / 2)));
     }
 
     @Override

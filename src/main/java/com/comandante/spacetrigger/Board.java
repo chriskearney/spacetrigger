@@ -83,7 +83,7 @@ public class Board extends JPanel implements ActionListener {
             eventBus.unregister(playerStatusBars);
         }
         this.playerShip = new PlayerShip(eventBus);
-        this.playerStatusBars = new PlayerStatusBars(new PVector(0, 0));
+        this.playerStatusBars = new PlayerStatusBars(eventBus, new PVector(0, 0));
         this.eventBus.register(playerStatusBars);
         this.eventBus.register(playerShip);
         initAliens();

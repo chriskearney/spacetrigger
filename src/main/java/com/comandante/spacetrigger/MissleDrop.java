@@ -2,6 +2,7 @@ package com.comandante.spacetrigger;
 
 import com.comandante.spacetrigger.events.MisslePickUpEvent;
 import com.comandante.spacetrigger.events.STEvent;
+import com.google.common.eventbus.EventBus;
 import org.checkerframework.checker.nullness.Opt;
 
 import java.awt.*;
@@ -10,8 +11,8 @@ import java.util.Optional;
 
 public class MissleDrop extends Drop {
 
-    public MissleDrop(DropRate dropRate) {
-        super(new PVector(), dropRate, Optional.of(Assets.MISSLE_DROP), Optional.empty(), Optional.empty(), Optional.empty());
+    public MissleDrop(EventBus eventBus, DropRate dropRate) {
+        super(eventBus, new PVector(), dropRate, Optional.of(Assets.MISSLE_DROP), Optional.empty(), Optional.empty(), Optional.empty());
     }
 
 

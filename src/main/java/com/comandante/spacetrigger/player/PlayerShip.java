@@ -29,13 +29,13 @@ public class PlayerShip extends Sprite {
 
     private final List<Projectile> projectiles = Lists.newArrayList();
     private final SpriteSheetAnimation exhaust = Assets.getPlayerShipExhaustAnimation();
-    private final Shield shield = new Shield();
+    private final Shield shield;
     private final EventBus eventBus;
 
     private int ticks;
 
     public PlayerShip(EventBus eventBus) {
-        super(new PVector(0, 0),
+        super(eventBus,new PVector(0, 0),
                 500,
                 Optional.ofNullable(Assets.PLAYER_SHIP),
                 Optional.empty(),
@@ -46,6 +46,7 @@ public class PlayerShip extends Sprite {
         this.velocity = new PVector(0, 0);
         this.eventBus = eventBus;
         this.visible = true;
+        this.shield = new Shield(eventBus);
     }
 
     public void update() {
@@ -122,13 +123,13 @@ public class PlayerShip extends Sprite {
         if (currentMissles == 0) {
             return;
         }
-        projectiles.add(new PlayerMissleLevel1Bullet((location.x + getWidth() / 2) - 8, (location.y + getHeight() / 2) - 20));
+        projectiles.add(new PlayerMissleLevel1Bullet(eventBus, (location.x + getWidth() / 2) - 8, (location.y + getHeight() / 2) - 20));
         currentMissles--;
     }
 
     public void fireGun() {
-        PlayerGunLevel2Bullet playerGunLevel2BulletLeft = new PlayerGunLevel2Bullet((location.x + getWidth() / 2) - 22, (location.y + getHeight() / 2) - 15);
-        PlayerGunLevel2Bullet playerGunLevel2BulletRight = new PlayerGunLevel2Bullet((location.x + getWidth() / 2) + 3, (location.y + getHeight() / 2) - 15);
+        PlayerGunLevel2Bullet playerGunLevel2BulletLeft = new PlayerGunLevel2Bullet(eventBus, (location.x + getWidth() / 2) - 22, (location.y + getHeight() / 2) - 15);
+        PlayerGunLevel2Bullet playerGunLevel2BulletRight = new PlayerGunLevel2Bullet(eventBus, (location.x + getWidth() / 2) + 3, (location.y + getHeight() / 2) - 15);
         projectiles.add(playerGunLevel2BulletLeft);
         projectiles.add(playerGunLevel2BulletRight);
         if (playerGunLevel2BulletLeft.getFireSound().isPresent()) {

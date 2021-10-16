@@ -12,11 +12,13 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import com.comandante.spacetrigger.sound.SoundEvent;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.eventbus.EventBus;
 import org.checkerframework.checker.nullness.Opt;
 
 
@@ -40,6 +42,8 @@ public abstract class Sprite {
     protected Optional<SpriteSheetAnimation> warpAnimation = Optional.empty();
     protected boolean isExploding;
     private boolean invisibleAfterExploding;
+
+    protected final EventBus eventBus;
 
     private long createStamp;
 
@@ -70,12 +74,14 @@ public abstract class Sprite {
 
     private Point2D previousAddedPoint;
 
-    public Sprite(PVector location,
+    public Sprite(EventBus eventBus,
+                  PVector location,
                   int hitPoints,
                   Optional<BufferedImage> image,
                   Optional<SpriteSheetAnimation> imageAnimation,
                   Optional<SpriteSheetAnimation> explosionAnimation,
                   Optional<SpriteSheetAnimation> warpAnimation) {
+        this.eventBus = eventBus;
         this.location = location;
         this.originalLocation = new PVector(location.x, location.y);
         this.hitPoints = hitPoints;
@@ -305,6 +311,9 @@ public abstract class Sprite {
     public void setExploding(boolean exploding, boolean invisibleAfterExploding) {
         this.isExploding = exploding;
         this.invisibleAfterExploding = invisibleAfterExploding;
+        if (explosion.getPlaySound().isPresent()) {
+            eventBus.post(new SoundEvent(explosion.getPlaySound().get()));
+        }
     }
 
     public void applyForce(PVector force) {
@@ -362,7 +371,11 @@ public abstract class Sprite {
     }
 
     public void addDamageAnimation(Projectile projectile, Point2D point) {
-        damageAnimations.add(projectile.getDamageAnimation(removeBoardCoords(point)));
+        SpriteSheetAnimation damageAnimation = projectile.getDamageAnimation(removeBoardCoords(point));
+        damageAnimations.add(damageAnimation);
+        if (damageAnimation.getPlaySound().isPresent()) {
+            eventBus.post(new SoundEvent(damageAnimation.getPlaySound().get()));
+        }
     }
 
     private Point2D removeBoardCoords(Point2D point) {

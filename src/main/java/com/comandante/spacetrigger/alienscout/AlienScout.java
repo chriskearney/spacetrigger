@@ -12,8 +12,8 @@ public class AlienScout extends Alien {
     private int scoutTicks;
     private final EventBus eventBus;
 
-    public AlienScout(PVector location, EventBus eventBus) {
-        super(location,
+    public AlienScout(EventBus eventBus, PVector location) {
+        super(eventBus, location,
                 150,
                 Optional.of(Assets.ALIEN_SCOUT),
                 Optional.empty(),
@@ -27,7 +27,7 @@ public class AlienScout extends Alien {
         PVector sub = PVector.sub(shipLocation, location);
         sub.normalize();
         sub.mult(0.1);
-        AlienScoutMissle alienScoutMissle = new AlienScoutMissle((location.x + getWidth() / 2) - 7, (location.y + getHeight() / 2) + 40, sub);
+        AlienScoutMissle alienScoutMissle = new AlienScoutMissle(eventBus, (location.x + getWidth() / 2) - 7, (location.y + getHeight() / 2) + 40, sub);
         eventBus.register(alienScoutMissle);
         projectiles.add(alienScoutMissle);
     }

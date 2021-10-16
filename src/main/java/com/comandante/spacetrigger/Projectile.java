@@ -1,6 +1,7 @@
 package com.comandante.spacetrigger;
 
 import com.comandante.spacetrigger.sound.SoundEffectService;
+import com.google.common.eventbus.EventBus;
 
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -11,8 +12,8 @@ public abstract class Projectile extends Sprite {
     private final int damage;
     private final Optional<SoundEffectService.PlaySound> fireSound;
 
-    public Projectile(PVector location, PVector heading, int damage, BufferedImage spriteImage) {
-        super(location, 0, Optional.ofNullable(spriteImage), Optional.empty(), Optional.empty(), Optional.empty());
+    public Projectile(EventBus eventBus, PVector location, PVector heading, int damage, BufferedImage spriteImage) {
+        super(eventBus, location, 0, Optional.ofNullable(spriteImage), Optional.empty(), Optional.empty(), Optional.empty());
         this.damage = damage;
         if (heading != null && heading.heading() != 0) {
             image = cachedRotate(spriteImage, heading.heading());
@@ -22,8 +23,8 @@ public abstract class Projectile extends Sprite {
         fireSound = Optional.empty();
     }
 
-    public Projectile(PVector location, PVector heading, int damage, BufferedImage spriteImage, SoundEffectService.PlaySound fireSound) {
-        super(location, 0, Optional.ofNullable(spriteImage), Optional.empty(), Optional.empty(), Optional.empty());
+    public Projectile(EventBus eventBus, PVector location, PVector heading, int damage, BufferedImage spriteImage, SoundEffectService.PlaySound fireSound) {
+        super(eventBus, location, 0, Optional.ofNullable(spriteImage), Optional.empty(), Optional.empty(), Optional.empty());
         this.damage = damage;
         if (heading != null && heading.heading() != 0) {
             image = cachedRotate(spriteImage, heading.heading());
