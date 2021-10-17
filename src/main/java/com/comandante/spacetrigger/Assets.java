@@ -54,6 +54,8 @@ public class Assets {
     public static final BufferedImage PLAYER_HEALTH_BAR_FULL;
     public static final BufferedImage PLAYER_SHIELD_BAR_FULL;
 
+    public static final SoundEffectService.PlaySound PLAYER_SHIELD_IMPACT_SOUND;
+
     public static final BufferedImage TRANSPARENT_ONE_PIXEL;
 
     static {
@@ -105,6 +107,8 @@ public class Assets {
         PLAYER_HEALTH_BAR_EMPTY = Assets.loadImage("player-health-bar/player-health-bar-empty.png");
         PLAYER_SHIELD_BAR_FULL = Assets.loadImage("player-health-bar/player-shield-bar-full.png");
 
+        PLAYER_SHIELD_IMPACT_SOUND = loadSound("player-ship-shield-impact.wav");
+
     }
 
     public static BufferedImage loadImage(String imageFilename) {
@@ -112,7 +116,7 @@ public class Assets {
             InputStream imageStream = Assets.class.getClassLoader().getResourceAsStream(imageFilename);
             return ImageIO.read(imageStream);
         } catch (Exception e) {
-            throw new RuntimeException(imageFilename + e);
+            throw new RuntimeException(imageFilename, e);
         }
     }
 
@@ -125,7 +129,7 @@ public class Assets {
             InputStream soundStream = Assets.class.getClassLoader().getResourceAsStream(soundFileName);
             return new SoundEffectService.PlaySound(ByteStreams.toByteArray(soundStream), numLoops);
         } catch (Exception e) {
-            throw new RuntimeException(soundFileName + e);
+            throw new RuntimeException(soundFileName, e);
         }
     }
 

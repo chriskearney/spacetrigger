@@ -5,6 +5,7 @@ import com.comandante.spacetrigger.events.PlayerShipHealthUpdateEvent;
 import com.comandante.spacetrigger.player.PlayerStatusBars;
 import com.comandante.spacetrigger.player.PlayerShip;
 import com.comandante.spacetrigger.sound.SoundEffectService;
+import com.comandante.spacetrigger.sound.SoundEvent;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
 
@@ -303,6 +304,7 @@ public class Board extends JPanel implements ActionListener {
                     playerShip.getShield().setVisible(true);
                     projectile.setVisible(false);
                     playerShip.getShield().addDamageAnimation(projectile, shieldCollision.get());
+                    eventBus.post(new SoundEvent(Assets.PLAYER_SHIELD_IMPACT_SOUND));
                 } else {
                     Optional<Point2D> collison = projectile.isCollison(playerShip);
                     if (collison.isPresent()) {
