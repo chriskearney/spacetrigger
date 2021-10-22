@@ -2,10 +2,12 @@ package com.comandante.spacetrigger;
 
 import com.comandante.spacetrigger.sound.SoundEffectService;
 import com.google.common.io.ByteStreams;
+import tinysound.TinySound;
 
 import javax.imageio.ImageIO;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Optional;
 
@@ -16,6 +18,7 @@ public class Assets {
     public static final SoundEffectService.PlaySound ALIEN_SCOUT_EXPLOSION_SOUND;
     public static final BufferedImage ALIEN_SCOUT_MISSLE;
     public static final BufferedImage ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION;
+    public static final SoundEffectService.PlaySound ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION_SOUND;
     public static final BufferedImage ALIEN_SCOUT_WARP;
 
     public static final BufferedImage ALIEN_NYMPH;
@@ -67,6 +70,7 @@ public class Assets {
         ALIEN_SCOUT_EXPLOSION_SOUND = loadSound("alien-scout-explosion.wav");
         ALIEN_SCOUT_MISSLE = loadImage("alien-scout-missle.png");
         ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION = loadImage("alien-scout-missle-impact-explosion.png");
+        ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION_SOUND = loadSound("alien-scout-missle-impact-explosion.wav");
         ALIEN_SCOUT_WARP = loadImage("alien-scout-warp.png");
 
         ALIEN_BUZZ = loadImage("alien-buzz.png");
@@ -127,7 +131,7 @@ public class Assets {
     public static SoundEffectService.PlaySound loadSound(String soundFileName, int numLoops) {
         try {
             InputStream soundStream = Assets.class.getClassLoader().getResourceAsStream(soundFileName);
-            return new SoundEffectService.PlaySound(ByteStreams.toByteArray(soundStream), numLoops);
+            return new SoundEffectService.PlaySound(TinySound.loadSound(soundStream), numLoops);
         } catch (Exception e) {
             throw new RuntimeException(soundFileName, e);
         }
@@ -152,7 +156,9 @@ public class Assets {
     }
 
     public static SpriteSheetAnimation getAlienScoutMissleImpactExplosion(Point2D point) {
-        return new SpriteSheetAnimation(64, 64, 8, 8, Assets.ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION, 2, 3, Optional.of(point));
+        SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(64, 64, 8, 8, Assets.ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION, 2, 3, Optional.of(point));
+        spriteSheetAnimation.setPlaySound(Assets.ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION_SOUND);
+        return spriteSheetAnimation;
     }
 
     public static SpriteSheetAnimation getAlienNymphBulletImpactExplosion(Point2D point) {

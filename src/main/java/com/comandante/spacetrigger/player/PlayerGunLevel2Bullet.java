@@ -15,7 +15,7 @@ public class PlayerGunLevel2Bullet extends Projectile {
 
     public SpriteSheetAnimation getDamageAnimation(Point2D point) {
         SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(32, 32, 8, 8, Assets.PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION, 2, 3, Optional.of(point));
-        spriteSheetAnimation.setPlaySound(Assets.PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION_SOUND);
+        spriteSheetAnimation.setPlaySound(Assets.ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION_SOUND);
         return spriteSheetAnimation;
     }
 

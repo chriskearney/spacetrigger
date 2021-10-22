@@ -30,9 +30,7 @@ public class AlienScoutMissle extends Projectile {
     @Override
     public void update() {
         if (isOlderThan(5, TimeUnit.SECONDS) && !isExploding()) {
-            SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(32, 32, 8, 8, Assets.PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION, 2, 3, Optional.of(new Point2D.Double(location.x, location.y)));
-
-            explosion = spriteSheetAnimation;
+            explosion = getDamageAnimation(new Point2D.Double(location.x, location.y));
             setExploding(true, true);
         }
         PVector sub = PVector.sub(shipLocation, location);
