@@ -29,25 +29,26 @@ public class AlienScoutMissle extends Projectile {
 
     @Override
     public void update() {
-        if (isOlderThan(5, TimeUnit.SECONDS) && !isExploding()) {
+        if (isOlderThan(3, TimeUnit.SECONDS) && !isExploding()) {
             explosion = getDamageAnimation(new Point2D.Double(location.x, location.y));
             setExploding(true, true);
-        }
-        PVector sub = PVector.sub(shipLocation, location);
-        sub.normalize();
-        sub.mult(0.1);
-        acceleration.add(sub);
-        velocity.add(acceleration);
-        velocity.limit(2);
-        location.add(velocity);
-        image = cachedRotate(Assets.ALIEN_SCOUT_MISSLE, GfxUtil.round(velocity.heading(), 1));
-        acceleration.mult(0);
+        } else if (!isExploding()) {
+            PVector sub = PVector.sub(shipLocation, location);
+            sub.normalize();
+            sub.mult(0.1);
+            acceleration.add(sub);
+            velocity.add(acceleration);
+            velocity.limit(2);
+            location.add(velocity);
+            image = cachedRotate(Assets.ALIEN_SCOUT_MISSLE, GfxUtil.round(velocity.heading(), 1));
+            acceleration.mult(0);
 
-        if ((location.x > BOARD_X) || (location.x < 0)) {
-            setVisible(false);
-        }
-        if ((location.y > BOARD_Y) || (location.y < 0)) {
-            setVisible(false);
+            if ((location.x > BOARD_X) || (location.x < 0)) {
+                setVisible(false);
+            }
+            if ((location.y > BOARD_Y) || (location.y < 0)) {
+                setVisible(false);
+            }
         }
         super.update();
     }

@@ -25,7 +25,7 @@ public class Main extends JFrame {
                 .build();
 
 
-        reporter.start(3, TimeUnit.SECONDS);
+        reporter.start(40, TimeUnit.SECONDS);
 
         add(new Board(metrics));
 

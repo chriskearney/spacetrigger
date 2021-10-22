@@ -1,5 +1,6 @@
 package com.comandante.spacetrigger.sound;
 
+import com.google.common.collect.Interners;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.RateLimiter;
 import tinysound.Sound;
@@ -26,7 +27,8 @@ public class SoundEffectService {
 
         private final Sound sound;
         private final int numOfLoops;
-        private final RateLimiter rateLimiter = RateLimiter.create(5);
+
+        private long lastPlayTime = 0;
 
         public PlaySound(Sound sound, int numOfLoops) {
             this.sound = sound;
@@ -34,10 +36,12 @@ public class SoundEffectService {
         }
 
         @Override
-        public void run() {
+        public synchronized void run() {
             try {
-                if (rateLimiter.tryAcquire()) {
+                // this prevents crackling if the same sound wants to play at the sametime
+                if (lastPlayTime == 0 || System.currentTimeMillis() - lastPlayTime > 30) {
                     sound.play();
+                    lastPlayTime = System.currentTimeMillis();
                 }
             } catch (Exception e) {
                 System.err.println(e.getMessage());

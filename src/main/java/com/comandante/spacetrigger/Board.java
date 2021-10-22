@@ -298,6 +298,9 @@ public class Board extends JPanel implements ActionListener {
 
             List<Projectile> projectiles = aliens.get(i).getMissiles();
             for (Projectile projectile : projectiles) {
+                if (!projectile.isVisible()) {
+                    continue;
+                }
                 // Check if alient projectiles hit playerShip
                 Optional<Point2D> shieldCollision = projectile.isCollison(playerShip.getShield(), 100, true);
                 if (shieldCollision.isPresent() && playerShip.getCurrentShield() > 20) {
@@ -319,7 +322,7 @@ public class Board extends JPanel implements ActionListener {
                 // Check if alien projectile hit other alien
                 for (int j = 0; j < aliens.size(); j++) {
                     // this is a kind of sloppy way to prevent alien friendly fire
-                    if (!projectile.isOlderThan(2, TimeUnit.SECONDS)) {
+                    if (!projectile.isOlderThan(1, TimeUnit.SECONDS)) {
                         continue;
                     }
                     Optional<Point2D> collisonPoint = aliens.get(j).isCollison(projectile);
@@ -403,6 +406,7 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < aliens.size(); i++) {
             boolean remove = false;
             for (int j = 0; j < aliens.get(i).getMissiles().size(); j++) {
+//                System.out.println("Total number of missles: " + aliens.get(i).getMissiles().size());
                 Projectile alienMissle = aliens.get(i).getMissiles().get(j);
                 if (alienMissle.isVisible()) {
                     alienMissle.update();
@@ -411,12 +415,14 @@ public class Board extends JPanel implements ActionListener {
                     try {
                         eventBus.unregister(alienMissle);
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
                 }
             }
             if (remove) {
+                System.out.println("FOUND REMOVE");
                 aliens.get(i).getMissiles().removeIf(missle -> !missle.isVisible());
+//                System.out.println("Total number of missles after delete " + aliens.get(i).getMissiles().size());
             }
         }
 
