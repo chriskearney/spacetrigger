@@ -406,7 +406,6 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < aliens.size(); i++) {
             boolean remove = false;
             for (int j = 0; j < aliens.get(i).getMissiles().size(); j++) {
-//                System.out.println("Total number of missles: " + aliens.get(i).getMissiles().size());
                 Projectile alienMissle = aliens.get(i).getMissiles().get(j);
                 if (alienMissle.isVisible()) {
                     alienMissle.update();
@@ -420,9 +419,7 @@ public class Board extends JPanel implements ActionListener {
                 }
             }
             if (remove) {
-                System.out.println("FOUND REMOVE");
                 aliens.get(i).getMissiles().removeIf(missle -> !missle.isVisible());
-//                System.out.println("Total number of missles after delete " + aliens.get(i).getMissiles().size());
             }
         }
 
