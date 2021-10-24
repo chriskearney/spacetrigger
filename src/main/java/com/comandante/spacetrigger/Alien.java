@@ -31,7 +31,7 @@ public abstract class Alien extends Sprite {
         visible = true;
     }
 
-    public List<Projectile> getMissiles() {
+    public List<Projectile> getProjectiles() {
         return projectiles;
     }
 

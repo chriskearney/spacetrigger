@@ -212,8 +212,8 @@ public class Board extends JPanel implements ActionListener {
                 g.drawImage(aliensRender.getImage(), getAffineTransform(aliensRender.getX(), aliensRender.getY()), this);
 
                 // Alien projectiles
-                for (int j = 0; j < alien.getMissiles().size(); j++) {
-                    Sprite.SpriteRender alienMissleRender = alien.getMissiles().get(j).getSpriteRender();
+                for (int j = 0; j < alien.getProjectiles().size(); j++) {
+                    Sprite.SpriteRender alienMissleRender = alien.getProjectiles().get(j).getSpriteRender();
                     g.drawImage(alienMissleRender.getImage(), getAffineTransform(alienMissleRender.getX(), alienMissleRender.getY()), null);
                 }
                 if (alien.isExploding()) {
@@ -287,76 +287,105 @@ public class Board extends JPanel implements ActionListener {
         repaint();
     }
 
-    public void checkCollisions() {
-        boolean newExplosion = false;
-        for (int i = 0; i < aliens.size(); i++) {
-            if (aliens.get(i).isCollison(playerShip).isPresent()) {
-                playerShip.setExploding(true, true);
-                aliens.get(i).setExploding(true, true);
-            }
 
+    interface AlienExecute {
+        void process(Alien alien);
+    }
 
-            List<Projectile> projectiles = aliens.get(i).getMissiles();
-            for (Projectile projectile : projectiles) {
-                if (!projectile.isVisible()) {
-                    continue;
-                }
-                // Check if alient projectiles hit playerShip
-                Optional<Point2D> shieldCollision = projectile.isCollison(playerShip.getShield(), 100, true);
-                if (shieldCollision.isPresent() && playerShip.getCurrentShield() > 20) {
-                    playerShip.getShield().setVisible(true);
-                    projectile.setVisible(false);
-                    playerShip.getShield().addDamageAnimation(projectile, shieldCollision.get());
-                    eventBus.post(new SoundEvent(Assets.PLAYER_SHIELD_IMPACT_SOUND));
-                } else {
-                    Optional<Point2D> collison = projectile.isCollison(playerShip);
-                    if (collison.isPresent()) {
-                        int newHitPointsPct = playerShip.calculateHitPointsPercentAfterDamageApplied(projectile, collison.get());
-                        projectile.setVisible(false);
-                        if (newHitPointsPct == 0) {
-                            playerShip.setExploding(true, true);
-                        }
-                        eventBus.post(new PlayerShipHealthUpdateEvent(newHitPointsPct));
-                    }
-                }
-                // Check if alien projectile hit other alien
-                for (int j = 0; j < aliens.size(); j++) {
-                    // this is a kind of sloppy way to prevent alien friendly fire
-                    if (!projectile.isOlderThan(1, TimeUnit.SECONDS)) {
-                        continue;
-                    }
-                    Optional<Point2D> collisonPoint = aliens.get(j).isCollison(projectile);
-                    if (collisonPoint.isPresent()) {
-                        int newHitPointsPercentage = aliens.get(j).calculateHitPointsPercentAfterDamageApplied(projectile, collisonPoint.get());
-                        projectile.setVisible(false);
-                        if (newHitPointsPercentage <= 0) {
-                            processDrops(aliens.get(j));
-                            aliens.get(j).setExploding(true, true);
-                            newExplosion = true;
-                        }
-                    }
-                }
-            }
+    public interface ProjectileExecute {
+        void process(Projectile projectile);
+    }
 
-            if (playerShip.getShield().getDamageAnimations().size() == 0) {
-                playerShip.getShield().setVisible(false);
-            }
+    private List<Projectile> getAlienProjectiles() {
+        List<Projectile> projectiles = Lists.newArrayList();
+        runOnAllAliens(alien -> projectiles.addAll(alien.getProjectiles()));
+        return projectiles;
+    }
+
+    private void runOnAllAliens(AlienExecute alienExecute) {
+        for (Alien alien : aliens) {
+            alienExecute.process(alien);
         }
+    }
 
-        List<Projectile> spaceShipMissles = playerShip.getMissiles();
-        for (int i = 0; i < spaceShipMissles.size(); i++) {
-            for (int j = 0; j < aliens.size(); j++) {
-                Optional<Point2D> collisonPoint = aliens.get(j).isCollison(spaceShipMissles.get(i));
-                if (collisonPoint.isPresent()) {
-                    int newHitPointsPercentage = aliens.get(j).calculateHitPointsPercentAfterDamageApplied(spaceShipMissles.get(i), collisonPoint.get());
-                    spaceShipMissles.get(i).setVisible(false);
-                    if (newHitPointsPercentage <= 0) {
-                        processDrops(aliens.get(j));
-                        aliens.get(j).setExploding(true, true);
-                        newExplosion = true;
+    private void runOnAllAlienProjectiles(ProjectileExecute projectileExecute) {
+        for (Projectile alienProjectile : getAlienProjectiles()) {
+            projectileExecute.process(alienProjectile);
+        }
+    }
+
+    public void checkCollisions() {
+        final boolean[] newExplosion = {false};
+
+        runOnAllAlienProjectiles(projectile -> {
+            if (!projectile.isVisible()) {
+                return;
+            }
+            // Check if alien projectiles hit playerShip
+            Optional<Point2D> shieldCollision = projectile.isCollison(playerShip.getShield(), 100, true);
+            if (shieldCollision.isPresent() && playerShip.getCurrentShield() > 20) {
+                playerShip.getShield().setVisible(true);
+                projectile.setVisible(false);
+                playerShip.getShield().addDamageAnimation(projectile, shieldCollision.get());
+                eventBus.post(new SoundEvent(Assets.PLAYER_SHIELD_IMPACT_SOUND));
+            } else {
+                Optional<Point2D> collison = projectile.isCollison(playerShip);
+                if (collison.isPresent()) {
+                    int newHitPointsPct = playerShip.calculateHitPointsPercentAfterDamageApplied(projectile, collison.get());
+                    projectile.setVisible(false);
+                    if (newHitPointsPct == 0) {
+                        playerShip.setExploding(true, true);
                     }
+                    eventBus.post(new PlayerShipHealthUpdateEvent(newHitPointsPct));
                 }
             }
+
+            // Check if alien projectile hit other alien
+            runOnAllAliens(alienCheck -> {
+                // this is a kind of sloppy way to prevent alien friendly fire
+                if (!projectile.isOlderThan(1, TimeUnit.SECONDS)) {
+                    return;
+                }
+                Optional<Point2D> collisonPoint = alienCheck.isCollison(projectile);
+                if (collisonPoint.isPresent()) {
+                    int newHitPointsPercentage = alienCheck.calculateHitPointsPercentAfterDamageApplied(projectile, collisonPoint.get());
+                    projectile.setVisible(false);
+                    if (newHitPointsPercentage <= 0) {
+                        processDrops(alienCheck);
+                        alienCheck.setExploding(true, true);
+                        newExplosion[0] = true;
+                    }
+                }
+            });
+        });
+
+        runOnAllAliens(alien -> {
+            if (alien.isCollison(playerShip).isPresent()) {
+                playerShip.setExploding(true, true);
+                alien.setExploding(true, true);
+            }
+        });
+
+        for (Projectile spaceShipMissle : playerShip.getMissiles()) {
+            runOnAllAliens(alien -> {
+                Optional<Point2D> collisonPoint = alien.isCollison(spaceShipMissle);
+                if (collisonPoint.isPresent()) {
+                    int newHitPointsPercentage = alien.calculateHitPointsPercentAfterDamageApplied(spaceShipMissle, collisonPoint.get());
+                    spaceShipMissle.setVisible(false);
+                    if (newHitPointsPercentage <= 0) {
+                        processDrops(alien);
+                        alien.setExploding(true, true);
+                        newExplosion[0] = true;
+                    }
+                }
+            });
+
+            runOnAllAlienProjectiles(projectile -> {
+                if (projectile.isCollison(spaceShipMissle).isPresent()) {
+                    spaceShipMissle.setVisible(false);
+                    projectile.setExploding(true, true);
+                }
+            });
         }
 
         for (int i = 0; i < drops.size(); i++) {
@@ -368,7 +397,7 @@ public class Board extends JPanel implements ActionListener {
             }
         }
 
-        if (newExplosion) {
+        if (newExplosion[0]) {
             aliens.sort((abc1, abc2) -> Boolean.compare(abc1.isExploding, abc2.isExploding));
         }
     }
@@ -405,8 +434,8 @@ public class Board extends JPanel implements ActionListener {
 
         for (int i = 0; i < aliens.size(); i++) {
             boolean remove = false;
-            for (int j = 0; j < aliens.get(i).getMissiles().size(); j++) {
-                Projectile alienMissle = aliens.get(i).getMissiles().get(j);
+            for (int j = 0; j < aliens.get(i).getProjectiles().size(); j++) {
+                Projectile alienMissle = aliens.get(i).getProjectiles().get(j);
                 if (alienMissle.isVisible()) {
                     alienMissle.update();
                 } else {
@@ -419,7 +448,7 @@ public class Board extends JPanel implements ActionListener {
                 }
             }
             if (remove) {
-                aliens.get(i).getMissiles().removeIf(missle -> !missle.isVisible());
+                aliens.get(i).getProjectiles().removeIf(missle -> !missle.isVisible());
             }
         }
 
@@ -429,6 +458,10 @@ public class Board extends JPanel implements ActionListener {
     private void updateSpaceShip() {
         if (!playerShip.isVisible() && !playerShip.isExploding()) {
             inGame = false;
+        }
+
+        if (playerShip.getShield().getDamageAnimations().size() == 0) {
+            playerShip.getShield().setVisible(false);
         }
 
         playerShip.update();

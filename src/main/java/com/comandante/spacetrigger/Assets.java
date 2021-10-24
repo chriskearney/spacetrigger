@@ -161,6 +161,12 @@ public class Assets {
         return spriteSheetAnimation;
     }
 
+    public static SpriteSheetAnimation getAlienScoutMissleExplosion() {
+        SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(64, 64, 8, 8, Assets.ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION, 2, 3);
+        spriteSheetAnimation.setPlaySound(Assets.ALIEN_SCOUT_MISSLE_IMPACT_EXPLOSION_SOUND);
+        return spriteSheetAnimation;
+    }
+
     public static SpriteSheetAnimation getAlienNymphBulletImpactExplosion(Point2D point) {
         return new SpriteSheetAnimation(32, 32, 8, 8, Assets.ALIEN_NYMPH_BULLET_IMPACT_EXPLOSION, 2, 3, Optional.of(point));
     }

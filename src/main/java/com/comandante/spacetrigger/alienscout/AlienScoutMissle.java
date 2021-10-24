@@ -20,6 +20,7 @@ public class AlienScoutMissle extends Projectile {
     public AlienScoutMissle(EventBus eventBus, double x, double y, PVector heading) {
         super(eventBus, new PVector(x, y), heading, 250, Assets.ALIEN_SCOUT_MISSLE);
         this.shipLocation = heading;
+        this.explosion = Assets.getAlienScoutMissleExplosion();
     }
 
     @Override
@@ -30,7 +31,6 @@ public class AlienScoutMissle extends Projectile {
     @Override
     public void update() {
         if (isOlderThan(3, TimeUnit.SECONDS) && !isExploding()) {
-            explosion = getDamageAnimation(new Point2D.Double(location.x, location.y));
             setExploding(true, true);
         } else if (!isExploding()) {
             PVector sub = PVector.sub(shipLocation, location);
