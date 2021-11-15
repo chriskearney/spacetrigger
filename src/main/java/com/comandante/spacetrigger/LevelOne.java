@@ -55,7 +55,7 @@ public class LevelOne extends Level {
             AlienBuzz alienBuzz = new AlienBuzz(eventBus, new PVector(i * 40, 40));
             alienBuzz.addDrop(new HealthDrop(eventBus, Drop.DropRate.COMMON));
             alienBuzz.addDrop(new MissleDrop(eventBus, Drop.DropRate.COMMON));
-            //   aliens4.add(alienBuzz);
+            aliens4.add(alienBuzz);
         }
         alienTimeMap.put(900L, aliens4);
 

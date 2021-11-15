@@ -23,6 +23,7 @@ public class Assets {
 
     public static final BufferedImage ALIEN_NYMPH;
     public static final BufferedImage ALIEN_NYMPH_EXPLOSION;
+    public static final SoundEffectService.PlaySound ALIEN_NYMPH_EXPLOSION_SOUND;
     public static final BufferedImage ALIEN_NYMPH_BULLET;
     public static final BufferedImage ALIEN_NYMPH_BULLET_IMPACT_EXPLOSION;
     public static final BufferedImage ALIEN_NYMPH_WARP;
@@ -79,6 +80,7 @@ public class Assets {
 
         ALIEN_NYMPH = loadImage("alien-nymph.png");
         ALIEN_NYMPH_EXPLOSION = loadImage("alien-nymph-explosion.png");
+        ALIEN_NYMPH_EXPLOSION_SOUND = loadSound("alien-nymph-explosion.wav");
         ALIEN_NYMPH_BULLET = loadImage("alien-nymph-bullet.png");
         ALIEN_NYMPH_BULLET_IMPACT_EXPLOSION = loadImage("alien-nymph-bullet-impact-explosion.png");
         ALIEN_NYMPH_WARP = loadImage("alien-nymph-warp.png");
@@ -176,7 +178,9 @@ public class Assets {
     }
 
     public static SpriteSheetAnimation getAlienNymphExplosion() {
-        return new SpriteSheetAnimation(128, 128, 8, 8, Assets.ALIEN_NYMPH_EXPLOSION, 2, 3);
+        SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(128, 128, 8, 8, Assets.ALIEN_NYMPH_EXPLOSION, 2, 3);
+        spriteSheetAnimation.setPlaySound(ALIEN_NYMPH_EXPLOSION_SOUND);
+        return spriteSheetAnimation;
     }
 
     public static SpriteSheetAnimation getAlienBuzzWarpAnimation() {
