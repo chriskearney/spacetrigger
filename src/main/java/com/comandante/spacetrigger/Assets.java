@@ -183,6 +183,12 @@ public class Assets {
         return spriteSheetAnimation;
     }
 
+    public static SpriteSheetAnimation getPlayerGunLevel2BulletDamageAnimation(Point2D point) {
+        SpriteSheetAnimation spriteSheetAnimation = new SpriteSheetAnimation(32, 32, 8, 8, Assets.PLAYER_GUN_LEVEL_2_IMPACT_EXPLOSION, 2, 3, Optional.of(point));
+        spriteSheetAnimation.setPlaySound(Assets.ALIEN_NYMPH_EXPLOSION_SOUND);
+        return spriteSheetAnimation;
+    }
+
     public static SpriteSheetAnimation getAlienBuzzWarpAnimation() {
         return new SpriteSheetAnimation(64, 64, 9, 1, Assets.ALIEN_NYMPH_WARP, 0, 5);
     }

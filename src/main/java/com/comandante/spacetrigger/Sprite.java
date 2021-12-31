@@ -166,12 +166,15 @@ public abstract class Sprite {
 
 
         if (isExploding) {
-            Optional<BufferedImage> currentFrame = explosion.updateAnimation();
-            if (currentFrame.isPresent()) {
-                double explosionX = centerX - (currentFrame.get().getWidth() / 2);
-                double explosionY = centerY - (currentFrame.get().getHeight() / 2);
-                this.spriteRender = new SpriteRender(new PVector(explosionX, explosionY), currentFrame.get());
-                return;
+
+            if (explosion != null) {
+                Optional<BufferedImage> currentFrame = explosion.updateAnimation();
+                if (currentFrame.isPresent()) {
+                    double explosionX = centerX - (currentFrame.get().getWidth() / 2);
+                    double explosionY = centerY - (currentFrame.get().getHeight() / 2);
+                    this.spriteRender = new SpriteRender(new PVector(explosionX, explosionY), currentFrame.get());
+                    return;
+                }
             }
 
             if (invisibleAfterExploding) {
@@ -311,7 +314,7 @@ public abstract class Sprite {
     public void setExploding(boolean exploding, boolean invisibleAfterExploding) {
         this.isExploding = exploding;
         this.invisibleAfterExploding = invisibleAfterExploding;
-        if (explosion.getPlaySound().isPresent()) {
+        if (explosion != null && explosion.getPlaySound().isPresent()) {
             eventBus.post(new SoundEvent(explosion.getPlaySound().get()));
         }
     }
